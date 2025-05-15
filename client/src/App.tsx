@@ -14,7 +14,6 @@ import MyQuestions from "@/pages/my-questions";
 import KnowledgeSearch from "@/pages/knowledge-search";
 import ReceivedQuestions from "@/pages/received-questions";
 import ManageUsers from "@/pages/manage-users";
-import ChatPage from "@/pages/chat";
 
 function Router() {
   return (
@@ -27,7 +26,6 @@ function Router() {
       <ProtectedRoute path="/knowledge-search" component={KnowledgeSearch} />
       <ProtectedRoute path="/received-questions" component={ReceivedQuestions} />
       <ProtectedRoute path="/manage-users" component={ManageUsers} />
-      <ProtectedRoute path="/chat" component={ChatPage} />
       <Route component={NotFound} />
     </Switch>
   );

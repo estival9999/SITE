@@ -465,32 +465,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Rota de busca para API e webhook
-  app.get("/api/search", async (req, res) => {
-    try {
-      if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-      
-      const query = req.query.q as string;
-      
-      if (!query || query.length < 3) {
-        return res.status(400).json({ message: "Search query must be at least 3 characters" });
-      }
-
-      // Busca no banco de dados
-      const searchResults = await storage.searchAnnouncements(query);
-      
-      // Se tivéssemos um webhook real, poderíamos consultar aqui também
-      // Mas vamos apenas retornar os resultados do banco de dados por enquanto
-      
-      res.json(searchResults);
-    } catch (error) {
-      console.error("Error searching:", error);
-      res.status(500).json({ message: "Server error" });
-    }
-  });
-  
   // Serve uploaded files
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
   
