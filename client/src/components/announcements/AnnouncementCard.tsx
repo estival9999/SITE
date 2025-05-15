@@ -265,10 +265,12 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
       {isExpanded && (
         <div className="border-t border-gray-200" onClick={(e) => e.stopPropagation()}>
           <Tabs defaultValue="content">
-            <div className="bg-gray-50 px-5 py-3">
-              <TabsList className="grid grid-cols-2 w-full max-w-md">
-                <TabsTrigger value="content" className="tab-active">Conteúdo</TabsTrigger>
-                <TabsTrigger value="question">Enviar Dúvida/Comentário</TabsTrigger>
+            <div className="bg-gray-50 px-5 py-3 flex justify-between items-center">
+              <TabsList className="w-[200px]">
+                <TabsTrigger value="content" className="tab-active w-full font-semibold text-base">Conteúdo</TabsTrigger>
+              </TabsList>
+              <TabsList className="w-auto bg-transparent">
+                <TabsTrigger value="question" className="text-xs text-gray-500 hover:text-gray-700 bg-transparent hover:bg-gray-100 border border-gray-200">Perguntas</TabsTrigger>
               </TabsList>
             </div>
             
@@ -295,7 +297,7 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
                     onChange={(e) => setQuestion(e.target.value)}
                     className="mt-1 w-full"
                     rows={4}
-                    placeholder="Digite sua dúvida ou comentário..."
+                    placeholder="Digite sua pergunta sobre este comunicado..."
                     onClick={(e) => e.stopPropagation()}
                     onFocus={(e) => e.stopPropagation()}
                   />
