@@ -1,8 +1,24 @@
 import { scrypt, randomBytes } from 'crypto';
 import { promisify } from 'util';
-import { db } from './server/db.js';
-import { users } from './shared/schema.js';
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
 import { eq } from 'drizzle-orm';
+import * as schema from './shared/schema.js';
+import ws from 'ws';
+
+// Configuração para o neon usar websocket
+neonConfig.webSocketConstructor = ws;
+
+// Verificar se DATABASE_URL está definido
+if (!process.env.DATABASE_URL) {
+  console.error("DATABASE_URL is not defined. Please check your environment variables.");
+  process.exit(1);
+}
+
+console.log("Connecting to database...");
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const db = drizzle(pool, { schema });
+const { users } = schema;
 
 const scryptAsync = promisify(scrypt);
 
