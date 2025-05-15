@@ -229,29 +229,30 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
         <div className="flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
           <div className="flex-grow min-w-0 max-w-full">
             <div className="flex items-center mb-4">
-              <Badge className={cn("text-xs px-3 py-1.5 shadow-sm", getDepartmentBadgeClass())}>
+              <Badge className={cn("text-xs px-3 py-1.5 rounded-full", getDepartmentBadgeClass())}>
                 {getDepartmentLabel()}
               </Badge>
               <span 
-                className="category-icon bg-[var(--color-bg-main)] h-7 w-7 rounded-full flex items-center justify-center ml-3 shadow-sm border border-[var(--color-border)]" 
+                className="category-icon bg-[var(--color-bg-main)] h-8 w-8 rounded-full flex items-center justify-center ml-3 backdrop-blur border border-[var(--color-border)]" 
                 title={getCategoryTitle()}
               >
                 {getCategoryIcon()}
               </span>
+              <p className="text-sm text-[var(--color-text-light)] ml-auto">{formatDate(announcement.createdAt)}</p>
             </div>
             
-            <h3 className="font-semibold text-xl text-[var(--color-text-dark)] tracking-tight">{announcement.title}</h3>
-            <p className="text-sm text-[var(--color-text-light)] mt-1.5">{formatDate(announcement.createdAt)}</p>
-            <p className="text-sm text-[var(--color-text-medium)] mt-4 line-clamp-2 max-w-full leading-relaxed">{announcement.message}</p>
+            <h3 className="font-semibold text-xl text-[var(--color-text-dark)] tracking-tight leading-7">{announcement.title}</h3>
+            <div className="h-[1px] w-1/3 bg-gradient-to-r from-[var(--color-accent-primary)] via-[var(--color-accent-secondary)] to-transparent my-3 opacity-60"></div>
+            <p className="text-sm text-[var(--color-text-medium)] mt-2 line-clamp-2 max-w-full leading-relaxed">{announcement.message}</p>
           </div>
           
           <div className="flex items-start">
             <button 
               className={cn(
-                "read-flag h-9 w-9 rounded-full flex items-center justify-center",
+                "read-flag h-10 w-10 rounded-full flex items-center justify-center transform transition-all duration-300",
                 readStatus 
-                  ? "bg-gradient-to-b from-[#ecf9f0] to-[#d7f5e1] border-2 border-[var(--color-accent-secondary)]" 
-                  : "bg-gradient-to-b from-[var(--color-bg-main)] to-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-text-light)]"
+                  ? "bg-gradient-to-b from-[#ecf9f0] to-[#d7f5e1] border-2 border-[var(--color-accent-secondary)] shadow-md shadow-green-300/20" 
+                  : "bg-gradient-to-b from-[var(--color-bg-main)] to-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-text-light)] hover:shadow-md"
               )} 
               title={readStatus ? "Marcado como lido" : "Marcar como lido"}
               onClick={handleReadFlagClick}
@@ -263,49 +264,77 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
               {toggleReadStatusMutation.isPending ? (
                 <RefreshCw className="h-4 w-4 text-gray-400 animate-spin" />
               ) : readStatus ? (
-                <Check className="h-5 w-5 text-green-600" strokeWidth={2.5} />
+                <Check className="h-5 w-5 text-green-600 animate-checkmark" strokeWidth={2.5} />
               ) : (
                 <Check className="h-5 w-5 text-gray-300" strokeWidth={1.5} />
               )}
             </button>
           </div>
         </div>
+        
+        {!isExpanded && (
+          <div className="mt-4 flex items-center text-xs text-[var(--color-text-light)] opacity-70">
+            <span className="flex items-center mr-4">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-accent-primary)] mr-1.5"></span>
+              Clique para expandir
+            </span>
+          </div>
+        )}
       </div>
       
       {isExpanded && (
         <div className="border-t border-[var(--color-border)]" onClick={(e) => e.stopPropagation()}>
           <Tabs defaultValue="content">
-            <div className="bg-[var(--color-bg-main)] px-5 py-3 flex justify-between items-center">
-              <TabsList className="w-[200px]">
+            <div className="bg-[var(--color-bg-main)] px-5 py-3 flex justify-between items-center border-b border-[var(--color-border)]">
+              <TabsList className="w-[200px] bg-white/80 backdrop-blur-sm shadow-md">
                 <TabsTrigger value="content" className="tab-active w-full font-semibold text-base">Conteúdo</TabsTrigger>
               </TabsList>
               <TabsList className="w-auto bg-transparent">
-                <TabsTrigger value="question" className="text-xs text-[var(--color-text-light)] hover:text-[var(--color-text-medium)] bg-transparent hover:bg-[var(--color-bg-main)/80] border border-[var(--color-border)]">Perguntas</TabsTrigger>
+                <TabsTrigger 
+                  value="question" 
+                  className="text-xs font-medium text-[var(--color-text-medium)] hover:text-[var(--color-accent-primary)] 
+                  bg-white shadow-md hover:shadow-lg border border-[var(--color-border)] rounded-full
+                  transition-all duration-300 px-4"
+                >
+                  Perguntas
+                </TabsTrigger>
               </TabsList>
             </div>
             
-            <div className="p-5">
-              <TabsContent value="content">
+            <div className="p-6 bg-white">
+              <TabsContent value="content" className="animate-in fade-in-50 duration-300">
                 <div className="text-sm text-[var(--color-text-medium)] whitespace-pre-line max-w-4xl leading-relaxed">
                   {announcement.message}
                 </div>
                 
                 {announcement.attachment && (
-                  <div className="mt-5 flex items-center text-sm text-[var(--color-accent-primary)] hover:text-[var(--color-accent-secondary)]">
-                    <FileText className="h-5 w-5 mr-2" />
-                    <a href={announcement.attachment} target="_blank" rel="noopener noreferrer" className="font-medium">
-                      {announcement.attachment.split('/').pop()}
+                  <div className="mt-6 flex items-center text-sm text-[var(--color-accent-primary)] 
+                  hover:text-[var(--color-accent-secondary)] bg-[var(--color-bg-main)] p-3 rounded-lg
+                  border border-[var(--color-border)] shadow-sm hover:shadow-md transition-all duration-300">
+                    <FileText className="h-5 w-5 mr-3" />
+                    <a 
+                      href={announcement.attachment} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="font-medium hover:underline"
+                    >
+                      {announcement.attachment.split('/').pop() || 'Anexo'}
                     </a>
                   </div>
                 )}
               </TabsContent>
               
-              <TabsContent value="question">
+              <TabsContent value="question" className="animate-in slide-in-from-right-5 duration-300">
                 <div className="max-w-2xl">
+                  <div className="bg-[var(--color-bg-main)]/70 p-4 rounded-lg border border-[var(--color-border)] mb-4">
+                    <h4 className="text-sm font-medium text-[var(--color-text-dark)] mb-2">Envie uma pergunta ao autor</h4>
+                    <p className="text-xs text-[var(--color-text-light)] mb-3">Utilize este espaço para esclarecer dúvidas sobre o comunicado.</p>
+                  </div>
+                
                   <Textarea
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
-                    className="mt-1 w-full"
+                    className="mt-1 w-full bg-white shadow-sm focus:shadow border border-[var(--color-border)] rounded-lg"
                     rows={4}
                     placeholder="Digite sua pergunta sobre este comunicado..."
                     onClick={(e) => e.stopPropagation()}
@@ -314,10 +343,12 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
                   <div className="mt-4 flex justify-end">
                     <Button
                       className={cn(
-                        "hover:opacity-90", 
-                        announcement.department === Department.CONTROLES_INTERNOS ? "bg-red-500" :
-                        announcement.department === Department.ADMINISTRATIVO ? "bg-blue-500" : 
-                        "bg-green-500"
+                        "hover:opacity-90 shadow-md px-5 rounded-full transition-all duration-300", 
+                        announcement.department === Department.CONTROLES_INTERNOS 
+                          ? "bg-gradient-to-r from-[#8c2318] to-[#a62e24] hover:shadow-[#8c2318]/20 hover:shadow-lg" 
+                          : announcement.department === Department.ADMINISTRATIVO 
+                          ? "bg-gradient-to-r from-[#4a7dbe] to-[#5a8fd0] hover:shadow-[#4a7dbe]/20 hover:shadow-lg"
+                          : "bg-gradient-to-r from-[#88a65e] to-[#96b46a] hover:shadow-[#88a65e]/20 hover:shadow-lg"
                       )}
                       onClick={(e) => handleAskQuestion(e)}
                       onMouseDown={(e) => e.stopPropagation()}
@@ -329,7 +360,7 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
                           Enviando...
                         </>
                       ) : (
-                        "Enviar"
+                        "Enviar Pergunta"
                       )}
                     </Button>
                   </div>
