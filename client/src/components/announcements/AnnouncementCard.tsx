@@ -188,7 +188,10 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
     setShowDeleteConfirm(true);
   };
 
-  const handleAskQuestion = () => {
+  const handleAskQuestion = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation(); // Impede o evento de propagação
+    
     if (!question.trim()) {
       toast({
         title: "Erro ao enviar pergunta",
@@ -218,7 +221,7 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
       )}
       onClick={handleCardClick}
     >
-      <div className="p-4">
+      <div className="p-5">
         <div className="flex justify-between items-start">
           <Badge className={cn("text-xs", getDepartmentBadgeClass())}>
             {getDepartmentLabel()}
@@ -248,13 +251,13 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
           </div>
         </div>
         
-        <h3 className="font-semibold text-lg mt-2 text-gray-800">{announcement.title}</h3>
+        <h3 className="font-semibold text-lg mt-3 text-gray-800">{announcement.title}</h3>
         <p className="text-sm text-gray-500 mt-1">{formatDate(announcement.createdAt)}</p>
-        <p className="text-sm text-gray-700 mt-2 line-clamp-2">{announcement.message}</p>
+        <p className="text-sm text-gray-700 mt-3 line-clamp-3 mb-2">{announcement.message}</p>
       </div>
       
       {isExpanded && (
-        <div className="border-t border-gray-200">
+        <div className="border-t border-gray-200" onClick={(e) => e.stopPropagation()}>
           <Tabs defaultValue="content">
             <div className="bg-gray-50 px-4 py-3">
               <TabsList className="grid grid-cols-2 w-full">
@@ -286,11 +289,14 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
                   className="mt-1 w-full"
                   rows={4}
                   placeholder="Digite sua dúvida ou comentário..."
+                  onClick={(e) => e.stopPropagation()}
+                  onFocus={(e) => e.stopPropagation()}
                 />
                 <div className="mt-3 flex justify-end">
                   <Button
                     className="bg-[#5e8c6a] hover:bg-[#88a65e]"
-                    onClick={handleAskQuestion}
+                    onClick={(e) => handleAskQuestion(e)}
+                    onMouseDown={(e) => e.stopPropagation()}
                     disabled={askQuestionMutation.isPending}
                   >
                     {askQuestionMutation.isPending ? (
