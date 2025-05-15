@@ -86,6 +86,8 @@ export default function KnowledgeSearch() {
       
       // Remove { e output do início se existirem
       responseText = responseText.replace(/^\s*\{\s*output:?\s*/i, '');
+      responseText = responseText.replace(/^\s*\{\s*"output":?\s*/i, '');
+      responseText = responseText.replace(/^\s*{"output":\s*/i, '');
       
       // Remove aspas redundantes e caracteres } no final
       responseText = responseText.replace(/"\s*\}\s*$/g, '');
@@ -93,6 +95,19 @@ export default function KnowledgeSearch() {
       
       // Remove aspas extras no início e fim
       responseText = responseText.replace(/^"/, '').replace(/"$/, '');
+      
+      // Remove barras invertidas de escape antes das aspas
+      responseText = responseText.replace(/\\"/g, '"');
+      
+      // Remove aspas extras dentro do conteúdo
+      if (responseText.startsWith('"') && responseText.endsWith('"')) {
+        responseText = responseText.slice(1, -1);
+      }
+      
+      // Remove caracteres de escape Unicode
+      responseText = responseText.replace(/\\u(\w{4})/g, (_, hex) => 
+        String.fromCharCode(parseInt(hex, 16))
+      );
       
       setChatResponse(responseText);
     } catch (err) {
