@@ -214,9 +214,9 @@ export default function KnowledgeSearch() {
               ) : chatResponse ? (
                 <div>
                   <div className="flex items-start mb-6">
-                    <div className="bg-[#f5f9f6] border border-[#e0f0e5] p-4 rounded-lg mr-2 max-w-2xl">
+                    <div className="bg-[#edf3ee] border border-[#e0f0e5] p-4 rounded-lg mr-2 max-w-2xl">
                       <div className="flex items-center mb-2">
-                        <div className="bg-gray-100 p-1.5 rounded-full mr-2 border border-gray-200">
+                        <div className="bg-gradient-to-b from-gray-100 to-gray-200 p-1.5 rounded-full mr-2 border border-gray-200 shadow-sm">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                           </svg>
@@ -228,9 +228,9 @@ export default function KnowledgeSearch() {
                   </div>
                   
                   <div className="flex items-start mt-6">
-                    <div className="bg-white border border-[#5e8c6a] shadow-lg p-6 rounded-lg w-full max-w-4xl">
+                    <div className="bg-[#f9fbf9] border border-[#5e8c6a] shadow-lg p-6 rounded-lg w-full max-w-4xl">
                       <div className="flex items-center mb-4 border-b border-[#e0f0e5] pb-3">
-                        <div className="bg-[#5e8c6a] p-2 rounded-full mr-3">
+                        <div className="bg-gradient-to-br from-[#5e8c6a] to-[#4d7358] p-2 rounded-full mr-3 shadow-sm">
                           <Bot className="h-5 w-5 text-white" />
                         </div>
                         <span className="font-medium text-[#5e8c6a] text-lg">Assistente IA</span>

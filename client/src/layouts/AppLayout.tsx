@@ -209,11 +209,11 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
       {/* Main content area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top navbar */}
-        <header className="bg-white shadow-md relative z-10">
+        <header className="bg-[#fafcfa] shadow-md relative z-10 border-b border-[#e0f0e5]">
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center">
               <button
-                className="md:hidden text-gray-500 hover:text-gray-600 focus:outline-none mr-3 bg-gray-50 p-2 rounded-lg shadow-sm"
+                className="md:hidden text-gray-500 hover:text-gray-600 focus:outline-none mr-3 bg-[#f2f7f2] p-2 rounded-lg shadow-sm"
                 onClick={toggleMobileMenu}
               >
                 <MenuIcon className="h-6 w-6" />
@@ -230,7 +230,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
         </header>
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <main className="flex-1 overflow-y-auto bg-[#f5f8f5] p-6">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>

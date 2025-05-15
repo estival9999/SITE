@@ -219,7 +219,7 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
   return (
     <div 
       className={cn(
-        "announcement-card bg-white rounded-xl shadow-lg overflow-hidden w-full", 
+        "announcement-card rounded-xl shadow-lg overflow-hidden w-full", 
         getDepartmentClass(),
         "cursor-pointer relative"
       )}
