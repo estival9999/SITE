@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Announcement } from "@shared/schema";
 import { Search, Lightbulb, Bot, SendHorizontal, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ReactMarkdown from "react-markdown";
 
 // URL do webhook n8n para o chat
 const CHAT_WEBHOOK_URL = "https://mateusestival.app.n8n.cloud/webhook/662240cb-762b-4046-9cb1-ab3c386bf8a7/chat";
@@ -189,9 +190,14 @@ export default function KnowledgeSearch() {
                   </div>
                   
                   <div className="flex items-start mt-6">
-                    <div className="bg-[#5e8c6a] text-white p-4 rounded-lg">
-                      <Bot className="h-5 w-5 mb-2" />
-                      <div className="whitespace-pre-line">{chatResponse}</div>
+                    <div className="bg-[#5e8c6a] text-white p-4 rounded-lg w-full max-w-3xl">
+                      <div className="flex items-center mb-3 border-b border-[#4d7358] pb-2">
+                        <Bot className="h-5 w-5 mr-2" />
+                        <span className="font-medium">Assistente IA</span>
+                      </div>
+                      <div className="prose prose-invert prose-sm max-w-none prose-headings:text-[#b2d8bc] prose-a:text-[#c6e5d1] prose-a:hover:text-white prose-strong:text-white prose-code:bg-[#4d7358] prose-code:px-1 prose-code:py-0.5 prose-code:rounded">
+                        <ReactMarkdown>{chatResponse}</ReactMarkdown>
+                      </div>
                     </div>
                   </div>
                 </div>
