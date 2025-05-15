@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import logoImage from "@assets/logo Auralis.png";
+import logoImage from "../assets/auralis-logo.png";
 
 interface LogoProps {
   className?: string;
@@ -9,29 +9,18 @@ interface LogoProps {
 
 export function Logo({ className, size = "medium", withText = false }: LogoProps) {
   const sizes = {
-    small: "h-8 w-auto",
-    medium: "h-12 w-auto",
-    large: "h-24 w-auto",
+    small: "h-10 w-auto",
+    medium: "h-16 w-auto",
+    large: "h-32 w-auto",
   };
 
   return (
-    <div className={cn("flex items-center", className)}>
+    <div className={cn("flex justify-center", className)}>
       <img 
         src={logoImage}
         alt="Auralis Logo" 
         className={cn(sizes[size], "object-contain")}
       />
-      
-      {withText && (
-        <span className={cn(
-          "ml-3 font-bold",
-          size === "small" && "text-sm",
-          size === "medium" && "text-xl",
-          size === "large" && "text-3xl"
-        )}>
-          Auralis
-        </span>
-      )}
     </div>
   );
 }
