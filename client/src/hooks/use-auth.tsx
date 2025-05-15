@@ -33,16 +33,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginData) => {
-      const res = await apiRequest("POST", "/api/login", credentials);
-      return await res.json();
+      try {
+        const res = await apiRequest("POST", "/api/login", credentials);
+        
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || `${res.status}: ${res.statusText}`);
+        }
+        
+        return await res.json();
+      } catch (error) {
+        console.error("Login error:", error);
+        throw error;
+      }
     },
     onSuccess: (user: SelectUser) => {
       queryClient.setQueryData(["/api/user"], user);
+      toast({
+        title: "Login bem-sucedido",
+        description: `Bem-vindo, ${user.name || user.username}!`,
+      });
     },
     onError: (error: Error) => {
+      console.error("Login error in mutation:", error);
       toast({
-        title: "Login failed",
-        description: error.message,
+        title: "Falha no login",
+        description: error.message || "Ocorreu um erro durante o login. Tente novamente.",
         variant: "destructive",
       });
     },
