@@ -73,13 +73,28 @@ export default function KnowledgeSearch() {
       
       // Assumindo que a resposta vem no formato { reply: "..." }
       // Ajuste conforme a estrutura real da resposta do webhook
+      // Processamento para remover possíveis caracteres { e output do início
+      let responseText = '';
+      
       if (data.reply) {
-        setChatResponse(data.reply);
+        responseText = data.reply;
       } else if (data.response) {
-        setChatResponse(data.response);
+        responseText = data.response;
       } else {
-        setChatResponse(JSON.stringify(data));
+        responseText = JSON.stringify(data);
       }
+      
+      // Remove { e output do início se existirem
+      responseText = responseText.replace(/^\s*\{\s*output:?\s*/i, '');
+      
+      // Remove aspas redundantes e caracteres } no final
+      responseText = responseText.replace(/"\s*\}\s*$/g, '');
+      responseText = responseText.replace(/\s*\}\s*$/g, '');
+      
+      // Remove aspas extras no início e fim
+      responseText = responseText.replace(/^"/, '').replace(/"$/, '');
+      
+      setChatResponse(responseText);
     } catch (err) {
       console.error("Erro ao consultar IA:", err);
       setError("Desculpe, não foi possível obter uma resposta no momento. Tente novamente mais tarde.");
@@ -183,19 +198,29 @@ export default function KnowledgeSearch() {
                 </div>
               ) : chatResponse ? (
                 <div>
-                  <div className="flex items-start mb-4">
-                    <div className="bg-[#e9f0eb] p-3 rounded-lg mr-2">
-                      <p className="text-gray-700">{searchQuery}</p>
+                  <div className="flex items-start mb-6">
+                    <div className="bg-[#f5f9f6] border border-[#e0f0e5] p-4 rounded-lg mr-2 max-w-2xl">
+                      <div className="flex items-center mb-2">
+                        <div className="bg-gray-100 p-1.5 rounded-full mr-2 border border-gray-200">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <span className="text-sm font-medium text-gray-600">Você perguntou:</span>
+                      </div>
+                      <p className="text-gray-700 text-base">{searchQuery}</p>
                     </div>
                   </div>
                   
                   <div className="flex items-start mt-6">
-                    <div className="bg-[#5e8c6a] text-white p-4 rounded-lg w-full max-w-3xl">
-                      <div className="flex items-center mb-3 border-b border-[#4d7358] pb-2">
-                        <Bot className="h-5 w-5 mr-2" />
-                        <span className="font-medium">Assistente IA</span>
+                    <div className="bg-white border border-[#5e8c6a] shadow-lg p-6 rounded-lg w-full max-w-4xl">
+                      <div className="flex items-center mb-4 border-b border-[#e0f0e5] pb-3">
+                        <div className="bg-[#5e8c6a] p-2 rounded-full mr-3">
+                          <Bot className="h-5 w-5 text-white" />
+                        </div>
+                        <span className="font-medium text-[#5e8c6a] text-lg">Assistente IA</span>
                       </div>
-                      <div className="prose prose-invert prose-sm max-w-none prose-headings:text-[#b2d8bc] prose-a:text-[#c6e5d1] prose-a:hover:text-white prose-strong:text-white prose-code:bg-[#4d7358] prose-code:px-1 prose-code:py-0.5 prose-code:rounded">
+                      <div className="prose prose-lg max-w-none text-gray-700 prose-headings:text-[#5e8c6a] prose-a:text-[#5e8c6a] prose-a:hover:text-[#88a65e] prose-strong:text-[#3e5c46] prose-code:bg-[#f0f8f2] prose-code:text-[#3e5c46] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-[#e0f0e5] leading-relaxed">
                         <ReactMarkdown>{chatResponse}</ReactMarkdown>
                       </div>
                     </div>
