@@ -181,15 +181,7 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
   const handleReadFlagClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card expansion
     
-    // Animação suave de transição ao marcar como lido
-    const target = e.currentTarget as HTMLButtonElement;
-    if (!readStatus) {
-      // Efeito sutil ao marcar como lido
-      target.classList.add('hover:scale-105');
-      setTimeout(() => {
-        target.classList.remove('hover:scale-105');
-      }, 300);
-    }
+    // Animação suave de transição eliminada para uma melhor abordagem via CSS
     
     toggleReadStatusMutation.mutate();
   };
@@ -258,8 +250,8 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
               className={cn(
                 "read-flag h-8 w-8 rounded-full flex items-center justify-center",
                 readStatus 
-                  ? "bg-green-100 border border-green-300" 
-                  : "bg-gray-100 border border-gray-200 hover:bg-gray-50"
+                  ? "bg-white border-2 border-green-400" 
+                  : "bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300"
               )} 
               title={readStatus ? "Marcado como lido" : "Marcar como lido"}
               onClick={handleReadFlagClick}
