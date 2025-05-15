@@ -1,0 +1,194 @@
+graph TD
+    A[Início: Usuário acessa o site] --> B{Usuário Logado?};
+    B -- Não --> C[Exibe Tela de Login com Logo da Empresa];
+    C -- Tenta Logar com Email/Senha --> D{Login Válido?};
+    D -- Sim --> E[Redireciona para App];
+    D -- Não --> C_Error[Exibe Erro no Login];
+    C_Error --> C;
+    B -- Sim --> E;
+
+    E --> F{Qual o Papel do Usuário?};
+    F -- Admin --> G_Admin[Navegação Principal (Admin)];
+    F -- Leitor --> G_Reader[Navegação Principal (Leitor)];
+
+    %% Navegação Principal e Abas
+    G_Admin --> G_Admin_Tabs[Abas: Registrar Comunicado, Caixa de Comunicados, Minhas Perguntas, Busca de Conhecimento, Perguntas Recebidas, Gerenciar Usuários];
+    G_Reader --> G_Reader_Tabs[Abas: Caixa de Comunicados, Minhas Perguntas, Busca de Conhecimento];
+
+    %% Fluxo da Aba: Registrar Comunicado (Admin)
+    G_Admin_Tabs -- Clique 'Registrar Comunicado' --> RC1[Tela: Registrar Comunicado];
+    RC1 --> RC1a{Admin tem 'actingDepartment' definido?};
+    RC1a -- Sim --> RC2[Preenche: Título, Mensagem. Área Responsável (pré-selecionada/bloqueada para seu 'actingDepartment')];
+    RC1a -- Não --> RC2b[Preenche: Título, Mensagem. Seleciona: Área Responsável (obrigatório)];
+    RC2 --> RC3;
+    RC2b --> RC3;
+    RC3[Seleciona: Categoria com Ícone (obrigatório)];
+    RC3 --> RC4[Seleciona Locais de Direcionamento: Maracaju, Sidrolândia, etc. (obrigatório, múltipla escolha)];
+    RC4 --> RC5[Opcional: Upload de Anexo PDF];
+    RC5 --> RC6[Clica: 'Registrar Comunicado'];
+    RC6 --> RC7{Validação OK?};
+    RC7 -- Sim --> RC8[Comunicado Salvo (com 'authorId', 'targetedLocations', etc.)];
+    RC8 --> RC9[Exibe Mensagem de Sucesso];
+    RC9 --> G_Admin_Tabs;
+    RC7 -- Não --> RC10[Exibe Mensagem de Erro no Formulário];
+    RC10 --> RC1;
+
+    %% Fluxo da Aba: Caixa de Comunicados
+    G_Admin_Tabs -- Clique 'Caixa de Comunicados' --> CC_Admin_View;
+    G_Reader_Tabs -- Clique 'Caixa de Comunicados' --> CC_Reader_View;
+
+    CC_Admin_View --> CC1_Admin[Visualiza Lista de TODOS os Cards de Comunicados];
+    CC_Reader_View --> CC1_Reader[Visualiza Lista de Cards de Comunicados FILTRADOS por seus 'assignedLocations'];
+    
+    CC1_Admin --> CC_Filters_Admin[Interage com Filtros/Busca? (Inclui filtro por Local)];
+    CC1_Reader --> CC_Filters_Reader[Interage com Filtros/Busca? (Não inclui filtro por Local)];
+
+    CC_Filters_Admin -- Sim --> CC_Panel_Admin[Abre Painel Expansível de Filtros (Área, Categoria, Local, Palavra-chave)];
+    CC_Filters_Reader -- Sim --> CC_Panel_Reader[Abre Painel Expansível de Filtros (Área, Categoria, Palavra-chave)];
+    CC_Panel_Admin --> CC_Apply_Filters_Admin[Aplica Filtros];
+    CC_Panel_Reader --> CC_Apply_Filters_Reader[Aplica Filtros];
+    CC_Apply_Filters_Admin --> CC1_Admin;
+    CC_Apply_Filters_Reader --> CC1_Reader;
+
+    CC_Filters_Admin -- Não --> CC_View_Cards_Admin;
+    CC_Filters_Reader -- Não --> CC_View_Cards_Reader;
+
+    subgraph Card do Comunicado
+        direction LR
+        CC_Card_Info[Info: Área (destaque), Categoria (ícone), Título, Data]
+        CC_Card_Color[Estilo: Cor/Borda por Área Responsável]
+        CC_Card_Size[Tamanho: Compacto]
+        CC_Card_ReadFlag[Flag Verde Interativo de Leitura (isRead)]
+        CC_Card_DeleteBtn{{Botão Excluir (só Admin criador)}}
+    end
+    CC_View_Cards_Admin --> CC_Card_Info;
+    CC_View_Cards_Reader --> CC_Card_Info;
+    
+    CC_Card_ReadFlag -- Clique no Flag --> CC_ToggleRead[Alterna Status 'isRead' no BD (AnnouncementReadStatus)];
+    CC_ToggleRead --> CC_View_Cards_Admin; % ou CC_View_Cards_Reader
+    CC_ToggleRead --> CC_View_Cards_Reader;
+
+    CC_View_Cards_Admin -- Clique no Card (fora do flag) --> CC_Expand_Admin;
+    CC_View_Cards_Reader -- Clique no Card (fora do flag) --> CC_Expand_Reader;
+
+    CC_Expand_Admin --> CC_MarkRead_Admin{Já lido?};
+    CC_Expand_Reader --> CC_MarkRead_Reader{Já lido?};
+    CC_MarkRead_Admin -- Não --> CC_SetRead_Admin[Marca 'isRead=true' (AnnouncementReadStatus)];
+    CC_MarkRead_Reader -- Não --> CC_SetRead_Reader[Marca 'isRead=true' (AnnouncementReadStatus)];
+    CC_SetRead_Admin --> CC_ShowTabs_Admin;
+    CC_SetRead_Reader --> CC_ShowTabs_Reader;
+    CC_MarkRead_Admin -- Sim --> CC_ShowTabs_Admin;
+    CC_MarkRead_Reader -- Sim --> CC_ShowTabs_Reader;
+
+    CC_ShowTabs_Admin[Expande Comunicado: Abas 'Conteúdo' e 'Enviar Dúvida/Comentário'];
+    CC_ShowTabs_Reader[Expande Comunicado: Abas 'Conteúdo' e 'Enviar Dúvida/Comentário'];
+
+    CC_ShowTabs_Admin -- Aba 'Conteúdo' --> CC_Content_Admin[Visualiza: Mensagem, Anexo];
+    CC_ShowTabs_Reader -- Aba 'Conteúdo' --> CC_Content_Reader[Visualiza: Mensagem, Anexo];
+    
+    CC_ShowTabs_Admin -- Aba 'Enviar Dúvida/Comentário' --> CC_Doubt_Admin[Seção Enviar Dúvida];
+    CC_ShowTabs_Reader -- Aba 'Enviar Dúvida/Comentário' --> CC_Doubt_Reader[Seção Enviar Dúvida];
+
+    CC_Doubt_Admin --> CC_Doubt_Form[Campo Texto + Botão 'Enviar' (UX corrigido, sempre visível/funcional)];
+    CC_Doubt_Reader --> CC_Doubt_Form;
+    CC_Doubt_Form -- Clica 'Enviar' --> CC_Doubt_Validate{Texto Válido?};
+    CC_Doubt_Validate -- Sim --> CC_Doubt_Save[Pergunta Salva (Question: text, askerId, announcementId)];
+    CC_Doubt_Save --> CC_Doubt_Notify[Notifica Admin CRIADOR do Comunicado (lógica backend)];
+    CC_Doubt_Notify --> CC_Doubt_Feedback[Feedback: "Pergunta enviada! Acompanhe em 'Minhas Perguntas'"];
+    CC_Doubt_Feedback --> CC_ShowTabs_Admin; % ou CC_ShowTabs_Reader
+    CC_Doubt_Feedback --> CC_ShowTabs_Reader;
+    CC_Doubt_Validate -- Não --> CC_Doubt_Error[Feedback de Erro];
+    CC_Doubt_Error --> CC_Doubt_Form;
+
+    CC_Card_DeleteBtn -- Clique --> CC_Confirm_Delete{Confirmar Exclusão?};
+    CC_Confirm_Delete -- Sim --> CC_Delete_Announcement[Comunicado Excluído do BD];
+    CC_Delete_Announcement --> CC1_Admin; % Atualiza lista
+    CC_Confirm_Delete -- Não --> CC_View_Cards_Admin;
+
+    %% Fluxo da Aba: Minhas Perguntas (Todos os Usuários)
+    G_Admin_Tabs -- Clique 'Minhas Perguntas' --> MP_Admin_View;
+    G_Reader_Tabs -- Clique 'Minhas Perguntas' --> MP_Reader_View;
+    MP_Admin_View --> MP1[Tela: Minhas Perguntas (perguntas feitas pelo Admin logado)];
+    MP_Reader_View --> MP1;
+
+    MP1 --> MP2[Lista Perguntas Feitas pelo Usuário Logado];
+    MP2 -- Para cada Pergunta --> MP3[Exibe: Texto da Pergunta, Data, Ref. Comunicado, RESPOSTA DO ADMIN (se houver), Status (Enviada, Visualizada, Respondida)];
+    MP3 --> G_Admin_Tabs; % Ou G_Reader_Tabs
+    MP3 --> G_Reader_Tabs;
+
+    %% Fluxo da Aba: Busca de Conhecimento (Todos os Usuários)
+    G_Admin_Tabs -- Clique 'Busca de Conhecimento' --> BK_Admin_View;
+    G_Reader_Tabs -- Clique 'Busca de Conhecimento' --> BK_Reader_View;
+    BK_Admin_View --> BK1;
+    BK_Reader_View --> BK1;
+
+    BK1[Exibe Campo de Busca Simples];
+    BK1 --> BK2[Usuário Digita Termo];
+    BK2 --> BK3[Clica 'Buscar'];
+    BK3 --> BK4[Exibe: "Integração com IA em breve" / Resultados (placeholder)];
+    BK4 --> BK_Design[Design Prepara Espaço para Futuro Chat IA];
+    BK_Design --> G_Admin_Tabs; % Ou G_Reader_Tabs
+    BK_Design --> G_Reader_Tabs;
+
+    %% Fluxo da Aba: Perguntas Recebidas (Admin)
+    G_Admin_Tabs -- Clique 'Perguntas Recebidas' --> PR1[Tela: Perguntas Recebidas];
+    PR1 --> PR2[Lista Perguntas de Comunicados CRIADOS pelo Admin Logado];
+    PR2 -- Para cada Pergunta --> PR3[Exibe: Texto da Pergunta, Quem Perguntou, Data, Ref. Comunicado];
+    PR3 --> PR4{Admin Responde Pergunta?};
+    PR4 -- Sim --> PR5[Admin Digita Resposta no Campo];
+    PR5 --> PR6[Clica 'Enviar Resposta'];
+    PR6 --> PR7[Resposta Salva (Question: answerText, answeredAt, answeredById)];
+    PR7 --> PR8[Notifica Usuário que Perguntou (lógica backend)];
+    PR8 --> PR9[Atualiza Status da Pergunta (ex: para 'Respondida')];
+    PR9 --> PR2; % Atualiza lista
+    PR4 -- Não / Opcional: Marcar Resolvida --> PR10[Admin Marca Pergunta como 'isResolved=true'];
+    PR10 --> PR2;
+    PR3 --> G_Admin_Tabs;
+
+    %% Fluxo da Aba: Gerenciar Usuários (Admin)
+    G_Admin_Tabs -- Clique 'Gerenciar Usuários' --> GU1[Tela: Gerenciar Usuários];
+    GU1 --> GU2[Exibe Lista de Usuários: Nome, Email, Papel, ActingDepartment (Admin), AssignedLocations (Leitor)];
+    
+    GU2 --> GU_Action{Qual Ação?};
+    GU_Action -- Alterar Papel --> GU3[Seleciona Usuário e Novo Papel (Admin/Leitor)];
+    GU3 --> GU4[Sistema Atualiza Papel];
+    GU4 --> GU_UI_Update[UI do Usuário Afetado (se logado) Atualiza Dinamicamente];
+    GU_UI_Update --> GU2;
+
+    GU_Action -- Atribuir Área (Admin) --> GU5[Seleciona Usuário Admin];
+    GU5 --> GU6[Define/Altera 'actingDepartment'];
+    GU6 --> GU2;
+
+    GU_Action -- Atribuir Locais (Leitor) --> GU7[Seleciona Usuário Leitor];
+    GU7 --> GU8[Define/Altera 'assignedLocations' (múltipla escolha)];
+    GU8 --> GU2;
+
+    GU_Action -- Adicionar Novo Usuário --> GU9[Preenche Formulário: Email, Nome, Papel];
+    GU9 --> GU10{Papel é Admin?};
+    GU10 -- Sim --> GU11[Opcional: Define 'actingDepartment'];
+    GU10 -- Não (Leitor) --> GU12[Opcional: Define 'assignedLocations'];
+    GU11 --> GU13_SaveUser;
+    GU12 --> GU13_SaveUser;
+    GU9 -- Direto se não opcional --> GU13_SaveUser[Clica 'Adicionar'];
+    
+    GU13_SaveUser --> GU14{Validação OK?};
+    GU14 -- Sim --> GU15[Novo Usuário Registrado];
+    GU15 --> GU2;
+    GU14 -- Não --> GU16[Exibe Erro];
+    GU16 --> GU9;
+    
+    GU_Action -- Nenhuma / Voltar --> G_Admin_Tabs;
+
+    %% Logout
+    G_Admin_Tabs -- Clique 'Sair' --> LOGOUT;
+    G_Reader_Tabs -- Clique 'Sair' --> LOGOUT;
+    LOGOUT --> A;
+
+    classDef admin fill:#f9d,stroke:#333,stroke-width:2px;
+    classDef reader fill:#d9f,stroke:#333,stroke-width:2px;
+    classDef common fill:#dfd,stroke:#333,stroke-width:2px;
+    classDef action fill:#ff9,stroke:#333,stroke-width:1px;
+
+    class G_Admin,G_Admin_Tabs,RC1,RC1a,RC2,RC2b,RC3,RC4,RC5,RC6,RC7,RC8,RC9,RC10,CC_Admin_View,CC1_Admin,CC_Filters_Admin,CC_Panel_Admin,CC_Apply_Filters_Admin,CC_View_Cards_Admin,CC_Expand_Admin,CC_MarkRead_Admin,CC_SetRead_Admin,CC_ShowTabs_Admin,CC_Content_Admin,CC_Doubt_Admin,CC_Card_DeleteBtn,CC_Confirm_Delete,CC_Delete_Announcement,PR1,PR2,PR3,PR4,PR5,PR6,PR7,PR8,PR9,PR10,GU1,GU2,GU_Action,GU3,GU4,GU_UI_Update,GU5,GU6,GU7,GU8,GU9,GU10,GU11,GU12,GU13_SaveUser,GU14,GU15,GU16 admin;
+    class G_Reader,G_Reader_Tabs,CC_Reader_View,CC1_Reader,CC_Filters_Reader,CC_Panel_Reader,CC_Apply_Filters_Reader,CC_View_Cards_Reader,CC_Expand_Reader,CC_MarkRead_Reader,CC_SetRead_Reader,CC_ShowTabs_Reader,CC_Content_Reader,CC_Doubt_Reader,MP_Reader_View reader;
+    class A,B,C,D,E,F,CC_Card_Info,CC_Card_Color,CC_Card_Size,CC_Card_ReadFlag,CC_ToggleRead,CC_Doubt_Form,CC_Doubt_Validate,CC_Doubt_Save,CC_Doubt_Notify,CC_Doubt_Feedback,CC_Doubt_Error,MP_Admin_View,MP1,MP2,MP3,BK_Admin_View,BK_Reader_View,BK1,BK2,BK3,BK4,BK_Design,LOGOUT,C_Error common;

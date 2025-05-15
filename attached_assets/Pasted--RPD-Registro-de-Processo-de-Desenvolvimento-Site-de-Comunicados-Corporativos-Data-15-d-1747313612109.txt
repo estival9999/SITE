@@ -1,0 +1,152 @@
+# RPD (Registro de Processo de Desenvolvimento) - Site de Comunicados Corporativos
+
+**Data:** 15 de Maio de 2025
+**Versão:** 1.2 (Incorpora direcionamento geográfico, fluxo de P&R refinado e gestão de área para usuários)
+
+## 1. Introdução e Objetivo Geral
+
+O objetivo deste projeto é desenvolver um site interno de comunicados corporativos que permita à empresa centralizar a comunicação entre diferentes áreas e seus usuários, com funcionalidades específicas para registro, visualização, busca e gerenciamento de comunicados e usuários. O foco é na clareza da informação, experiência do usuário e direcionamento eficaz da comunicação.
+
+## 2. Design Geral e Tema
+
+### 2.1. Tema Principal e Cores
+* **Cores Predominantes:**
+    * Verde Escuro: `#5e8c6a`
+    * Verde Claro: `#88a65e`
+* **Plano de Fundo Geral:** Utilizar os tons predominantes, mantendo contraste agradável para leitura.
+* **Tela de Login:** O fundo da tela de login deve permitir bom contraste com a logo da empresa (predominantemente branca). Considerar um tom dos verdes principais ou um cinza escuro suave.
+
+### 2.2. Paleta de Cores Adicional
+* Vermelho Escuro/Bordô (Ex: Controles Internos): `#8c2318`
+* Amarelo Mostarda: `#bfb35a`
+* Amarelo Claro: `#f2c45a`
+* **Azul Distinto:** Um tom de azul para a área "Administrativo" (Ex: `#4a7dbe`).
+
+### 2.3. Layout e Estilo Visual
+* **Layout:** Moderno, funcional, responsivo e com hierarquia visual clara.
+* **Logo da Empresa:**
+    * Adicionar a logo da empresa (arquivo fornecido anteriormente) na **tela de login** em local de destaque.
+    * A logo também deve aparecer no cabeçalho do site após o login.
+
+### 2.4. Acessibilidade
+* Garantir contraste adequado, boa legibilidade e elementos clicáveis bem definidos.
+
+## 3. Funcionalidades e Abas Principais
+
+O site terá as seguintes abas principais na navegação:
+
+1.  **Registrar Comunicado** (Visível apenas para usuários "Admin")
+2.  **Caixa de Comunicados** (Visível para todos os usuários logados)
+3.  **Minhas Perguntas** (Visível para todos os usuários logados; exibe perguntas feitas pelo usuário e respostas recebidas)
+4.  **Busca de Conhecimento** (Visível para todos os usuários logados)
+5.  **Perguntas Recebidas** (Visível apenas para usuários "Admin"; para responder perguntas sobre seus comunicados)
+6.  **Gerenciar Usuários** (Visível apenas para usuários "Admin")
+
+## 4. Detalhamento das Funcionalidades por Aba
+
+### 4.1. Aba: Registrar Comunicado (Admin)
+* **Interface de Registro:**
+    * Título do comunicado.
+    * Mensagem do comunicado (caixa de texto).
+    * Upload de anexo em PDF.
+* **Seletores Obrigatórios:**
+    * **Área Responsável:** Dropdown (ou similar) com "Controles Internos", "Administrativo", "Ciclo de Crédito".
+        * *Restrição:* Se o Admin tiver uma "Área de Atuação" específica definida em seu perfil (ver Aba 5), este campo deve ser pré-selecionado e possivelmente bloqueado para sua área.
+    * **Categoria da Mensagem:** Dropdown (ou similar) com "Informativo", "Atualização", "Determinação" (cada um com ícone discreto).
+    * **Direcionamento Geográfico (Locais):** Campo de seleção múltipla (checkboxes, tags, etc.) para definir para quais locais o comunicado é visível. Opções: "Maracaju", "Sidrolândia", "Aquidauana", "Nioaque". Um comunicado pode ser direcionado para um ou mais locais.
+* **Design e Usabilidade:** Responsivo, campos organizados, estética amigável.
+
+### 4.2. Aba: Caixa de Comunicados (Todos os Usuários)
+* **Exibição de Comunicados:**
+    * Listar comunicados em cards individuais.
+        * **Visibilidade para Leitores:** Leitores visualizam apenas comunicados direcionados ao(s) seu(s) local(is) atribuído(s) (ver Aba 5).
+        * **Visibilidade para Admins:** Admins visualizam todos os comunicados, independente do direcionamento geográfico.
+    * **Tamanho dos Cards:** Compactos.
+* **Estilo Visual dos Cards:**
+    * **Cor por Área Responsável:**
+        * Controles Internos: Borda lateral discreta `#8c2318`.
+        * Administrativo: Fundo com tom de azul distinto.
+        * Ciclo de Crédito: Fundo com cor `#88a65e`.
+        * Fundo da mensagem no card com coloração leve da paleta da área.
+    * **Destaque da Área Responsável:** Badge colorido proeminente.
+    * **Exibição da Categoria:** Minimalista (pequeno quadrado com ícone) no canto superior direito.
+* **Funcionalidades dos Cards:**
+    * **Status de Leitura:**
+        * Marcação visual clara (ex: **pequeno "flag" verde interativo**) indicando se o comunicado foi lido/visto pelo usuário logado.
+        * Ao clicar no "flag", o status de leitura é alternado (lido/não lido) e a alteração é salva.
+        * Ao expandir o comunicado pela primeira vez, ele é automaticamente marcado como lido.
+    * **Expansão do Comunicado:** Ao clicar no card (fora do flag de leitura), expande na mesma tela (animação fluida), sem redirecionar.
+    * **Abas Internas no Comunicado Expandido:**
+        * **"Conteúdo":** Exibe mensagem principal e anexo.
+        * **"Enviar Dúvida/Comentário":**
+            * Seção minimalista e pouco visível.
+            * Campo de texto simples e botão "Enviar".
+            * **Fluxo da Pergunta:** Ao enviar, a pergunta é salva, vinculada ao usuário que perguntou e ao comunicado. A pergunta é então direcionada para a aba "Perguntas Recebidas" do **usuário Admin que criou o comunicado original**.
+            * O usuário que enviou a pergunta a acompanhará na sua própria aba "Minhas Perguntas".
+    * **Exclusão de Comunicados (Admin):**
+        * Um pequeno botão/ícone de exclusão deve estar visível **apenas para o Admin que criou o comunicado** ou para um super-admin (se aplicável).
+        * Ao clicar, solicitar confirmação antes de excluir permanentemente o comunicado.
+* **Filtros e Busca:**
+    * Painel de filtros expansível.
+    * Filtrar por: Área Responsável, Categoria, Local de Direcionamento (para Admins).
+    * Busca por palavras-chave em títulos/mensagens.
+
+### 4.3. Aba: Minhas Perguntas (Todos os Usuários)
+* **Objetivo:** Permitir que o usuário (Leitor ou Admin que fez uma pergunta em um comunicado de outro Admin) acompanhe as perguntas que fez e as respostas recebidas.
+* **Exibição:**
+    * Listar todas as perguntas feitas pelo usuário logado.
+    * Para cada pergunta, exibir:
+        * O texto da pergunta.
+        * Data/hora da pergunta.
+        * Link/referência ao comunicado original.
+        * **A resposta do Admin** (se já respondida).
+        * Status da pergunta (ex: "Enviada", "Visualizada pelo Admin", "Respondida").
+
+### 4.4. Aba: Busca de Conhecimento (Todos os Usuários)
+* Campo de busca simples.
+* Estruturar prevendo futura integração com chat de IA.
+
+### 4.5. Aba: Perguntas Recebidas (Admin)
+* **Objetivo:** Permitir que Admins visualizem e respondam às perguntas feitas sobre os comunicados que **eles criaram**.
+* **Exibição:**
+    * Listar perguntas pendentes e respondidas direcionadas aos comunicados criados pelo Admin logado.
+    * Para cada pergunta: Texto da pergunta, quem perguntou, data, link/referência ao comunicado original.
+* **Funcionalidade:**
+    * Interface para o Admin **responder à pergunta**.
+    * Ao responder, a resposta é salva e se torna visível para o usuário que fez a pergunta (na aba "Minhas Perguntas" desse usuário).
+    * Marcar perguntas como "Resolvidas" (futuro, mas estruturar dados).
+
+### 4.6. Aba: Gerenciar Usuários (Admin)
+* **Listagem de Usuários:** Exibir usuários (Nome, E-mail, Papel, Área de Atuação (para Admins), Locais Atribuídos (para Leitores)).
+* **Gerenciamento de Papéis:** Alterar papel (Admin/Leitor).
+* **Atribuição de Área de Atuação (para Admins):**
+    * Permitir que um super-admin (ou admin com permissão) atribua uma "Área Responsável" específica (Controles Internos, Administrativo, Ciclo de Crédito) a um usuário Admin.
+    * Este Admin só poderá registrar comunicados para a área que lhe foi atribuída. Se nenhuma área for atribuída, pode registrar para qualquer uma.
+* **Atribuição de Locais (para Leitores):**
+    * Permitir que um admin atribua um ou mais "Locais" (Maracaju, Sidrolândia, Aquidauana, Nioaque) a um usuário Leitor.
+    * O Leitor visualizará apenas comunicados direcionados aos seus locais atribuídos. Se nenhum local for atribuído, pode-se definir uma regra (ex: ver todos ou nenhum, a ser definido).
+* **Atualização de UI Imediata:** Ao alterar papel/permissões, a interface do usuário afetado deve refletir as mudanças em tempo real.
+* **Convidar/Adicionar Novos Usuários:** Formulário para admin inserir e-mail, nome, papel, e opcionalmente atribuir Área de Atuação (se Admin) ou Locais (se Leitor) no momento da criação.
+* **Controle de Acesso Refinado:**
+    * **Admin:**
+        * Registra comunicados (potencialmente restrito à sua Área de Atuação).
+        * Gerencia usuários (atribui papéis, áreas, locais).
+        * Acessa "Perguntas Recebidas" (para responder perguntas sobre seus comunicados).
+        * Visualiza todos os comunicados na "Caixa de Comunicados".
+        * Acessa "Minhas Perguntas" (para perguntas que ele mesmo fez).
+    * **Leitor:**
+        * Visualiza "Caixa de Comunicados" (filtrada por seus Locais atribuídos).
+        * Acessa "Minhas Perguntas" (para ver suas perguntas e respostas dos admins).
+        * Pode enviar dúvidas/comentários nos comunicados.
+        * Não acessa "Registrar Comunicado", "Perguntas Recebidas (Admin)", "Gerenciar Usuários".
+
+## 5. Considerações Técnicas Adicionais
+
+* **Estrutura de Dados:** O schema do banco de dados (ex: Prisma) precisará refletir os novos campos de direcionamento geográfico nos comunicados e as atribuições de área/local nos perfis dos usuários.
+* **Lógica de Filtragem:** A lógica para exibir comunicados aos leitores com base em seus locais atribuídos deve ser implementada no backend ou no frontend com dados apropriados.
+
+## 6. Considerações Futuras (Pós-MVP)
+
+* Sistema de notificações mais robusto.
+* Integração completa da IA.
+* Dashboard para administradores.
