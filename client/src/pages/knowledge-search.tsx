@@ -26,7 +26,7 @@ export default function KnowledgeSearch() {
   const { toast } = useToast();
 
   // Webhook para consulta de conhecimento
-  const webhookUrl = "https://mateusestival.app.n8n.cloud/webhook-test/f7405a78-ff69-4a7b-9b2b-8c7e64ff37f3";
+  const webhookUrl = "https://mateusestival.app.n8n.cloud/webhook/784c321e-9442-4ebc-9572-f53a31e14000/chat";
 
   // ID de sessão para o agente do n8n
   const sessionId = "auralis-corporate-comms-session-001";
