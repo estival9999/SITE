@@ -187,8 +187,8 @@ export default function UserModal({ isOpen, onOpenChange, user, onSave, isPendin
                   <FormItem>
                     <FormLabel>Área de Atuação</FormLabel>
                     <Select
-                      onValueChange={field.onChange}
-                      value={field.value || ""}
+                      onValueChange={(value) => field.onChange(value === "NO_DEPARTMENT" ? null : value)}
+                      value={field.value || "NO_DEPARTMENT"}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -196,7 +196,7 @@ export default function UserModal({ isOpen, onOpenChange, user, onSave, isPendin
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">Sem restrição de área</SelectItem>
+                        <SelectItem value="NO_DEPARTMENT">Sem restrição de área</SelectItem>
                         <SelectItem value={Department.CONTROLES_INTERNOS}>Controles Internos</SelectItem>
                         <SelectItem value={Department.ADMINISTRATIVO}>Administrativo</SelectItem>
                         <SelectItem value={Department.CICLO_DE_CREDITO}>Ciclo de Crédito</SelectItem>

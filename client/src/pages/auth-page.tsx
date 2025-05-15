@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
@@ -33,11 +33,12 @@ export default function AuthPage() {
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState<string>("login");
 
-  // Check if user is already logged in
-  if (user) {
-    navigate("/");
-    return null;
-  }
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   // Form setup for login
   const loginForm = useForm<LoginFormValues>({
