@@ -482,7 +482,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Forward the query to the webhook
-      const webhookUrl = "https://mateusestival.app.n8n.cloud/webhook/784c321e-9442-4ebc-9572-f53a31e14000/chat";
+      const webhookUrl = "https://mateusestival.app.n8n.cloud/webhook-test/18b90e2d-e422-40d6-a880-225b8337f016";
       const webhookResponse = await fetch(webhookUrl, {
         method: "POST",
         headers: {
