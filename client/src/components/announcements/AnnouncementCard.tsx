@@ -30,11 +30,11 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
   const getDepartmentClass = () => {
     switch (announcement.department) {
       case Department.CONTROLES_INTERNOS:
-        return "department-controles";
+        return "department-controles border-l-4 border-red-500";
       case Department.ADMINISTRATIVO:
-        return "department-administrativo";
+        return "department-administrativo border-l-4 border-blue-500";
       case Department.CICLO_DE_CREDITO:
-        return "department-credito";
+        return "department-credito border-l-4 border-green-500";
       default:
         return "";
     }
@@ -43,11 +43,11 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
   const getDepartmentBadgeClass = () => {
     switch (announcement.department) {
       case Department.CONTROLES_INTERNOS:
-        return "badge-controles";
+        return "bg-red-500 text-white";
       case Department.ADMINISTRATIVO:
-        return "badge-administrativo";
+        return "bg-blue-500 text-white";
       case Department.CICLO_DE_CREDITO:
-        return "badge-credito";
+        return "bg-green-500 text-white";
       default:
         return "";
     }
@@ -203,8 +203,9 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
     askQuestionMutation.mutate();
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatDate = (dateString: string | Date | null) => {
+    if (!dateString) return '';
+    const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
     return date.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
@@ -215,27 +216,36 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
   return (
     <div 
       className={cn(
-        "announcement-card bg-white rounded-lg shadow overflow-hidden", 
+        "announcement-card bg-white rounded-lg shadow overflow-hidden w-full", 
         getDepartmentClass(),
         "cursor-pointer hover:shadow-md relative"
       )}
       onClick={handleCardClick}
     >
       <div className="p-5">
-        <div className="flex justify-between items-start">
-          <Badge className={cn("text-xs", getDepartmentBadgeClass())}>
-            {getDepartmentLabel()}
-          </Badge>
-          <div className="flex items-center">
-            <span 
-              className="category-icon bg-gray-200 h-6 w-6 rounded-full flex items-center justify-center mr-2" 
-              title={getCategoryTitle()}
-            >
-              {getCategoryIcon()}
-            </span>
+        <div className="flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
+          <div className="flex-grow min-w-0 max-w-full">
+            <div className="flex items-center mb-3">
+              <Badge className={cn("text-xs px-3 py-1", getDepartmentBadgeClass())}>
+                {getDepartmentLabel()}
+              </Badge>
+              <span 
+                className="category-icon bg-gray-200 h-6 w-6 rounded-full flex items-center justify-center ml-3" 
+                title={getCategoryTitle()}
+              >
+                {getCategoryIcon()}
+              </span>
+            </div>
+            
+            <h3 className="font-semibold text-lg text-gray-800">{announcement.title}</h3>
+            <p className="text-sm text-gray-500 mt-1">{formatDate(announcement.createdAt)}</p>
+            <p className="text-sm text-gray-700 mt-3 line-clamp-2 max-w-full">{announcement.message}</p>
+          </div>
+          
+          <div className="flex items-start">
             <button 
               className={cn(
-                "read-flag h-6 w-6 rounded-full flex items-center justify-center",
+                "read-flag h-8 w-8 rounded-full flex items-center justify-center",
                 readStatus ? "bg-green-100" : "bg-gray-200"
               )} 
               title={readStatus ? "Marcado como lido" : "Marcar como lido"}
@@ -243,38 +253,34 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
               aria-label={readStatus ? "Marcado como lido" : "Marcar como lido"}
             >
               {readStatus ? (
-                <Check className="h-3 w-3 text-green-600" />
+                <Check className="h-4 w-4 text-green-600" />
               ) : (
-                <Check className="h-3 w-3 text-gray-400" />
+                <Check className="h-4 w-4 text-gray-400" />
               )}
             </button>
           </div>
         </div>
-        
-        <h3 className="font-semibold text-lg mt-3 text-gray-800">{announcement.title}</h3>
-        <p className="text-sm text-gray-500 mt-1">{formatDate(announcement.createdAt)}</p>
-        <p className="text-sm text-gray-700 mt-3 line-clamp-3 mb-2">{announcement.message}</p>
       </div>
       
       {isExpanded && (
         <div className="border-t border-gray-200" onClick={(e) => e.stopPropagation()}>
           <Tabs defaultValue="content">
-            <div className="bg-gray-50 px-4 py-3">
-              <TabsList className="grid grid-cols-2 w-full">
+            <div className="bg-gray-50 px-5 py-3">
+              <TabsList className="grid grid-cols-2 w-full max-w-md">
                 <TabsTrigger value="content" className="tab-active">Conteúdo</TabsTrigger>
                 <TabsTrigger value="question">Enviar Dúvida/Comentário</TabsTrigger>
               </TabsList>
             </div>
             
-            <div className="p-4">
+            <div className="p-5">
               <TabsContent value="content">
-                <div className="text-sm text-gray-700 whitespace-pre-line">
+                <div className="text-sm text-gray-700 whitespace-pre-line max-w-4xl">
                   {announcement.message}
                 </div>
                 
                 {announcement.attachment && (
-                  <div className="mt-4 flex items-center text-sm text-[#5e8c6a] hover:text-[#88a65e]">
-                    <FileText className="h-5 w-5 mr-1" />
+                  <div className="mt-5 flex items-center text-sm text-[#5e8c6a] hover:text-[#88a65e]">
+                    <FileText className="h-5 w-5 mr-2" />
                     <a href={announcement.attachment} target="_blank" rel="noopener noreferrer" className="font-medium">
                       {announcement.attachment.split('/').pop()}
                     </a>
@@ -283,31 +289,38 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
               </TabsContent>
               
               <TabsContent value="question">
-                <Textarea
-                  value={question}
-                  onChange={(e) => setQuestion(e.target.value)}
-                  className="mt-1 w-full"
-                  rows={4}
-                  placeholder="Digite sua dúvida ou comentário..."
-                  onClick={(e) => e.stopPropagation()}
-                  onFocus={(e) => e.stopPropagation()}
-                />
-                <div className="mt-3 flex justify-end">
-                  <Button
-                    className="bg-[#5e8c6a] hover:bg-[#88a65e]"
-                    onClick={(e) => handleAskQuestion(e)}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    disabled={askQuestionMutation.isPending}
-                  >
-                    {askQuestionMutation.isPending ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Enviando...
-                      </>
-                    ) : (
-                      "Enviar"
-                    )}
-                  </Button>
+                <div className="max-w-2xl">
+                  <Textarea
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    className="mt-1 w-full"
+                    rows={4}
+                    placeholder="Digite sua dúvida ou comentário..."
+                    onClick={(e) => e.stopPropagation()}
+                    onFocus={(e) => e.stopPropagation()}
+                  />
+                  <div className="mt-4 flex justify-end">
+                    <Button
+                      className={cn(
+                        "hover:opacity-90", 
+                        announcement.department === Department.CONTROLES_INTERNOS ? "bg-red-500" :
+                        announcement.department === Department.ADMINISTRATIVO ? "bg-blue-500" : 
+                        "bg-green-500"
+                      )}
+                      onClick={(e) => handleAskQuestion(e)}
+                      onMouseDown={(e) => e.stopPropagation()}
+                      disabled={askQuestionMutation.isPending}
+                    >
+                      {askQuestionMutation.isPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Enviando...
+                        </>
+                      ) : (
+                        "Enviar"
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </TabsContent>
             </div>

@@ -123,7 +123,7 @@ export default function Announcements() {
             <p>Erro ao carregar comunicados. Tente novamente mais tarde.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-4 w-full">
             {filteredAnnouncements && filteredAnnouncements.length > 0 ? (
               filteredAnnouncements.map((announcement) => (
                 <AnnouncementCard 
