@@ -19,7 +19,15 @@ export default function KnowledgeSearch() {
   // Fetch announcements for search results
   const { data: searchResults, isLoading } = useQuery<Announcement[]>({
     queryKey: ["/api/search", searchQuery],
-    queryFn: getQueryFn({ on401: "throw" }),
+    queryFn: ({ queryKey }) => {
+      const q = queryKey[1] as string;
+      // Só executamos a busca se a query tiver pelo menos 3 caracteres
+      if (q.length < 3) return Promise.resolve([]);
+      return fetch(`/api/search?q=${encodeURIComponent(q)}`).then(res => {
+        if (!res.ok) throw new Error('Falha na busca');
+        return res.json();
+      });
+    },
     enabled: hasSearched && searchQuery.length >= 3,
   });
 
