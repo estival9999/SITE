@@ -22,7 +22,13 @@ export default function KnowledgeSearch() {
   // Fetch announcements for search results
   const { data: searchResults, isLoading } = useQuery<Announcement[]>({
     queryKey: ["/api/search", searchQuery],
-    queryFn: getQueryFn({ on401: "throw" }),
+    queryFn: () => fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Erro na busca: ${res.status}`);
+        }
+        return res.json();
+      }),
     enabled: hasSearched && searchQuery.length >= 3,
   });
 
@@ -32,20 +38,55 @@ export default function KnowledgeSearch() {
     setAiResponse(null);
     
     try {
+      console.log("Enviando consulta para a IA:", query);
+      
+      // Dados para enviar ao webhook
+      const requestData = {
+        query: query,
+        userId: "user123",  // Poderia ser o ID real do usuário
+        timestamp: new Date().toISOString(),
+        source: "corporate-communications"
+      };
+      
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify(requestData),
       });
       
+      console.log("Status da resposta:", response.status);
+      
       if (!response.ok) {
-        throw new Error(`Erro na resposta: ${response.status}`);
+        throw new Error(`Erro na resposta do webhook: ${response.status}`);
       }
       
-      const data = await response.json();
-      setAiResponse(data.response || "Não foi possível obter uma resposta clara para sua pergunta.");
+      // Lendo a resposta como texto primeiro para debug
+      const responseText = await response.text();
+      console.log("Resposta do webhook (texto):", responseText);
+      
+      // Tentando fazer o parsing do JSON
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("Erro ao fazer parse da resposta:", parseError);
+        // Se não conseguir fazer o parse, usa o texto como resposta
+        setAiResponse(responseText || "Resposta recebida, mas em formato não processável.");
+        return;
+      }
+      
+      // Se conseguiu fazer o parse, procura pelo campo de resposta
+      if (data && (data.response || data.answer || data.result)) {
+        const aiAnswer = data.response || data.answer || data.result;
+        console.log("Resposta processada:", aiAnswer);
+        setAiResponse(aiAnswer);
+      } else {
+        // Se não encontrar nenhum dos campos esperados, exibe o objeto completo
+        setAiResponse(JSON.stringify(data, null, 2));
+      }
     } catch (error) {
       console.error("Erro ao consultar IA:", error);
       toast({
@@ -53,6 +94,9 @@ export default function KnowledgeSearch() {
         description: "Não foi possível obter uma resposta neste momento. Tente novamente mais tarde.",
         variant: "destructive",
       });
+      // Define uma resposta de fallback para erros
+      setAiResponse("Não foi possível obter uma resposta do assistente neste momento. " +
+                   "Nossos sistemas estão com alta demanda. Por favor, tente novamente em alguns minutos.");
     } finally {
       setIsAiLoading(false);
     }
@@ -163,7 +207,7 @@ export default function KnowledgeSearch() {
                       <CardContent className="p-4">
                         <h4 className="text-[#5e8c6a] font-medium">{result.title}</h4>
                         <p className="text-sm text-gray-500 mt-1">
-                          {new Date(result.createdAt).toLocaleDateString('pt-BR')}
+                          {result.createdAt ? new Date(result.createdAt).toLocaleDateString('pt-BR') : ''}
                         </p>
                         <p className="text-sm text-gray-600 mt-2 line-clamp-2">{result.message}</p>
                       </CardContent>
