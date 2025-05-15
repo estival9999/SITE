@@ -331,12 +331,12 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
       {/* Delete button - only visible for admin creator */}
       {isCreator && (
         <button
-          className="delete-announcement absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm text-gray-400 hover:text-[#8c2318] focus:outline-none z-10"
+          className="delete-announcement absolute bottom-4 right-4 bg-white rounded-full p-2 shadow-md text-gray-500 hover:text-[#8c2318] hover:shadow-lg focus:outline-none z-10 transition-all"
           title="Excluir comunicado"
           onClick={handleDeleteClick}
           aria-label="Excluir comunicado"
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="h-5 w-5" />
         </button>
       )}
       
