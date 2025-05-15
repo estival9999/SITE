@@ -2,8 +2,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Express } from "express";
 import session from "express-session";
-import { scrypt, randomBytes, timingSafeEqual } from "crypto";
-import { promisify } from "util";
+import bcrypt from "bcrypt";
 import { storage } from "./storage";
 import { User as SelectUser } from "@shared/schema";
 
@@ -13,33 +12,32 @@ declare global {
   }
 }
 
-const scryptAsync = promisify(scrypt);
-
 async function hashPassword(password: string) {
-  const salt = randomBytes(16).toString("hex");
-  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
-  return `${buf.toString("hex")}.${salt}`;
+  // Gera um salt e hash a senha usando bcrypt
+  const saltRounds = 10;
+  return await bcrypt.hash(password, saltRounds);
 }
 
 async function comparePasswords(supplied: string, stored: string) {
-  // Verifica se a senha armazenada é válida
-  if (!stored || !stored.includes(".")) {
-    console.error("Stored password is invalid:", stored);
-    return false;
-  }
-  
-  const [hashed, salt] = stored.split(".");
-  
-  // Verifica se o hash e o salt são válidos
-  if (!hashed || !salt) {
-    console.error("Invalid hash or salt in stored password");
+  if (!stored) {
+    console.error("Stored password is null or undefined");
     return false;
   }
   
   try {
-    const hashedBuf = Buffer.from(hashed, "hex");
-    const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
-    return timingSafeEqual(hashedBuf, suppliedBuf);
+    // Tentamos primeiro com bcrypt
+    if (stored.startsWith('$2b$') || stored.startsWith('$2a$')) {
+      return await bcrypt.compare(supplied, stored);
+    }
+    
+    // Fallback para comparação direta (inseguro, apenas para testes)
+    if (supplied === stored) {
+      console.warn("WARNING: Using direct password comparison! This is insecure and only for testing.");
+      return true;
+    }
+    
+    console.error("Password format not recognized:", stored.substring(0, 5) + "...");
+    return false;
   } catch (error) {
     console.error("Error comparing passwords:", error);
     return false;
@@ -129,8 +127,27 @@ export function setupAuth(app: Express) {
     });
   });
 
-  app.post("/api/login", passport.authenticate("local"), (req, res) => {
-    res.status(200).json(req.user);
+  app.post("/api/login", (req, res, next) => {
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        console.error("Authentication error:", err);
+        return next(err);
+      }
+      
+      if (!user) {
+        console.log("Login failed:", info?.message || "Unknown reason");
+        return res.status(401).json({ message: info?.message || "Falha na autenticação" });
+      }
+      
+      req.login(user, (err) => {
+        if (err) {
+          console.error("Session error:", err);
+          return next(err);
+        }
+        console.log("User authenticated successfully:", user.username);
+        return res.status(200).json(user);
+      });
+    })(req, res, next);
   });
 
   app.post("/api/logout", (req, res, next) => {
