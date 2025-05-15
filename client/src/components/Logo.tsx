@@ -9,9 +9,9 @@ interface LogoProps {
 
 export function Logo({ className, size = "medium", withText = false }: LogoProps) {
   const sizes = {
-    small: "h-6 w-auto",
-    medium: "h-8 w-auto",
-    large: "h-20 w-auto",
+    small: "h-8 w-auto",
+    medium: "h-12 w-auto",
+    large: "h-24 w-auto",
   };
 
   return (
@@ -24,10 +24,10 @@ export function Logo({ className, size = "medium", withText = false }: LogoProps
       
       {withText && (
         <span className={cn(
-          "ml-2 font-semibold",
+          "ml-3 font-bold",
           size === "small" && "text-sm",
-          size === "medium" && "text-lg",
-          size === "large" && "text-2xl"
+          size === "medium" && "text-xl",
+          size === "large" && "text-3xl"
         )}>
           Auralis
         </span>
