@@ -110,7 +110,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
           </div>
         </nav>
         
-        <div className="p-5 border-t border-[#88a65e]/30 mt-4 bg-[#5e8c6a]/40 backdrop-blur">
+        <div className="p-5 border-t border-[#88a65e]/30 mt-4 bg-[#88a65e]/40 backdrop-blur">
           <div className="flex items-center">
             <Avatar className="h-11 w-11 ring-2 ring-white/30 shadow-lg">
               <AvatarImage src="" alt={user?.name || "User"} />
@@ -127,7 +127,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
           
           <Button
             onClick={handleLogout}
-            className="w-full mt-5 bg-gradient-to-r from-[#5e8c6a]/80 to-[#5e8c6a] hover:from-[#8c2318] hover:to-[#8c2318] text-white shadow-md transition-all duration-300 border-none"
+            className="w-full mt-5 bg-gradient-to-r from-[#88a65e]/80 to-[#88a65e] hover:from-[#8c2318] hover:to-[#8c2318] text-white shadow-md transition-all duration-300 border-none"
             variant="secondary"
           >
             <LogOut className="h-4 w-4 mr-2" />
@@ -148,7 +148,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
       {/* Mobile sidebar */}
       <div
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-full bg-[#5e8c6a] text-white transform transition-transform duration-300 ease-in-out md:hidden",
+          "fixed inset-y-0 left-0 z-50 w-full bg-[var(--color-bg-sidebar)] text-white transform transition-transform duration-300 ease-in-out md:hidden",
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -185,10 +185,10 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
           <div className="flex items-center">
             <Avatar>
               <AvatarImage src="" alt={user?.name || "User"} />
-              <AvatarFallback className="bg-[#88a65e] text-white">{user?.name?.charAt(0) || "U"}</AvatarFallback>
+              <AvatarFallback className="bg-[#88a65e] text-white">{user?.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
             </Avatar>
             <div className="ml-3">
-              <p className="text-sm font-medium text-white">{user?.name}</p>
+              <p className="text-sm font-medium text-white">{user?.username}</p>
               <p className="text-xs text-gray-200">
                 {user?.role === UserRole.ADMIN ? "Administrador" : "Leitor"}
               </p>
@@ -197,7 +197,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
           
           <Button
             onClick={handleLogout}
-            className="w-full mt-4 bg-[#5e8c6a] hover:bg-[#8c2318] border border-white"
+            className="w-full mt-4 bg-[#88a65e] hover:bg-[#8c2318] border border-white"
             variant="secondary"
           >
             <LogOut className="h-4 w-4 mr-2" />

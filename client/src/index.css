@@ -33,12 +33,12 @@
   /* Cores de fundo */
   --color-bg-main: #f5f7fa;
   --color-bg-card: #ffffff;
-  --color-bg-sidebar: #2c3e50; 
+  --color-bg-sidebar: #5e8c6a; 
   --color-bg-header: #ffffff;
   
   /* Cores de acentuação */
   --color-accent-primary: #27ae60;    /* Verde principal */
-  --color-accent-secondary: #2ecc71;  /* Verde secundário */
+  --color-accent-secondary: #88a65e;  /* Verde secundário */
   
   /* Cores de texto */
   --color-text-dark: #2c3e50;         /* Texto escuro quase preto */
