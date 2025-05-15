@@ -26,7 +26,7 @@ export default function KnowledgeSearch() {
   const { toast } = useToast();
 
   // Webhook para consulta de conhecimento
-  const webhookUrl = "https://mateusestival.app.n8n.cloud/webhook-test/ed015f23-0109-408f-a803-9adab50d773b";
+  const webhookUrl = "https://mateusestival.app.n8n.cloud/webhook-test/f7405a78-ff69-4a7b-9b2b-8c7e64ff37f3";
 
   // Mutation para chamar o webhook
   const aiQueryMutation = useMutation({
