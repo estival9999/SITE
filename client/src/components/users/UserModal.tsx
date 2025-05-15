@@ -85,7 +85,7 @@ export default function UserModal({ isOpen, onOpenChange, user, onSave, isPendin
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {isEditMode ? "Editar Usuário" : "Adicionar Novo Usuário"}
@@ -93,66 +93,70 @@ export default function UserModal({ isOpen, onOpenChange, user, onSave, isPendin
         </DialogHeader>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nome do usuário" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nome do usuário" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Email do usuário" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Email do usuário" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome de Usuário</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nome de usuário" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{isEditMode ? "Nova Senha (opcional)" : "Senha"}</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="password" 
-                      placeholder={isEditMode ? "Deixe em branco para não alterar" : "Senha do usuário"} 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome de Usuário</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nome de usuário" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEditMode ? "Nova Senha (opcional)" : "Senha"}</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="password" 
+                        placeholder={isEditMode ? "Deixe em branco para não alterar" : "Senha do usuário"} 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             
             <FormField
               control={form.control}
@@ -217,13 +221,13 @@ export default function UserModal({ isOpen, onOpenChange, user, onSave, isPendin
                 name="assignedLocations"
                 render={() => (
                   <FormItem>
-                    <div className="mb-4">
+                    <div className="mb-2">
                       <FormLabel>Locais Atribuídos</FormLabel>
-                      <FormDescription>
+                      <FormDescription className="text-xs">
                         Selecione os locais para os quais este leitor pode visualizar comunicados.
                       </FormDescription>
                     </div>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-2 bg-gray-50 p-3 rounded-md">
                       {[
                         { value: Location.MARACAJU, label: "Maracaju" },
                         { value: Location.SIDROLANDIA, label: "Sidrolândia" },
@@ -238,7 +242,7 @@ export default function UserModal({ isOpen, onOpenChange, user, onSave, isPendin
                             return (
                               <FormItem
                                 key={location.value}
-                                className="flex flex-row items-start space-x-3 space-y-0"
+                                className="flex flex-row items-center space-x-2 space-y-0 mb-0"
                               >
                                 <FormControl>
                                   <Checkbox
@@ -253,7 +257,7 @@ export default function UserModal({ isOpen, onOpenChange, user, onSave, isPendin
                                     }}
                                   />
                                 </FormControl>
-                                <FormLabel className="font-normal">
+                                <FormLabel className="font-normal text-sm cursor-pointer">
                                   {location.label}
                                 </FormLabel>
                               </FormItem>
@@ -262,7 +266,7 @@ export default function UserModal({ isOpen, onOpenChange, user, onSave, isPendin
                         />
                       ))}
                     </div>
-                    <FormDescription className="mt-2">
+                    <FormDescription className="text-xs mt-1">
                       Se nenhum local for selecionado, o leitor não poderá visualizar comunicados.
                     </FormDescription>
                     <FormMessage />
@@ -271,12 +275,13 @@ export default function UserModal({ isOpen, onOpenChange, user, onSave, isPendin
               />
             )}
             
-            <DialogFooter className="mt-6">
+            <div className="pt-4">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={isPending}
+                className="mr-2"
               >
                 Cancelar
               </Button>
@@ -294,7 +299,7 @@ export default function UserModal({ isOpen, onOpenChange, user, onSave, isPendin
                   isEditMode ? "Salvar alterações" : "Adicionar usuário"
                 )}
               </Button>
-            </DialogFooter>
+            </div>
           </form>
         </Form>
       </DialogContent>
