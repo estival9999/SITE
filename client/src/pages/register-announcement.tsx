@@ -97,33 +97,52 @@ export default function RegisterAnnouncement() {
 
   // Handle form submission
   const onSubmit = (data: AnnouncementFormValues) => {
-    console.log("Submitting data:", data); // Debug
+    // Validate required fields first
+    if (!data.title || !data.message || !data.department || !data.category || !data.targetedLocations.length) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha todos os campos obrigatórios antes de submeter o formulário.",
+        variant: "destructive",
+      });
+      return;
+    }
     
-    const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("message", data.message);
-    formData.append("department", data.department);
-    formData.append("category", data.category);
+    console.log("Submitting data:", data);
     
-    // Handle targetedLocations array properly
-    if (data.targetedLocations && data.targetedLocations.length > 0) {
-      data.targetedLocations.forEach((location, index) => {
-        formData.append(`targetedLocations[${index}]`, location);
+    try {
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("message", data.message);
+      formData.append("department", data.department);
+      formData.append("category", data.category);
+      
+      // Handle targetedLocations array properly
+      if (data.targetedLocations && data.targetedLocations.length > 0) {
+        data.targetedLocations.forEach((location, index) => {
+          formData.append(`targetedLocations[${index}]`, location);
+        });
+      }
+      
+      if (data.attachment) {
+        formData.append("attachment", data.attachment);
+      }
+      
+      // Log FormData contents for debugging
+      console.log("FormData contents:");
+      console.log("title:", formData.get("title"));
+      console.log("message:", formData.get("message"));
+      console.log("department:", formData.get("department"));
+      console.log("category:", formData.get("category"));
+
+      registerAnnouncementMutation.mutate(formData);
+    } catch (error) {
+      console.error("Error preparing form data:", error);
+      toast({
+        title: "Erro ao preparar formulário",
+        description: "Ocorreu um erro ao preparar os dados para envio. Por favor, tente novamente.",
+        variant: "destructive",
       });
     }
-    
-    if (data.attachment) {
-      formData.append("attachment", data.attachment);
-    }
-    
-    // Log FormData contents for debugging
-    console.log("FormData contents:");
-    console.log("title:", formData.get("title"));
-    console.log("message:", formData.get("message"));
-    console.log("department:", formData.get("department"));
-    console.log("category:", formData.get("category"));
-
-    registerAnnouncementMutation.mutate(formData);
   };
 
   // Options for departments, categories, and locations

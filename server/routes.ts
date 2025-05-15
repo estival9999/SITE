@@ -78,6 +78,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create announcement (admin only)
   app.post("/api/announcements", isAdmin, upload.single('attachment'), async (req, res) => {
     try {
+      // Validate required fields manually first
+      if (!req.body.title || !req.body.message || !req.body.department || !req.body.category) {
+        return res.status(400).json({ 
+          message: "Missing required fields",
+          missingFields: {
+            title: !req.body.title,
+            message: !req.body.message,
+            department: !req.body.department,
+            category: !req.body.category
+          }
+        });
+      }
+      
       // Log the request body for debugging
       console.log("Request body:", req.body);
       
@@ -89,6 +102,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
               .map(key => req.body[key]);
               
       console.log("Targeted locations:", targetedLocations);
+      
+      if (!targetedLocations || targetedLocations.length === 0) {
+        return res.status(400).json({ 
+          message: "At least one location must be selected" 
+        });
+      }
       
       // Parse announcement data
       const announcementData = insertAnnouncementSchema.parse({
@@ -114,13 +133,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const announcement = await storage.createAnnouncement(announcementData);
+      console.log("Announcement created successfully:", announcement);
       res.status(201).json(announcement);
     } catch (error: any) {
       console.error("Error creating announcement:", error);
       if (error.name === 'ZodError') {
         return res.status(400).json({ message: "Invalid announcement data", errors: error.errors });
       }
-      res.status(500).json({ message: "Server error" });
+      res.status(500).json({ message: `Server error: ${error.message}` });
     }
   });
   
