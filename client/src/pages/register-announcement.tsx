@@ -97,17 +97,31 @@ export default function RegisterAnnouncement() {
 
   // Handle form submission
   const onSubmit = (data: AnnouncementFormValues) => {
+    console.log("Submitting data:", data); // Debug
+    
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("message", data.message);
     formData.append("department", data.department);
     formData.append("category", data.category);
-    data.targetedLocations.forEach((location, index) => {
-      formData.append(`targetedLocations[${index}]`, location);
-    });
+    
+    // Handle targetedLocations array properly
+    if (data.targetedLocations && data.targetedLocations.length > 0) {
+      data.targetedLocations.forEach((location, index) => {
+        formData.append(`targetedLocations[${index}]`, location);
+      });
+    }
+    
     if (data.attachment) {
       formData.append("attachment", data.attachment);
     }
+    
+    // Log FormData contents for debugging
+    console.log("FormData contents:");
+    console.log("title:", formData.get("title"));
+    console.log("message:", formData.get("message"));
+    console.log("department:", formData.get("department"));
+    console.log("category:", formData.get("category"));
 
     registerAnnouncementMutation.mutate(formData);
   };
@@ -188,7 +202,7 @@ export default function RegisterAnnouncement() {
                       <Select
                         disabled={!!user?.actingDepartment}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value || undefined}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -221,7 +235,7 @@ export default function RegisterAnnouncement() {
                       <FormLabel>Categoria da Mensagem</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value || undefined}
                       >
                         <FormControl>
                           <SelectTrigger>

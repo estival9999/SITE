@@ -78,15 +78,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create announcement (admin only)
   app.post("/api/announcements", isAdmin, upload.single('attachment'), async (req, res) => {
     try {
-      // Parse announcement data
-      const announcementData = insertAnnouncementSchema.parse({
-        ...req.body,
-        // Convert targetedLocations from form data to array
-        targetedLocations: Array.isArray(req.body.targetedLocations) 
+      // Log the request body for debugging
+      console.log("Request body:", req.body);
+      
+      // Prepare data for validation
+      const targetedLocations = Array.isArray(req.body.targetedLocations) 
           ? req.body.targetedLocations 
           : Object.keys(req.body)
               .filter(key => key.startsWith('targetedLocations['))
-              .map(key => req.body[key]),
+              .map(key => req.body[key]);
+              
+      console.log("Targeted locations:", targetedLocations);
+      
+      // Parse announcement data
+      const announcementData = insertAnnouncementSchema.parse({
+        title: req.body.title,
+        message: req.body.message,
+        department: req.body.department,
+        category: req.body.category,
+        targetedLocations: targetedLocations,
         authorId: req.user!.id
       });
       
