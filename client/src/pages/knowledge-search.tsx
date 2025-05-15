@@ -29,7 +29,7 @@ export default function KnowledgeSearch() {
   const webhookUrl = "https://mateusestival.app.n8n.cloud/webhook/784c321e-9442-4ebc-9572-f53a31e14000/chat";
 
   // ID de sessão para o agente do n8n
-  const sessionId = "auralis-corporate-comms-session-001";
+  const sessionId = "f2cfab57cb424067b8b917ce8f520776";
 
   // Mutation para chamar o webhook
   const aiQueryMutation = useMutation({
