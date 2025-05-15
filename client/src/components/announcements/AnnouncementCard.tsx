@@ -225,7 +225,7 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
       )}
       onClick={handleCardClick}
     >
-      <div className="p-6">
+      <div className="p-6 bg-[var(--color-bg-card)]">
         <div className="flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
           <div className="flex-grow min-w-0 max-w-full">
             <div className="flex items-center mb-4">
@@ -233,16 +233,16 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
                 {getDepartmentLabel()}
               </Badge>
               <span 
-                className="category-icon bg-gray-200 h-7 w-7 rounded-full flex items-center justify-center ml-3" 
+                className="category-icon bg-[var(--color-bg-main)] h-7 w-7 rounded-full flex items-center justify-center ml-3 shadow-sm border border-[var(--color-border)]" 
                 title={getCategoryTitle()}
               >
                 {getCategoryIcon()}
               </span>
             </div>
             
-            <h3 className="font-semibold text-xl text-gray-800 tracking-tight">{announcement.title}</h3>
-            <p className="text-sm text-gray-500 mt-1.5">{formatDate(announcement.createdAt)}</p>
-            <p className="text-sm text-gray-700 mt-4 line-clamp-2 max-w-full leading-relaxed">{announcement.message}</p>
+            <h3 className="font-semibold text-xl text-[var(--color-text-dark)] tracking-tight">{announcement.title}</h3>
+            <p className="text-sm text-[var(--color-text-light)] mt-1.5">{formatDate(announcement.createdAt)}</p>
+            <p className="text-sm text-[var(--color-text-medium)] mt-4 line-clamp-2 max-w-full leading-relaxed">{announcement.message}</p>
           </div>
           
           <div className="flex items-start">
@@ -250,8 +250,8 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
               className={cn(
                 "read-flag h-9 w-9 rounded-full flex items-center justify-center",
                 readStatus 
-                  ? "bg-gradient-to-b from-green-50 to-green-100 border-2 border-green-400" 
-                  : "bg-gradient-to-b from-gray-50 to-gray-100 border border-gray-200 hover:bg-gray-50 hover:border-gray-300"
+                  ? "bg-gradient-to-b from-[#ecf9f0] to-[#d7f5e1] border-2 border-[var(--color-accent-secondary)]" 
+                  : "bg-gradient-to-b from-[var(--color-bg-main)] to-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-text-light)]"
               )} 
               title={readStatus ? "Marcado como lido" : "Marcar como lido"}
               onClick={handleReadFlagClick}
