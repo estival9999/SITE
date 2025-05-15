@@ -1,74 +1,27 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryFn, apiRequest } from "@/lib/queryClient";
+import { useQuery } from "@tanstack/react-query";
+import { getQueryFn } from "@/lib/queryClient";
 import AppLayout from "@/layouts/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Announcement } from "@shared/schema";
-import { Search, Lightbulb, Send, Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Search, Lightbulb } from "lucide-react";
 
 export default function KnowledgeSearch() {
   const [searchQuery, setSearchQuery] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
-  const [aiResponse, setAiResponse] = useState<string | null>(null);
-  const [isAiResponding, setIsAiResponding] = useState(false);
-  const { toast } = useToast();
 
   // Fetch announcements for search results
   const { data: searchResults, isLoading } = useQuery<Announcement[]>({
     queryKey: ["/api/search", searchQuery],
-    queryFn: ({ queryKey }) => {
-      const q = queryKey[1] as string;
-      // Só executamos a busca se a query tiver pelo menos 3 caracteres
-      if (q.length < 3) return Promise.resolve([]);
-      return fetch(`/api/search?q=${encodeURIComponent(q)}`).then(res => {
-        if (!res.ok) throw new Error('Falha na busca');
-        return res.json();
-      });
-    },
+    queryFn: getQueryFn({ on401: "throw" }),
     enabled: hasSearched && searchQuery.length >= 3,
-  });
-
-  // Send query to webhook for AI response via our backend
-  const sendToAiMutation = useMutation({
-    mutationFn: async (query: string) => {
-      const response = await apiRequest("POST", "/api/ask-ai", { query });
-      
-      if (!response.ok) {
-        throw new Error("Falha ao obter resposta da IA");
-      }
-      
-      return await response.json();
-    },
-    onMutate: () => {
-      setIsAiResponding(true);
-      setAiResponse(null);
-    },
-    onSuccess: (data) => {
-      setAiResponse(data.response || "Não foi possível processar sua consulta.");
-      setIsAiResponding(false);
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Erro ao consultar IA",
-        description: error.message,
-        variant: "destructive"
-      });
-      setIsAiResponding(false);
-    },
   });
 
   const handleSearch = () => {
     if (searchQuery.length >= 3) {
       setHasSearched(true);
-    }
-  };
-
-  const handleAskAi = () => {
-    if (searchQuery.length >= 3) {
-      sendToAiMutation.mutate(searchQuery);
     }
   };
 
@@ -118,61 +71,18 @@ export default function KnowledgeSearch() {
         </Card>
         
         {!hasSearched || searchQuery.length < 3 ? (
-          <div className="space-y-6">
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-10 text-center">
-                <div className="flex space-x-2 mb-4">
-                  <Button 
-                    onClick={handleAskAi} 
-                    className="flex items-center space-x-2 bg-[#5e8c6a] hover:bg-[#4a7056]"
-                    disabled={searchQuery.length < 3 || isAiResponding}
-                  >
-                    {isAiResponding ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        <span>Consultando IA...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4 mr-2" />
-                        <span>Perguntar à IA</span>
-                      </>
-                    )}
-                  </Button>
-                  
-                  <Button 
-                    onClick={handleSearch}
-                    variant="outline"
-                    className="flex items-center space-x-2"
-                    disabled={searchQuery.length < 3}
-                  >
-                    <Search className="h-4 w-4 mr-2" />
-                    <span>Buscar Comunicados</span>
-                  </Button>
-                </div>
-                
-                {aiResponse ? (
-                  <div className="w-full mt-4 text-left">
-                    <h3 className="text-lg font-medium text-gray-900 mb-3">Resposta da IA:</h3>
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <p className="text-sm whitespace-pre-line">{aiResponse}</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="mt-4">
-                    <Lightbulb className="h-12 w-12 text-[#88a65e] mb-4 mx-auto" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">IA Corporativa Auralis</h3>
-                    <p className="text-sm text-gray-500 max-w-md">
-                      Digite sua pergunta na caixa de pesquisa acima e clique em "Perguntar à IA" para obter respostas instantâneas baseadas nos comunicados e documentos da empresa.
-                    </p>
-                    <p className="mt-3 text-sm text-gray-500">
-                      Você também pode usar a busca para encontrar comunicados específicos.
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+              <Lightbulb className="h-12 w-12 text-[#88a65e] mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Integração com IA em breve</h3>
+              <p className="text-sm text-gray-500 max-w-md">
+                Em breve, você poderá fazer perguntas diretamente à nossa IA para obter respostas instantâneas baseadas nos comunicados e documentos da empresa.
+              </p>
+              <p className="mt-3 text-sm text-gray-500">
+                Por enquanto, utilize a busca para encontrar comunicados específicos.
+              </p>
+            </CardContent>
+          </Card>
         ) : isLoading ? (
           <Card>
             <CardContent className="flex justify-center items-center py-12">
@@ -192,11 +102,7 @@ export default function KnowledgeSearch() {
                     <CardContent className="p-4">
                       <h4 className="text-[#5e8c6a] font-medium">{result.title}</h4>
                       <p className="text-sm text-gray-500 mt-1">
-                        {result.createdAt && typeof result.createdAt === 'string' 
-                          ? new Date(result.createdAt).toLocaleDateString('pt-BR') 
-                          : result.createdAt instanceof Date 
-                            ? result.createdAt.toLocaleDateString('pt-BR')
-                            : ''}
+                        {new Date(result.createdAt).toLocaleDateString('pt-BR')}
                       </p>
                       <p className="text-sm text-gray-600 mt-2 line-clamp-2">{result.message}</p>
                     </CardContent>

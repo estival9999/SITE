@@ -468,41 +468,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
   
-  // AI webhook integration route
-  app.post('/api/ask-ai', async (req, res) => {
-    try {
-      if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-      
-      const { query } = req.body;
-      
-      if (!query || typeof query !== 'string' || query.length < 3) {
-        return res.status(400).json({ message: "Query must be at least 3 characters" });
-      }
-      
-      // Forward the query to the webhook
-      const webhookUrl = "https://mateusestival.app.n8n.cloud/webhook-test/18b90e2d-e422-40d6-a880-225b8337f016";
-      const webhookResponse = await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query }),
-      });
-      
-      if (!webhookResponse.ok) {
-        throw new Error(`Webhook error: ${webhookResponse.status} ${webhookResponse.statusText}`);
-      }
-      
-      const data = await webhookResponse.json();
-      res.json(data);
-    } catch (error) {
-      console.error("Error in AI webhook:", error);
-      res.status(500).json({ message: "Failed to process AI request", error: String(error) });
-    }
-  });
-  
   const httpServer = createServer(app);
   return httpServer;
 }
