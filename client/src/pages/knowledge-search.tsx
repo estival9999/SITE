@@ -23,17 +23,10 @@ export default function KnowledgeSearch() {
     enabled: hasSearched && searchQuery.length >= 3,
   });
 
-  // Send query to webhook for AI response
+  // Send query to webhook for AI response via our backend
   const sendToAiMutation = useMutation({
     mutationFn: async (query: string) => {
-      const webhookUrl = "https://mateusestival.app.n8n.cloud/webhook/784c321e-9442-4ebc-9572-f53a31e14000/chat";
-      const response = await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query }),
-      });
+      const response = await apiRequest("POST", "/api/ask-ai", { query });
       
       if (!response.ok) {
         throw new Error("Falha ao obter resposta da IA");
