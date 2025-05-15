@@ -85,8 +85,8 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
-      <div className="bg-gradient-to-b from-[#5e8c6a] to-[#517a5b] text-white w-72 flex-shrink-0 hidden md:flex md:flex-col drop-shadow-lg">
-        <div className="flex items-center justify-center h-20 border-b border-[#88a65e]/30 bg-[#5e8c6a]/70 backdrop-blur-sm">
+      <div className="bg-[var(--color-bg-sidebar)] text-white w-72 flex-shrink-0 hidden md:flex md:flex-col drop-shadow-lg">
+        <div className="flex items-center justify-center h-20 border-b border-[#ffffff20] bg-[var(--color-bg-sidebar)] backdrop-blur-sm">
           <Logo size="medium" withText />
         </div>
 
@@ -209,7 +209,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
       {/* Main content area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top navbar */}
-        <header className="bg-[#fafcfa] shadow-md relative z-10 border-b border-[#e0f0e5]">
+        <header className="bg-[var(--color-bg-header)] shadow-sm relative z-10 border-b border-[var(--color-border)]">
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center">
               <button
@@ -230,7 +230,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
         </header>
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto bg-[#f5f8f5] p-6">
+        <main className="flex-1 overflow-y-auto bg-[var(--color-bg-main)] p-6">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>

@@ -30,16 +30,30 @@
 
 /* Ajustes globais para cores mais harmoniosas */
 body {
-  color: #444;
-  background-color: #f5f8f5;
+  color: #2c3e50;
+  background-color: #ecf0f1;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: #2c4a34;
+  color: #2c3e50;
 }
 
 .text-gray-700 {
-  color: #3c4a42;
+  color: #34495e;
+}
+
+/* Variáveis para a nova paleta de cores */
+:root {
+  --color-bg-main: #ecf0f1;
+  --color-bg-card: #ffffff;
+  --color-bg-sidebar: #2c3e50;
+  --color-bg-header: #ffffff;
+  --color-accent-primary: #27ae60;
+  --color-accent-secondary: #2ecc71;
+  --color-text-dark: #2c3e50;
+  --color-text-medium: #34495e;
+  --color-text-light: #7f8c8d;
+  --color-border: #e0e6ed;
 }
 
 .read-flag {
@@ -62,19 +76,16 @@ h1, h2, h3, h4, h5, h6 {
 /* Estilos globais para melhorar o aspecto 3D e profissional */
 .announcement-card {
   transition: all 0.3s ease;
-  box-shadow: 
-    0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transform: translateZ(0);
   backface-visibility: hidden;
   position: relative;
-  background-color: #f9fbf9;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
 }
 
 .announcement-card:hover {
-  box-shadow: 
-    0 10px 15px -3px rgba(0, 0, 0, 0.1), 
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
 
