@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 145 20% 46%; /* Verde Escuro: #5e8c6a */
+  --primary-foreground: 0 0% 98%;
+  --secondary: 79 28% 51%; /* Verde Claro: #88a65e */
+  --secondary-foreground: 0 0% 98%;
+  --accent: 93 48% 55%; /* Amarelo Claro: #f2c45a */
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 65% 32%; /* Vermelho Escuro/Bordô: #8c2318 */
+  --destructive-foreground: 0 0% 98%;
+  --ring: 145 20% 46%;
+  --radius: 0.5rem;
+
+  --admin-blue: 212 49% 52%; /* Azul Distinto: #4a7dbe */
+  --admin-blue-light: 212 49% 92%;
+
+  --verde-escuro: 145 20% 46%;
+  --verde-claro: 79 28% 51%;
+  --vermelho-escuro: 0 65% 32%;
+  --azul-distintivo: 212 49% 52%;
+  --amarelo-mostarda: 49 40% 55%;
+  --amarelo-claro: 43 84% 65%;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 145 20% 46%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 79 28% 51%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 93 48% 55%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 65% 32%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .department-controles {
+    @apply border-l-4 border-[#8c2318];
+  }
+  
+  .department-administrativo {
+    @apply border-l-4 border-[#4a7dbe] bg-[#4a7dbe]/10;
+  }
+  
+  .department-credito {
+    @apply border-l-4 border-[#88a65e] bg-[#88a65e]/5;
+  }
+  
+  .badge-controles {
+    @apply bg-[#8c2318] text-white;
+  }
+  
+  .badge-administrativo {
+    @apply bg-[#4a7dbe] text-white;
+  }
+  
+  .badge-credito {
+    @apply bg-[#88a65e] text-white;
+  }
+
+  .read-flag {
+    @apply transition-all duration-200 hover:scale-110;
+  }
+
+  .announcement-card {
+    @apply transition-all duration-300;
+  }
+
+  .tab-active {
+    @apply border-b-2 border-[#5e8c6a] text-[#5e8c6a] font-medium;
+  }
+}
