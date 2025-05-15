@@ -180,6 +180,17 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
 
   const handleReadFlagClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card expansion
+    
+    // Animação suave de transição ao marcar como lido
+    const target = e.currentTarget as HTMLButtonElement;
+    if (!readStatus) {
+      // Efeito sutil ao marcar como lido
+      target.classList.add('hover:scale-105');
+      setTimeout(() => {
+        target.classList.remove('hover:scale-105');
+      }, 300);
+    }
+    
     toggleReadStatusMutation.mutate();
   };
 
@@ -245,26 +256,24 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
           <div className="flex items-start">
             <button 
               className={cn(
-                "read-flag group h-9 w-9 rounded-full flex items-center justify-center shadow-md transition-all duration-300 transform hover:scale-110",
+                "read-flag h-8 w-8 rounded-full flex items-center justify-center",
                 readStatus 
-                  ? "bg-gradient-to-br from-green-400 to-green-600 ring-2 ring-green-300 ring-opacity-50" 
-                  : "bg-gradient-to-br from-gray-100 to-gray-300 hover:from-green-100 hover:to-green-300"
+                  ? "bg-green-100 border border-green-300" 
+                  : "bg-gray-100 border border-gray-200 hover:bg-gray-50"
               )} 
               title={readStatus ? "Marcado como lido" : "Marcar como lido"}
               onClick={handleReadFlagClick}
               aria-label={readStatus ? "Marcado como lido" : "Marcar como lido"}
               style={{ 
-                boxShadow: readStatus ? '0 0 15px rgba(74, 222, 128, 0.6)' : 'none',
-                animation: toggleReadStatusMutation.isPending ? 'pulse 1.5s infinite' : readStatus ? 'scaleIn 0.5s 1' : 'none',
-                transform: `translateZ(0)` // Para melhor performance de animação
+                animation: toggleReadStatusMutation.isPending ? 'subtlePulse 1s infinite' : 'none'
               }}
             >
               {toggleReadStatusMutation.isPending ? (
-                <RefreshCw className="h-4 w-4 text-white animate-spin" />
+                <RefreshCw className="h-4 w-4 text-gray-400 animate-spin" />
               ) : readStatus ? (
-                <Check className="h-5 w-5 text-white animate-scaleIn" />
+                <Check className="h-5 w-5 text-green-600" strokeWidth={2.5} />
               ) : (
-                <Check className="h-5 w-5 text-gray-400 group-hover:text-green-500" />
+                <Check className="h-5 w-5 text-gray-300" strokeWidth={1.5} />
               )}
             </button>
           </div>

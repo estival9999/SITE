@@ -2,80 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes pulse {
+@keyframes subtlePulse {
   0%, 100% {
-    opacity: 1;
     transform: scale(1);
   }
   50% {
-    opacity: 0.8;
-    transform: scale(1.05);
+    transform: scale(1.03);
   }
 }
 
-@keyframes scaleIn {
+@keyframes checkmark {
   0% {
+    stroke-dashoffset: 100;
     opacity: 0;
-    transform: scale(0);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
   }
   100% {
+    stroke-dashoffset: 0;
     opacity: 1;
-    transform: scale(1);
   }
 }
 
-.animate-scaleIn {
-  animation: scaleIn 0.3s ease-out forwards;
+.animate-checkmark {
+  animation: checkmark 0.4s ease-out forwards;
 }
 
 .read-flag {
   position: relative;
-  overflow: hidden;
+  transition: all 0.25s ease;
 }
 
-.read-flag::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 50%;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+.read-flag:hover {
+  transform: translateY(-1px);
 }
 
-.read-flag::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  right: -50%;
-  bottom: -50%;
-  background: conic-gradient(
-    transparent, 
-    rgba(255, 255, 255, 0.4), 
-    transparent 30%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  animation: rotate 4s linear infinite;
-  z-index: -1;
-}
-
-.read-flag:hover::after {
-  opacity: 1;
-}
-
-@keyframes rotate {
-  100% {
-    transform: rotate(360deg);
-  }
+.read-flag:active {
+  transform: translateY(1px);
 }
 
 :root {
