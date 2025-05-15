@@ -73,9 +73,15 @@ export default function RegisterAnnouncement() {
 
   // Create mutation for registering announcement
   const registerAnnouncementMutation = useMutation({
-    mutationFn: async (data: FormData) => {
-      const res = await apiRequest("POST", "/api/announcements", data);
-      return await res.json();
+    mutationFn: async (data: AnnouncementFormValues | FormData) => {
+      // Se o anexo estiver presente, use FormData, caso contrário use JSON
+      if (data instanceof FormData) {
+        const res = await apiRequest("POST", "/api/announcements", data, "formdata");
+        return await res.json();
+      } else {
+        const res = await apiRequest("POST", "/api/announcements", data);
+        return await res.json();
+      }
     },
     onSuccess: () => {
       toast({
@@ -110,31 +116,42 @@ export default function RegisterAnnouncement() {
     console.log("Submitting data:", data);
     
     try {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("message", data.message);
-      formData.append("department", data.department);
-      formData.append("category", data.category);
-      
-      // Handle targetedLocations array properly
-      if (data.targetedLocations && data.targetedLocations.length > 0) {
-        data.targetedLocations.forEach((location, index) => {
-          formData.append(`targetedLocations[${index}]`, location);
+      // Se tiver um anexo, use FormData, caso contrário, envie como JSON
+      if (data.attachment) {
+        const formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("message", data.message);
+        formData.append("department", data.department);
+        formData.append("category", data.category);
+        
+        // Handle targetedLocations array properly
+        if (data.targetedLocations && data.targetedLocations.length > 0) {
+          data.targetedLocations.forEach((location, index) => {
+            formData.append(`targetedLocations[${index}]`, location);
+          });
+        }
+        
+        formData.append("attachment", data.attachment);
+        
+        // Log FormData contents for debugging
+        console.log("Sending as FormData:");
+        console.log("title:", formData.get("title"));
+        console.log("message:", formData.get("message"));
+        console.log("department:", formData.get("department"));
+        console.log("category:", formData.get("category"));
+
+        registerAnnouncementMutation.mutate(formData);
+      } else {
+        // Sem anexo, enviar como JSON
+        console.log("Sending as JSON:", data);
+        registerAnnouncementMutation.mutate({
+          title: data.title,
+          message: data.message,
+          department: data.department,
+          category: data.category,
+          targetedLocations: data.targetedLocations
         });
       }
-      
-      if (data.attachment) {
-        formData.append("attachment", data.attachment);
-      }
-      
-      // Log FormData contents for debugging
-      console.log("FormData contents:");
-      console.log("title:", formData.get("title"));
-      console.log("message:", formData.get("message"));
-      console.log("department:", formData.get("department"));
-      console.log("category:", formData.get("category"));
-
-      registerAnnouncementMutation.mutate(formData);
     } catch (error) {
       console.error("Error preparing form data:", error);
       toast({

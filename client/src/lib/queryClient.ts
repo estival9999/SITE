@@ -11,11 +11,26 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
+  contentType: "json" | "formdata" = "json",
 ): Promise<Response> {
+  let headers: Record<string, string> = {};
+  let body: any = undefined;
+  
+  if (data) {
+    if (contentType === "json" && !(data instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+      body = JSON.stringify(data);
+    } else {
+      // Para FormData, não definimos Content-Type
+      // O navegador vai definir automaticamente com o boundary correto
+      body = data;
+    }
+  }
+  
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
+    headers,
+    body,
     credentials: "include",
   });
 
