@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import logoImage from "@assets/logo Auralis.png";
 
 interface LogoProps {
   className?: string;
@@ -15,14 +16,11 @@ export function Logo({ className, size = "medium", withText = false }: LogoProps
 
   return (
     <div className={cn("flex items-center", className)}>
-      <svg 
-        className={cn(sizes[size], "fill-current text-white")} 
-        viewBox="0 0 400 400" 
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M200 0L385.566 200L200 400L14.434 200L200 0Z" />
-        <path d="M180 240H340L200 80L60 220H140L200 160L240 200H160L180 240Z" fill="currentColor" opacity="0.8" />
-      </svg>
+      <img 
+        src={logoImage}
+        alt="Auralis Logo" 
+        className={cn(sizes[size], "object-contain")}
+      />
       
       {withText && (
         <span className={cn(
