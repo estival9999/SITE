@@ -28,6 +28,9 @@ export default function KnowledgeSearch() {
   // Webhook para consulta de conhecimento
   const webhookUrl = "https://mateusestival.app.n8n.cloud/webhook-test/f7405a78-ff69-4a7b-9b2b-8c7e64ff37f3";
 
+  // ID de sessão para o agente do n8n
+  const sessionId = "auralis-corporate-comms-session-001";
+
   // Mutation para chamar o webhook
   const aiQueryMutation = useMutation({
     mutationFn: async (query: string) => {
@@ -36,7 +39,10 @@ export default function KnowledgeSearch() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ 
+          query, 
+          sessionId 
+        }),
       });
       
       if (!response.ok) {
