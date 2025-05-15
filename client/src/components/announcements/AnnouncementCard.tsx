@@ -273,25 +273,25 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
       </div>
       
       {isExpanded && (
-        <div className="border-t border-gray-200" onClick={(e) => e.stopPropagation()}>
+        <div className="border-t border-[var(--color-border)]" onClick={(e) => e.stopPropagation()}>
           <Tabs defaultValue="content">
-            <div className="bg-gray-50 px-5 py-3 flex justify-between items-center">
+            <div className="bg-[var(--color-bg-main)] px-5 py-3 flex justify-between items-center">
               <TabsList className="w-[200px]">
                 <TabsTrigger value="content" className="tab-active w-full font-semibold text-base">Conteúdo</TabsTrigger>
               </TabsList>
               <TabsList className="w-auto bg-transparent">
-                <TabsTrigger value="question" className="text-xs text-gray-500 hover:text-gray-700 bg-transparent hover:bg-gray-100 border border-gray-200">Perguntas</TabsTrigger>
+                <TabsTrigger value="question" className="text-xs text-[var(--color-text-light)] hover:text-[var(--color-text-medium)] bg-transparent hover:bg-[var(--color-bg-main)/80] border border-[var(--color-border)]">Perguntas</TabsTrigger>
               </TabsList>
             </div>
             
             <div className="p-5">
               <TabsContent value="content">
-                <div className="text-sm text-gray-700 whitespace-pre-line max-w-4xl">
+                <div className="text-sm text-[var(--color-text-medium)] whitespace-pre-line max-w-4xl leading-relaxed">
                   {announcement.message}
                 </div>
                 
                 {announcement.attachment && (
-                  <div className="mt-5 flex items-center text-sm text-[#5e8c6a] hover:text-[#88a65e]">
+                  <div className="mt-5 flex items-center text-sm text-[var(--color-accent-primary)] hover:text-[var(--color-accent-secondary)]">
                     <FileText className="h-5 w-5 mr-2" />
                     <a href={announcement.attachment} target="_blank" rel="noopener noreferrer" className="font-medium">
                       {announcement.attachment.split('/').pop()}
