@@ -97,8 +97,9 @@ export default function AuthPage() {
                   <FormItem>
                     <FormLabel>Usuário</FormLabel>
                     <FormControl>
-                      <Input placeholder="Seu nome de usuário" {...field} />
+                      <Input placeholder="admin2 ou user2" {...field} />
                     </FormControl>
+                    <div className="text-xs text-muted-foreground mt-1">Usuários de teste: admin2 ou user2</div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -111,8 +112,9 @@ export default function AuthPage() {
                   <FormItem>
                     <FormLabel>Senha</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="Sua senha" {...field} />
+                      <Input type="password" placeholder="password" {...field} />
                     </FormControl>
+                    <div className="text-xs text-muted-foreground mt-1">Senha de teste: password</div>
                     <FormMessage />
                   </FormItem>
                 )}
