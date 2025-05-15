@@ -214,28 +214,28 @@ export default function KnowledgeSearch() {
               ) : chatResponse ? (
                 <div>
                   <div className="flex items-start mb-6">
-                    <div className="bg-[#edf3ee] border border-[#e0f0e5] p-4 rounded-lg mr-2 max-w-2xl">
+                    <div className="bg-white border border-[var(--color-border)] p-4 rounded-lg mr-2 max-w-2xl shadow-sm">
                       <div className="flex items-center mb-2">
-                        <div className="bg-gradient-to-b from-gray-100 to-gray-200 p-1.5 rounded-full mr-2 border border-gray-200 shadow-sm">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                        <div className="bg-[var(--color-bg-main)] p-1.5 rounded-full mr-2 border border-[var(--color-border)] shadow-sm">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[var(--color-text-medium)]" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                           </svg>
                         </div>
-                        <span className="text-sm font-medium text-gray-600">Você perguntou:</span>
+                        <span className="text-sm font-medium text-[var(--color-text-medium)]">Você perguntou:</span>
                       </div>
-                      <p className="text-gray-700 text-base">{searchQuery}</p>
+                      <p className="text-[var(--color-text-dark)] text-base">{searchQuery}</p>
                     </div>
                   </div>
                   
                   <div className="flex items-start mt-6">
-                    <div className="bg-[#f9fbf9] border border-[#5e8c6a] shadow-lg p-6 rounded-lg w-full max-w-4xl">
-                      <div className="flex items-center mb-4 border-b border-[#e0f0e5] pb-3">
-                        <div className="bg-gradient-to-br from-[#5e8c6a] to-[#4d7358] p-2 rounded-full mr-3 shadow-sm">
+                    <div className="bg-white border border-[var(--color-accent-primary)] shadow-lg p-6 rounded-lg w-full max-w-4xl">
+                      <div className="flex items-center mb-4 border-b border-[var(--color-border)] pb-3">
+                        <div className="bg-[var(--color-accent-primary)] p-2 rounded-full mr-3 shadow-sm">
                           <Bot className="h-5 w-5 text-white" />
                         </div>
-                        <span className="font-medium text-[#5e8c6a] text-lg">Assistente IA</span>
+                        <span className="font-medium text-[var(--color-accent-primary)] text-lg">Assistente IA</span>
                       </div>
-                      <div className="prose prose-lg max-w-none text-gray-700 prose-headings:text-[#5e8c6a] prose-a:text-[#5e8c6a] prose-a:hover:text-[#88a65e] prose-strong:text-[#3e5c46] prose-code:bg-[#f0f8f2] prose-code:text-[#3e5c46] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-[#e0f0e5] leading-relaxed">
+                      <div className="prose prose-lg max-w-none text-[var(--color-text-dark)] prose-headings:text-[var(--color-accent-primary)] prose-a:text-[var(--color-accent-primary)] prose-a:hover:text-[var(--color-accent-secondary)] prose-strong:text-[var(--color-text-dark)] prose-code:bg-[#f8f9fa] prose-code:text-[var(--color-text-medium)] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-[var(--color-border)] leading-relaxed">
                         <ReactMarkdown>{chatResponse}</ReactMarkdown>
                       </div>
                     </div>

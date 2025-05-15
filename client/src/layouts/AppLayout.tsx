@@ -218,12 +218,12 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
               >
                 <MenuIcon className="h-6 w-6" />
               </button>
-              <h1 className="text-xl font-semibold text-[#5e8c6a] tracking-tight">{title}</h1>
+              <h1 className="text-xl font-semibold text-[var(--color-accent-primary)] tracking-tight">{title}</h1>
             </div>
             
             <div className="md:hidden flex items-center">
-              <Avatar className="h-8 w-8 ring-2 ring-[#5e8c6a]/20 shadow-md">
-                <AvatarFallback className="bg-gradient-to-br from-[#88a65e] to-[#7a9354] text-white text-xs">{user?.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
+              <Avatar className="h-8 w-8 ring-2 ring-[var(--color-accent-primary)]/20 shadow-md">
+                <AvatarFallback className="bg-[var(--color-accent-primary)] text-white text-xs">{user?.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
               </Avatar>
             </div>
           </div>
