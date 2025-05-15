@@ -97,9 +97,9 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center px-6 py-3.5 text-gray-100 hover:bg-[#88a65e]/80 transition-all duration-200 rounded-lg shadow-sm",
+                  "flex items-center px-6 py-3.5 text-gray-100 hover:bg-[var(--color-accent-secondary)]/80 transition-all duration-200 rounded-lg shadow-sm",
                   location === item.href 
-                    ? "bg-gradient-to-r from-[#88a65e] to-[#88a65e]/80 text-white shadow-md transform translate-x-1" 
+                    ? "bg-[var(--color-accent-secondary)] text-white shadow-md transform translate-x-1" 
                     : "hover:translate-x-1"
                 )}
               >
@@ -169,8 +169,8 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center px-4 py-3 text-white hover:bg-[#88a65e] transition-colors duration-200 rounded-md",
-                  location === item.href && "bg-[#88a65e]"
+                  "flex items-center px-4 py-3 text-white hover:bg-[var(--color-accent-secondary)] transition-colors duration-200 rounded-md",
+                  location === item.href && "bg-[var(--color-accent-secondary)]"
                 )}
                 onClick={toggleMobileMenu}
               >
