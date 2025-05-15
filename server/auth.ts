@@ -22,10 +22,28 @@ async function hashPassword(password: string) {
 }
 
 async function comparePasswords(supplied: string, stored: string) {
+  // Verifica se a senha armazenada é válida
+  if (!stored || !stored.includes(".")) {
+    console.error("Stored password is invalid:", stored);
+    return false;
+  }
+  
   const [hashed, salt] = stored.split(".");
-  const hashedBuf = Buffer.from(hashed, "hex");
-  const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
-  return timingSafeEqual(hashedBuf, suppliedBuf);
+  
+  // Verifica se o hash e o salt são válidos
+  if (!hashed || !salt) {
+    console.error("Invalid hash or salt in stored password");
+    return false;
+  }
+  
+  try {
+    const hashedBuf = Buffer.from(hashed, "hex");
+    const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
+    return timingSafeEqual(hashedBuf, suppliedBuf);
+  } catch (error) {
+    console.error("Error comparing passwords:", error);
+    return false;
+  }
 }
 
 export function setupAuth(app: Express) {
@@ -43,19 +61,55 @@ export function setupAuth(app: Express) {
 
   passport.use(
     new LocalStrategy(async (username, password, done) => {
-      const user = await storage.getUserByUsername(username);
-      if (!user || !(await comparePasswords(password, user.password))) {
-        return done(null, false);
-      } else {
+      try {
+        const user = await storage.getUserByUsername(username);
+        
+        if (!user) {
+          console.log(`Login attempt with non-existent username: ${username}`);
+          return done(null, false, { message: "Usuário ou senha incorretos" });
+        }
+        
+        // Verifica se o objeto user e a senha são válidos
+        if (!user.password) {
+          console.error(`User ${username} has invalid password stored`);
+          return done(null, false, { message: "Erro na autenticação, contate o administrador" });
+        }
+        
+        const isPasswordValid = await comparePasswords(password, user.password);
+        
+        if (!isPasswordValid) {
+          console.log(`Invalid password attempt for user: ${username}`);
+          return done(null, false, { message: "Usuário ou senha incorretos" });
+        }
+        
         return done(null, user);
+      } catch (error) {
+        console.error("Login error:", error);
+        return done(error);
       }
     }),
   );
 
-  passport.serializeUser((user, done) => done(null, user.id));
+  passport.serializeUser((user, done) => {
+    if (!user || !user.id) {
+      console.error("Cannot serialize invalid user:", user);
+      return done(new Error("Invalid user data"));
+    }
+    return done(null, user.id);
+  });
+  
   passport.deserializeUser(async (id: number, done) => {
-    const user = await storage.getUser(id);
-    done(null, user);
+    try {
+      const user = await storage.getUser(id);
+      if (!user) {
+        console.error(`User with id ${id} not found during deserialization`);
+        return done(null, false);
+      }
+      done(null, user);
+    } catch (error) {
+      console.error("Error deserializing user:", error);
+      done(error, null);
+    }
   });
 
   app.post("/api/register", async (req, res, next) => {
