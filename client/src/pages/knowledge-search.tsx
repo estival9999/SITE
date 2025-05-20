@@ -43,60 +43,61 @@ export default function KnowledgeSearch() {
     try {
       console.log("Enviando consulta para a IA:", searchQuery);
       
-      // Simular uma resposta de IA temporária
-      setTimeout(() => {
-        const respostas = {
-          "Quais são os comunicados mais recentes?": 
-            "Os comunicados mais recentes incluem:\n\n" +
-            "1. Atualização sobre o novo sistema de gerenciamento de documentos, lançado na semana passada.\n" +
-            "2. Informativo sobre a reorganização do departamento de Ciclo de Crédito.\n" +
-            "3. Determinação sobre novas políticas de segurança da informação.\n\n" +
-            "Você pode visualizar todos esses comunicados na seção 'Caixa de Comunicados'.",
-          
-          "Qual é a política de férias da empresa?": 
-            "A política de férias da empresa estabelece que:\n\n" +
-            "- Cada colaborador tem direito a 30 dias de férias por ano após completar 12 meses de trabalho.\n" +
-            "- As férias podem ser divididas em até 3 períodos, sendo que um deles não pode ser inferior a 14 dias.\n" +
-            "- A solicitação deve ser feita com pelo menos 30 dias de antecedência através do sistema interno.\n" +
-            "- O pagamento das férias será efetuado até 2 dias antes do início do período.\n\n" +
-            "Para mais detalhes, consulte o manual do colaborador ou entre em contato com o RH.",
-          
-          "Como funciona o processo de aprovação de despesas?": 
-            "O processo de aprovação de despesas segue o seguinte fluxo:\n\n" +
-            "1. O colaborador registra a despesa no sistema com todos os comprovantes necessários.\n" +
-            "2. O gestor imediato recebe uma notificação para aprovar ou rejeitar a solicitação.\n" +
-            "3. Para valores acima de R$ 5.000, é necessária também a aprovação do diretor da área.\n" +
-            "4. Após aprovação, o departamento financeiro processa o reembolso em até 5 dias úteis.\n\n" +
-            "Lembre-se que todas as despesas devem estar alinhadas com a política de gastos da empresa.",
-          
-          "Quais são as metas da empresa para este ano?": 
-            "As metas principais da empresa para este ano são:\n\n" +
-            "1. Expandir nossa base de clientes em 20% nos setores prioritários.\n" +
-            "2. Implementar o novo sistema de gestão integrada em todas as unidades até o final do segundo trimestre.\n" +
-            "3. Reduzir o tempo médio de processamento de crédito em 35%.\n" +
-            "4. Aumentar o índice de satisfação dos clientes para 92%.\n" +
-            "5. Desenvolver pelo menos 3 novos produtos financeiros inovadores.\n\n" +
-            "Estas metas foram comunicadas na última reunião geral e estão detalhadas no plano estratégico anual."
-        };
-        
-        // Verificar se há uma resposta pré-definida para a pergunta
-        let resposta = respostas[searchQuery];
-        
-        // Se não houver uma resposta pré-definida, usar uma resposta genérica
-        if (!resposta) {
-          if (searchQuery.toLowerCase().includes("ola") || 
-              searchQuery.toLowerCase().includes("olá") || 
-              searchQuery.toLowerCase().includes("oi")) {
-            resposta = `Olá ${user?.username || ""}! Como posso ajudar você hoje? Estou aqui para responder suas dúvidas sobre a empresa.`;
-          } else {
-            resposta = `Obrigado pela sua pergunta sobre "${searchQuery}". No momento, não tenho informações específicas sobre esse tema em minha base de conhecimento. Recomendo consultar seu gestor ou o departamento correspondente para obter informações mais precisas.`;
-          }
-        }
-        
-        setChatResponse(resposta);
-        setIsChatLoading(false);
-      }, 2000); // Simular um atraso de 2 segundos para a resposta
+      const response = await fetch(CHAT_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: searchQuery,
+          userId: user?.id || 'guest',
+          username: user?.username || 'Usuário não identificado'
+        }),
+      });
       
+      if (!response.ok) {
+        throw new Error(`Erro na requisição: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Processamento para formatar a resposta
+      let responseText = '';
+      
+      if (data.reply) {
+        responseText = data.reply;
+      } else if (data.response) {
+        responseText = data.response;
+      } else {
+        responseText = JSON.stringify(data);
+      }
+      
+      // Remove { e output do início se existirem
+      responseText = responseText.replace(/^\s*\{\s*output:?\s*/i, '');
+      responseText = responseText.replace(/^\s*\{\s*"output":?\s*/i, '');
+      responseText = responseText.replace(/^\s*{"output":\s*/i, '');
+      
+      // Remove aspas redundantes e caracteres } no final
+      responseText = responseText.replace(/"\s*\}\s*$/g, '');
+      responseText = responseText.replace(/\s*\}\s*$/g, '');
+      
+      // Remove aspas extras no início e fim
+      responseText = responseText.replace(/^"/, '').replace(/"$/, '');
+      
+      // Remove barras invertidas de escape antes das aspas
+      responseText = responseText.replace(/\\"/g, '"');
+      
+      // Remove aspas extras dentro do conteúdo
+      if (responseText.startsWith('"') && responseText.endsWith('"')) {
+        responseText = responseText.slice(1, -1);
+      }
+      
+      // Remove caracteres de escape Unicode
+      responseText = responseText.replace(/\\u(\w{4})/g, (_, hex) => 
+        String.fromCharCode(parseInt(hex, 16))
+      );
+      
+      setChatResponse(responseText);
     } catch (err) {
       console.error("Erro ao consultar IA:", err);
       setError("Desculpe, não foi possível obter uma resposta no momento. Tente novamente mais tarde.");
@@ -105,6 +106,7 @@ export default function KnowledgeSearch() {
         description: "Não foi possível conectar ao serviço de IA.",
         variant: "destructive",
       });
+    } finally {
       setIsChatLoading(false);
     }
   };
