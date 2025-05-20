@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Announcement, Category, Department } from "@shared/schema";
@@ -10,8 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
-import { Loader2, Info, RefreshCw, AlertTriangle, X, Check, FileText, Trash2, MessageSquare, Clock, Calendar, User } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Loader2, Info, RefreshCw, AlertTriangle, X, Check, FileText, Trash2 } from "lucide-react";
 
 interface AnnouncementCardProps {
   announcement: Announcement;
@@ -24,22 +23,8 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
   const { user } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const [question, setQuestion] = useState("");
-  const [readStatus, setReadStatus] = useState<boolean>(false);
+  const [readStatus, setReadStatus] = useState<boolean>(false); // This would come from API in a real implementation
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [isNew, setIsNew] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
-  
-  // Verifica se o anúncio é recente (menos de 24 horas)
-  useEffect(() => {
-    if (announcement.createdAt) {
-      const now = new Date();
-      const created = new Date(announcement.createdAt);
-      const diff = now.getTime() - created.getTime();
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      setIsNew(hours < 24);
-    }
-  }, [announcement]);
 
   // Get department and category specific styling
   const getDepartmentClass = () => {
@@ -235,52 +220,23 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
   };
 
   return (
-    <motion.div 
+    <div 
       className={cn(
-        "announcement-card rounded-lg overflow-hidden w-full border border-[#3a3a47]", 
+        "announcement-card rounded-lg overflow-hidden w-full", 
         announcement.department === Department.CONTROLES_INTERNOS 
           ? "hover:bg-gradient-to-r hover:from-red-500/5 hover:to-transparent" 
           : announcement.department === Department.ADMINISTRATIVO 
           ? "hover:bg-gradient-to-r hover:from-blue-500/5 hover:to-transparent"
           : "hover:bg-gradient-to-r hover:from-green-500/5 hover:to-transparent",
-        "cursor-pointer relative transition-all duration-300 bg-[#2d2d38]",
-        isNew && "ring-1 ring-blue-500/30"
+        "cursor-pointer relative transition-all duration-300 bg-[#2d2d38]"
       )}
       onClick={handleCardClick}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      whileHover={!isExpanded ? 
-        { y: -4, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)" } 
-        : {}}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      layout
     >
-      {/* Tag de "NOVO" para anúncios recentes */}
-      {isNew && (
-        <motion.div 
-          className="absolute top-0 right-0 bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded-bl-md z-10"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          NOVO
-        </motion.div>
-      )}
       <div className="px-4 py-3.5 sm:px-5 sm:py-4">
         <div className="flex flex-wrap md:flex-nowrap justify-between items-start gap-2">
           <div className="flex-grow min-w-0 max-w-full">
-            <motion.div 
-              className="flex items-center flex-wrap gap-2 mb-2.5"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <motion.div 
-                className="flex items-center gap-1.5"
-                whileHover={{ scale: 1.05 }}
-              >
+            <div className="flex items-center flex-wrap gap-2 mb-2.5">
+              <div className="flex items-center gap-1.5">
                 <div className={cn("w-2 h-2 rounded-full", 
                   announcement.department === Department.CONTROLES_INTERNOS 
                     ? "bg-red-500" 
@@ -290,99 +246,59 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
                 <span className="text-xs font-medium text-gray-300">
                   {getDepartmentLabel()}
                 </span>
-              </motion.div>
-              <motion.div 
+              </div>
+              <div 
                 className="ml-2 flex items-center gap-1"
                 title={getCategoryTitle()}
-                whileHover={{ scale: 1.05 }}
               >
                 <span className="text-xs text-gray-400">•</span>
                 <span className="text-xs text-gray-400">{getCategoryTitle()}</span>
-              </motion.div>
-              <motion.p 
-                className="text-xs text-gray-400 ml-auto flex items-center"
-                initial={{ opacity: 0.6 }}
-                animate={{ opacity: 1 }}
-              >
-                <Clock className="h-3 w-3 mr-1 inline opacity-70" />
+              </div>
+              <p className="text-xs text-gray-400 ml-auto">
                 {formatDate(announcement.createdAt)}
-              </motion.p>
-            </motion.div>
+              </p>
+            </div>
             
-            <motion.h3 
-              className="font-semibold text-base sm:text-lg text-white tracking-tight leading-snug"
-              initial={{ opacity: 0.8 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.2 }}
-            >
-              {announcement.title}
-            </motion.h3>
-            <motion.p 
-              className="text-sm text-gray-300 mt-1.5 line-clamp-2 max-w-full leading-relaxed"
-              initial={{ opacity: 0.6 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              {announcement.message}
-            </motion.p>
+            <h3 className="font-semibold text-base sm:text-lg text-white tracking-tight leading-snug">{announcement.title}</h3>
+            <p className="text-sm text-gray-300 mt-1.5 line-clamp-2 max-w-full leading-relaxed">{announcement.message}</p>
           </div>
           
-          <motion.div 
-            className="flex items-start ml-2 mt-0.5"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            <motion.button 
+          <div className="flex items-start ml-2 mt-0.5">
+            <button 
               className={cn(
-                "read-flag h-8 w-8 rounded-full flex items-center justify-center transform transition-all duration-150",
+                "read-flag h-8 w-8 rounded-full flex items-center justify-center transform transition-colors duration-150",
                 readStatus 
-                  ? "bg-emerald-500/10 text-emerald-400 shadow-md shadow-emerald-500/10 ring-1 ring-emerald-500/20" 
-                  : "text-gray-500 hover:text-gray-300 hover:bg-blue-500/10"
+                  ? "bg-emerald-500/10 text-emerald-400" 
+                  : "text-gray-500 hover:text-gray-300"
               )} 
               title={readStatus ? "Marcado como lido" : "Marcar como lido"}
               onClick={handleReadFlagClick}
               aria-label={readStatus ? "Marcado como lido" : "Marcar como lido"}
               disabled={toggleReadStatusMutation.isPending}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
             >
               {toggleReadStatusMutation.isPending ? (
-                <RefreshCw className="h-4 w-4 animate-spin" />
+                <RefreshCw className="h-4 w-4 animate-spin animate-duration-500" />
               ) : readStatus ? (
                 <Check className="h-4 w-4 animate-in fade-in zoom-in-50 duration-150" strokeWidth={2.5} />
               ) : (
                 <Check className="h-4 w-4" strokeWidth={1.5} />
               )}
-            </motion.button>
-          </motion.div>
+            </button>
+          </div>
         </div>
         
         {!isExpanded && (
-          <motion.div 
-            className="mt-3 flex"
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <motion.button 
-              className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-all duration-200 bg-blue-500/5 hover:bg-blue-500/10 px-2.5 py-1 rounded-full"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <motion.span 
-                className="w-3.5 h-3.5 flex items-center justify-center rounded-full bg-blue-500/20"
-                animate={{ y: [0, -1, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
-              >
+          <div className="mt-3 flex">
+            <button className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">
+              <span className="w-3.5 h-3.5 flex items-center justify-center rounded-full bg-blue-500/10">
                 <span className="sr-only">Expandir</span>
                 <svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3 0L5.5 4.5H0.5L3 0Z" fill="currentColor"/>
                 </svg>
-              </motion.span>
+              </span>
               <span>Expandir</span>
-            </motion.button>
-          </motion.div>
+            </button>
+          </div>
         )}
       </div>
       
@@ -493,6 +409,6 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
         onConfirm={() => deleteAnnouncementMutation.mutate()}
         isLoading={deleteAnnouncementMutation.isPending}
       />
-    </motion.div>
+    </div>
   );
 }
