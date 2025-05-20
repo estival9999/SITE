@@ -1,0 +1,72 @@
+Ok, aqui está um prompt completo e revisado que você pode usar para solicitar ao Replit AI a criação da funcionalidade de mapa mental, incorporando a ideia da visualização gráfica que você mostrou:
+
+Plaintext
+
+Olá, Agente Replit AI. Quero adicionar uma nova funcionalidade à minha aplicação: uma aba para visualização de Mapas Mentais gráficos e interativos.
+
+**Nome da Nova Aba no Menu:**
+"Mind Map" (ou "Mapa Mental").
+
+**Objetivo da Aba "Mind Map":**
+Permitir que o usuário insira um texto e veja um mapa mental gráfico gerado a partir desse texto. A visualização deve ser clara, bem estruturada, com um layout radial ou de árvore (como no exemplo visual que tenho em mente, onde um conceito central se ramifica). A interatividade e qualidade visual devem ser inspiradas em plataformas como o MindMeister.
+
+**Componentes da Interface na Nova Aba:**
+
+1.  **Área de Entrada de Texto:**
+    * Um campo de texto grande (por exemplo, um `<textarea>`) onde o usuário poderá digitar ou colar o texto que servirá de base para o mapa mental.
+    * Um botão (ex: "Gerar Mapa Mental" ou "Atualizar Mapa") para acionar a criação/atualização do mapa.
+
+2.  **Área de Visualização do Mapa Mental:**
+    * Um espaço dedicado (por exemplo, uma `<div>`) onde o mapa mental gráfico será renderizado.
+
+**Funcionalidades Chave:**
+
+1.  **Entrada de Dados:** O usuário insere texto no campo designado.
+2.  **Processamento do Texto para Estrutura Hierárquica:**
+    * Para a primeira versão, o texto de entrada deverá ser interpretado para definir a hierarquia do mapa. Sugiro utilizar a indentação das linhas para definir os níveis:
+        * Cada linha de texto representa um nó.
+        * A indentação (espaços ou tabs no início da linha) define o nível do nó (nó principal sem indentação, primeiro sub-nível com uma indentação, segundo sub-nível com duas indentações, e assim por diante).
+        * **Exemplo de texto de entrada:**
+            ```
+            Tema Central do Mapa
+              Ramo Principal 1
+                Sub-item 1.1
+                Sub-item 1.2
+                  Detalhe 1.2.1
+              Ramo Principal 2
+                Sub-item 2.1
+            ```
+    * Converta essa estrutura de texto em um formato de dados hierárquico (como uma árvore de objetos JSON com nós e filhos) que possa ser usado pela biblioteca de visualização.
+
+3.  **Geração e Renderização do Mapa Mental Gráfico:**
+    * Utilize uma biblioteca JavaScript para renderizar a estrutura de dados hierárquica como um mapa mental gráfico.
+    * **Visualização Gráfica:** O layout deve ser semelhante a uma árvore radial ou um organograma claro, partindo de um ou mais nós centrais com ramos que se expandem, conforme o exemplo visual [descrever brevemente a imagem: um nó central com múltiplos ramos que se subdividem, como "Pick a Mind Map Tool" e seus critérios].
+
+4.  **Interatividade do Mapa Mental:**
+    * **Navegação:** Permitir zoom in/out e pan (arrastar) na área do mapa.
+    * **Expansão/Contração de Nós (se a biblioteca suportar facilmente):** Seria ideal poder expandir ou recolher ramos do mapa.
+    * **Layout Automático:** A biblioteca deve prover um layout automático que organize os nós de forma clara e evite sobreposições.
+
+**Requisitos Técnicos e Sugestões (Baseado no contexto anterior do projeto):**
+
+* **Linguagem/Framework:** Implemente esta funcionalidade usando **React com TypeScript**, criando os componentes necessários (por exemplo, um novo componente para a página "MindMapPage" e possivelmente subcomponentes).
+* **Biblioteca de Visualização de Mapa Mental/Gráfico:**
+    * Por favor, escolha e implemente uma biblioteca JavaScript adequada para renderizar mapas mentais gráficos e interativos a partir de dados hierárquicos.
+    * **Sugestões de bibliotecas (ou use uma melhor que você conheça):**
+        * **React Flow:** Parece uma boa opção para aplicações React, permitindo construir UIs baseadas em nós com bastante customização de layout e interatividade.
+        * **Vis.js (especialmente o módulo Network com layout hierárquico):** Muito flexível para diferentes tipos de grafos.
+        * **Cytoscape.js:** Poderosa para visualização de grafos, altamente customizável.
+        * **Markmap.js:** Se for possível customizar seu layout para ser mais radial/gráfico e menos linear, e se puder ser atualizado dinamicamente a partir da estrutura de dados gerada (não apenas de markdown estático).
+    * A biblioteca deve permitir a atualização do mapa quando o texto de entrada e, consequentemente, a estrutura de dados, mudar.
+* **Integração:**
+    * Adicione a nova aba "Mind Map" ao sistema de menu/navegação existente na aplicação. (Se você souber o nome do arquivo/componente do menu, adicione aqui: `[Nome do arquivo/componente do menu, se aplicável]`).
+    * A estilização inicial deve ser funcional e limpa, permitindo que o mapa mental seja o foco principal.
+
+**Resultado Esperado:**
+Um novo componente de página React funcional em minha aplicação Replit que:
+1.  Apresenta um campo de texto para entrada de dados.
+2.  Processa o texto indentado para criar uma estrutura de dados hierárquica.
+3.  Renderiza essa estrutura como um mapa mental gráfico interativo, com um layout claro e radial/de árvore.
+4.  Está acessível através de uma nova aba no menu.
+
+Por favor, forneça o código TypeScript (TSX), CSS (se nece
