@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import AppLayout from "@/layouts/AppLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,32 +15,41 @@ import ReactFlow, {
   MiniMap,
   ReactFlowProvider,
   useReactFlow,
+  Position,
+  MarkerType,
+  Handle,
 } from 'react-flow-renderer';
 
 // Componente de nó personalizado
-const CustomNode = ({ data }: { data: { label: string } }) => {
+const CustomNode = ({ data }: { data: { label: string, level: number } }) => {
   return (
-    <div className="px-4 py-2 rounded-lg shadow-md bg-[#c4c9ef] border-2 border-[#8c8fd8] text-[#242424] font-medium">
-      {data.label}
+    <div className="px-4 py-2 shadow-md rounded-lg bg-[#c4c9ef] border-2 border-[#8c8fd8] text-[#242424] font-medium min-w-[100px] text-center">
+      {/* Handle de entrada (lado superior) */}
+      {data.level > 0 && (
+        <Handle
+          type="target"
+          position={Position.Top}
+          className="w-2 h-2 bg-[#8c8fd8]"
+        />
+      )}
+      
+      <div>{data.label}</div>
+      
+      {/* Handle de saída (lado inferior) */}
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className="w-2 h-2 bg-[#8c8fd8]"
+      />
     </div>
   );
 };
 
-// Registrando o componente de nó personalizado
-const nodeTypes = {
-  custom: CustomNode,
-};
-
-// Componente principal do mapa mental
-export default function MindMap() {
-  return (
-    <ReactFlowProvider>
-      <MindMapContent />
-    </ReactFlowProvider>
-  );
-}
-
+// Registrando o componente de nó personalizado usando useMemo para evitar re-renderizações
 function MindMapContent() {
+  // Definição de nodeTypes dentro do componente, mas memoizado
+  const nodeTypes = useMemo(() => ({ custom: CustomNode }), []);
+  
   const [inputText, setInputText] = useState(
     "Pick a Mind Map Tool\n  Cost\n    Price of the App\n    Develop a Habit With the App\n  Platform\n    Which OS you Use?\n    Nature of Work\n  Needs\n    Goal of Creating a Mind Map\n    Individual or Team Use\n  Collaboration\n    Do you Collaborate With Team on Mind Maps?\n    Number of Team Members\n  Templates\n    Built-in Templates\n    Use Cases\n  Import/Export\n    Import and Export Formats\n    Is the Feature Behind Paywall or Integrate With Other Apps"
   );
@@ -52,172 +61,158 @@ function MindMapContent() {
   // Função para processar o texto indentado
   const processIndentedText = useCallback((text: string) => {
     const lines = text.split('\n');
-    const rootNodes: Array<Node> = [];
-    const edgesList: Array<Edge> = [];
+    const newNodes: Node[] = [];
+    const newEdges: Edge[] = [];
     
-    // Mapeamento para rastrear níveis e nós
-    const levelMap: { [key: number]: string[] } = {};
-    let nodeId = 1;
-    let mainThemeId = '';
-
+    // Mapa para armazenar os nós por nível e o último nó de cada caminho
+    const levelMap: { [key: number]: { id: string, label: string }[] } = {};
+    const parentMap: { [key: number]: string } = {}; // Armazena o último pai para cada nível
+    
     // Função para determinar o nível de indentação
     const getIndentationLevel = (line: string): number => {
       const indent = line.match(/^(\s+)/);
       return indent ? Math.ceil(indent[0].length / 2) : 0;
     };
-
-    // Primeira passagem: criar todos os nós
-    lines.forEach((line, index) => {
-      if (!line.trim()) return;
-
-      const level = getIndentationLevel(line);
-      const nodeLabel = line.trim();
-      const id = `node-${nodeId++}`;
-
-      // Adicionar ao mapa de níveis para rastrear a hierarquia
-      if (!levelMap[level]) {
-        levelMap[level] = [];
-      }
-      levelMap[level].push(id);
-
-      // Salvar o ID do tema principal (primeiro nó)
-      if (level === 0 && !mainThemeId) {
-        mainThemeId = id;
-      }
-
-      // Criar o nó com posição inicial
-      // Posições serão calculadas depois
-      const node: Node = {
-        id,
-        type: 'custom',
-        data: { label: nodeLabel },
-        position: { x: 0, y: 0 },
-      };
-
-      rootNodes.push(node);
-    });
-
-    // Calcular posições de nós em layout radial
-    const calculatePositions = (nodesList: Node[], edgesList: Edge[]): void => {
-      // Posicionar o nó principal no centro
-      if (nodesList.length > 0) {
-        const mainNode = nodesList.find(n => n.id === mainThemeId);
-        if (mainNode) {
-          mainNode.position = { x: 0, y: 0 };
-        }
-      }
-
-      // Funções para cálculos de posição baseadas no layout radial
-      const getMainBranches = (): Node[] => {
-        return nodesList.filter(node => {
-          // Encontrar nós conectados diretamente ao nó central
-          // mas apenas se são pais de outros nós (estão no nível 1)
-          return edgesList.some(edge => 
-            edge.source === mainThemeId && 
-            edge.target === node.id &&
-            levelMap[1]?.includes(node.id)
-          );
-        });
-      };
-
-      // Posicionar os ramos principais em círculo ao redor do nó central
-      const mainBranches = getMainBranches();
-      const angleStep = (2 * Math.PI) / mainBranches.length;
-      mainBranches.forEach((node, index) => {
-        const angle = index * angleStep;
-        const radius = 200; // Distância do centro
-        
-        node.position = {
-          x: Math.cos(angle) * radius,
-          y: Math.sin(angle) * radius,
-        };
-
-        // Agora, para cada ramo principal, posicionar seus filhos
-        positionChildNodes(node, radius / 2, angle, 0.5, edgesList, nodesList);
-      });
-    };
-
-    // Função recursiva para posicionar nós filhos
-    const positionChildNodes = (
-      parentNode: Node, 
-      radius: number, 
-      parentAngle: number, 
-      angleSpread: number, 
-      edges: Edge[], 
-      nodes: Node[]
-    ): void => {
-      // Encontrar todos os nós filhos deste pai
-      const childrenEdges = edges.filter(edge => edge.source === parentNode.id);
-      if (childrenEdges.length === 0) return;
-
-      const childAngleStep = angleSpread / childrenEdges.length;
-      const startAngle = parentAngle - (angleSpread / 2);
-
-      childrenEdges.forEach((edge, index) => {
-        const childNode = nodes.find(n => n.id === edge.target);
-        if (!childNode) return;
-
-        const childAngle = startAngle + (index * childAngleStep);
-        const grandchildRadius = radius * 0.8; // Diminui gradualmente o raio para os níveis mais profundos
-        
-        childNode.position = {
-          x: parentNode.position.x + Math.cos(childAngle) * radius,
-          y: parentNode.position.y + Math.sin(childAngle) * radius,
-        };
-
-        // Continuar recursivamente para os filhos deste nó
-        positionChildNodes(childNode, grandchildRadius, childAngle, childAngleStep, edges, nodes);
-      });
-    };
-
-    // Segunda passagem: criar as arestas (conexões)
-    for (let level = 0; level < Object.keys(levelMap).length; level++) {
-      if (!levelMap[level]) continue;
+    
+    let nodeIdCounter = 1;
+    
+    // Primeiro passo: criar os nós
+    lines.forEach((line) => {
+      const trimmedLine = line.trim();
+      if (!trimmedLine) return;
       
-      // Para cada nó neste nível
-      levelMap[level].forEach(nodeId => {
-        // Se houver um próximo nível, conecte este nó aos nós filho apropriados
-        if (levelMap[level + 1]) {
-          // Determinar qual parte do texto corresponde a este nó
-          const nodeIndex = rootNodes.findIndex(n => n.id === nodeId);
-          if (nodeIndex === -1) return;
+      const level = getIndentationLevel(line);
+      const nodeId = `node-${nodeIdCounter++}`;
+      
+      // Calcular posição aproximada - será ajustada depois
+      const xPos = level * 250;
+      const yPos = newNodes.filter(n => n.data.level === level).length * 100;
+      
+      // Criar o nó
+      const newNode: Node = {
+        id: nodeId,
+        type: 'custom',
+        data: { 
+          label: trimmedLine,
+          level: level
+        },
+        position: { x: xPos, y: yPos },
+        sourcePosition: Position.Bottom,
+        targetPosition: Position.Top,
+      };
+      
+      newNodes.push(newNode);
+      
+      // Rastrear nós por nível
+      if (!levelMap[level]) levelMap[level] = [];
+      levelMap[level].push({ id: nodeId, label: trimmedLine });
+      
+      // Conectar ao pai apropriado
+      if (level > 0) {
+        const parentLevel = level - 1;
+        const parentId = parentMap[parentLevel];
+        
+        if (parentId) {
+          const edgeId = `edge-${parentId}-${nodeId}`;
+          const newEdge: Edge = {
+            id: edgeId,
+            source: parentId,
+            target: nodeId,
+            type: 'smoothstep',
+            animated: false,
+            style: { stroke: '#8c8fd8', strokeWidth: 2 },
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              color: '#8c8fd8',
+              width: 20,
+              height: 20,
+            },
+          };
           
-          const currentLine = lines[nodeIndex];
-          const currentIndent = getIndentationLevel(currentLine);
-          
-          // Procurar os filhos deste nó (próximas linhas com indent + 1)
-          for (let i = nodeIndex + 1; i < lines.length; i++) {
-            const nextLine = lines[i];
-            const nextIndent = getIndentationLevel(nextLine);
-            
-            // Se a indentação for menor ou igual, não é filho
-            if (nextIndent <= currentIndent) break;
-            
-            // Se a indentação for exatamente um nível mais profundo, é filho direto
-            if (nextIndent === currentIndent + 1) {
-              const childNodeId = rootNodes[i]?.id;
-              if (childNodeId) {
-                const edge: Edge = {
-                  id: `edge-${nodeId}-${childNodeId}`,
-                  source: nodeId,
-                  target: childNodeId,
-                  style: { stroke: '#8c8fd8', strokeWidth: 2 },
-                  type: 'smoothstep',
-                  animated: false,
-                };
-                edgesList.push(edge);
-              }
-            }
-          }
+          newEdges.push(newEdge);
         }
-      });
+      }
+      
+      // Atualizar o mapa de pais para este nível
+      parentMap[level] = nodeId;
+      
+      // Limpar os mapas de pais para níveis mais profundos
+      for (let i = level + 1; i < Object.keys(levelMap).length; i++) {
+        delete parentMap[i];
+      }
+    });
+    
+    // Segundo passo: organizar os nós em um layout radial
+    if (newNodes.length > 0) {
+      // Encontrar o nó raiz (nível 0)
+      const rootNode = newNodes.find(node => node.data.level === 0);
+      
+      if (rootNode) {
+        // Posicionar o nó raiz no centro
+        rootNode.position = { x: 0, y: 0 };
+        
+        // Posicionar filhos de primeiro nível em círculo ao redor do nó raiz
+        const firstLevelNodes = newNodes.filter(node => node.data.level === 1);
+        const angleStep = (2 * Math.PI) / firstLevelNodes.length;
+        
+        firstLevelNodes.forEach((node, index) => {
+          const angle = index * angleStep;
+          const radius = 200;
+          
+          node.position = {
+            x: Math.cos(angle) * radius,
+            y: Math.sin(angle) * radius,
+          };
+          
+          // Posicionar os filhos do segundo nível
+          positionChildrenNodes(node, newNodes, newEdges, radius, angle, angleStep);
+        });
+      }
     }
-
-    // Calcular posições para um layout radial
-    calculatePositions(rootNodes, edgesList);
-
-    return { nodes: rootNodes, edges: edgesList };
+    
+    return { nodes: newNodes, edges: newEdges };
   }, []);
+  
+  // Função para posicionar os nós filhos
+  const positionChildrenNodes = (
+    parentNode: Node,
+    allNodes: Node[],
+    allEdges: Edge[],
+    parentRadius: number,
+    parentAngle: number,
+    parentAngleWidth: number
+  ) => {
+    // Encontrar os filhos deste nó
+    const childEdges = allEdges.filter(edge => edge.source === parentNode.id);
+    if (childEdges.length === 0) return;
+    
+    const childNodes = childEdges.map(edge => 
+      allNodes.find(node => node.id === edge.target)
+    ).filter(Boolean) as Node[];
+    
+    const childAngleStep = parentAngleWidth / (childNodes.length + 1);
+    const childStartAngle = parentAngle - (parentAngleWidth / 2);
+    const childRadius = parentRadius * 0.8; // Reduzir o raio conforme aumenta a profundidade
+    
+    childNodes.forEach((childNode, index) => {
+      const childAngle = childStartAngle + ((index + 1) * childAngleStep);
+      
+      childNode.position = {
+        x: parentNode.position.x + Math.cos(childAngle) * childRadius,
+        y: parentNode.position.y + Math.sin(childAngle) * childRadius,
+      };
+      
+      // Recursivamente posicionar filhos deste nó
+      positionChildrenNodes(
+        childNode,
+        allNodes,
+        allEdges,
+        childRadius,
+        childAngle,
+        childAngleStep * 0.8
+      );
+    });
+  };
 
   // Função para gerar o mapa mental
   const generateMindMap = useCallback(() => {
@@ -344,12 +339,8 @@ function MindMapContent() {
                   <Controls />
                   <Background color="#aaa" gap={16} />
                   <MiniMap
-                    nodeStrokeColor={(n) => {
-                      return '#8c8fd8';
-                    }}
-                    nodeColor={(n) => {
-                      return '#c4c9ef';
-                    }}
+                    nodeStrokeColor={() => '#8c8fd8'}
+                    nodeColor={() => '#c4c9ef'}
                     nodeBorderRadius={10}
                   />
                 </ReactFlow>
@@ -363,5 +354,14 @@ function MindMapContent() {
         </Card>
       </div>
     </AppLayout>
+  );
+}
+
+// Componente principal do mapa mental com o Provider
+export default function MindMap() {
+  return (
+    <ReactFlowProvider>
+      <MindMapContent />
+    </ReactFlowProvider>
   );
 }
