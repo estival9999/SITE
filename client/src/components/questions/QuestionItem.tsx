@@ -29,19 +29,19 @@ export default function QuestionItem({ question, userView, responseForm }: Quest
   const getStatusBadge = () => {
     if (question.answerText) {
       return (
-        <Badge className="bg-green-100 text-green-800">
+        <Badge className="bg-emerald-500/10 text-emerald-400 border-0">
           Respondida
         </Badge>
       );
     } else if (question.isResolved) {
       return (
-        <Badge className="bg-purple-100 text-purple-800">
+        <Badge className="bg-purple-500/10 text-purple-400 border-0">
           Resolvida
         </Badge>
       );
     } else {
       return (
-        <Badge className="bg-yellow-100 text-yellow-800">
+        <Badge className="bg-amber-500/10 text-amber-400 border-0">
           Aguardando resposta
         </Badge>
       );
@@ -49,22 +49,24 @@ export default function QuestionItem({ question, userView, responseForm }: Quest
   };
 
   return (
-    <li>
-      <div className="px-4 py-5 sm:px-6">
-        <div className="flex flex-wrap justify-between">
-          <div className="mb-2 md:mb-0">
-            <h3 className="text-sm leading-5 font-semibold">
+    <li className="bg-[#2d2d38] border-b border-gray-700/30 last:border-b-0">
+      <div className="px-5 py-4">
+        <div className="flex flex-wrap justify-between gap-2">
+          <div className="mb-1">
+            <h3 className="text-sm leading-5 font-medium">
               {userView ? (
                 <>
-                  <span className="text-[#5e8c6a]">Você perguntou sobre:</span> {announcementTitle}
+                  <span className="text-blue-300">Você perguntou sobre:</span>{" "}
+                  <span className="text-white">{announcementTitle}</span>
                 </>
               ) : (
                 <>
-                  <span className="text-[#5e8c6a]">Referente a:</span> {announcementTitle}
+                  <span className="text-blue-300">Referente a:</span>{" "}
+                  <span className="text-white">{announcementTitle}</span>
                 </>
               )}
             </h3>
-            <p className="mt-1 max-w-2xl text-sm text-gray-500">
+            <p className="mt-1 max-w-2xl text-xs text-gray-400">
               {userView ? (
                 <>{formatDate(question.createdAt)}</>
               ) : (
@@ -75,21 +77,21 @@ export default function QuestionItem({ question, userView, responseForm }: Quest
           {getStatusBadge()}
         </div>
         
-        <div className="mt-4 bg-[#1e1e2a] p-3 rounded-lg border border-[#344054]">
-          <p className="text-sm text-white">{question.text}</p>
+        <div className="mt-3 bg-[#353542] p-3 rounded-lg">
+          <p className="text-sm text-gray-200">{question.text}</p>
         </div>
         
         {question.answerText && (
-          <div className="mt-4 border-l-4 border-[#3b82f6] pl-4">
-            <p className="text-sm font-medium text-blue-400">
+          <div className="mt-4 border-l-2 border-blue-500/50 pl-3">
+            <p className="text-xs font-medium text-blue-400">
               {userView ? (
                 <>Resposta de {question.answeredBy?.name} ({question.answeredBy?.actingDepartment}):</>
               ) : (
                 <>Sua resposta:</>
               )}
             </p>
-            <p className="mt-1 text-sm text-gray-200">{question.answerText}</p>
-            <p className="mt-1 text-xs text-gray-400">Respondido em: {question.answeredAt ? formatDate(question.answeredAt) : ''}</p>
+            <p className="mt-1 text-sm text-gray-300">{question.answerText}</p>
+            <p className="mt-1 text-xs text-gray-500">Respondido em: {question.answeredAt ? formatDate(question.answeredAt) : ''}</p>
           </div>
         )}
         

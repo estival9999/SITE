@@ -118,69 +118,75 @@ export default function ReceivedQuestions() {
     <AppLayout title="Perguntas Recebidas">
       <div className="max-w-4xl mx-auto">
         
-        <Card>
-          <CardContent className="p-0">
-            {isLoading ? (
-              <div className="flex justify-center items-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-[#5e8c6a]" />
+        <div className="mb-5 bg-[#353542] rounded-lg overflow-hidden shadow">
+          <div className="px-4 py-3 flex items-center border-b border-gray-700/30">
+            <h3 className="text-sm font-medium text-blue-300">Suas perguntas para responder</h3>
+          </div>
+          
+          {isLoading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="flex flex-col items-center">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-400 mb-2" />
+                <span className="text-sm text-gray-400">Carregando perguntas...</span>
               </div>
-            ) : !sortedQuestions || sortedQuestions.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">
-                <p>Não há perguntas para responder no momento.</p>
-              </div>
-            ) : (
-              <ul className="divide-y divide-gray-200">
-                {sortedQuestions.map((question) => (
-                  <QuestionItem 
-                    key={question.id} 
-                    question={question} 
-                    userView={false}
-                    responseForm={
-                      !question.answerText && (
-                        <div className="mt-4">
-                          <label htmlFor={`answer-${question.id}`} className="block text-sm font-medium text-gray-700">
-                            Sua resposta:
-                          </label>
-                          <Textarea
-                            id={`answer-${question.id}`}
-                            rows={4}
-                            className="mt-1 w-full"
-                            placeholder="Digite sua resposta..."
-                            value={answers[question.id] || ""}
-                            onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                          />
-                          <div className="mt-3 flex justify-end space-x-3">
-                            <Button
-                              variant="outline"
-                              onClick={() => handleMarkResolved(question.id)}
-                              disabled={resolveQuestionMutation.isPending}
-                            >
-                              Marcar como Resolvida
-                            </Button>
-                            <Button
-                              className="bg-[#5e8c6a] hover:bg-[#88a65e]"
-                              onClick={() => handleSendAnswer(question.id)}
-                              disabled={answerQuestionMutation.isPending}
-                            >
-                              {answerQuestionMutation.isPending ? (
-                                <>
-                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                  Enviando...
-                                </>
-                              ) : (
-                                "Enviar Resposta"
-                              )}
-                            </Button>
-                          </div>
+            </div>
+          ) : !sortedQuestions || sortedQuestions.length === 0 ? (
+            <div className="p-6 bg-[#2d2d38] text-center">
+              <p className="text-gray-400 text-sm">Não há perguntas para responder no momento.</p>
+            </div>
+          ) : (
+            <ul className="divide-y divide-gray-700/30">
+              {sortedQuestions.map((question) => (
+                <QuestionItem 
+                  key={question.id} 
+                  question={question} 
+                  userView={false}
+                  responseForm={
+                    !question.answerText && (
+                      <div className="mt-4">
+                        <label htmlFor={`answer-${question.id}`} className="block text-sm font-medium text-gray-200 mb-2">
+                          Sua resposta:
+                        </label>
+                        <Textarea
+                          id={`answer-${question.id}`}
+                          rows={3}
+                          className="w-full bg-[#353542] border-0 focus:ring-1 focus:ring-blue-500 rounded text-white placeholder:text-gray-500 resize-none"
+                          placeholder="Digite sua resposta..."
+                          value={answers[question.id] || ""}
+                          onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                        />
+                        <div className="mt-3 flex justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            className="h-9 text-sm text-gray-300 hover:text-gray-100 hover:bg-[#2d2d38]"
+                            onClick={() => handleMarkResolved(question.id)}
+                            disabled={resolveQuestionMutation.isPending}
+                          >
+                            Marcar como Resolvida
+                          </Button>
+                          <Button
+                            className="h-9 text-sm px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white"
+                            onClick={() => handleSendAnswer(question.id)}
+                            disabled={answerQuestionMutation.isPending}
+                          >
+                            {answerQuestionMutation.isPending ? (
+                              <>
+                                <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
+                                Enviando...
+                              </>
+                            ) : (
+                              "Enviar Resposta"
+                            )}
+                          </Button>
                         </div>
-                      )
-                    }
-                  />
-                ))}
-              </ul>
-            )}
-          </CardContent>
-        </Card>
+                      </div>
+                    )
+                  }
+                />
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </AppLayout>
   );

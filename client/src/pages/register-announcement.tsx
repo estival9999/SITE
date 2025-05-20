@@ -192,72 +192,28 @@ export default function RegisterAnnouncement() {
 
   return (
     <AppLayout title="Registrar Comunicado">
-      <Card className="max-w-3xl mx-auto">
-        <CardContent className="pt-6">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Título do Comunicado</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Digite o título do comunicado" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Mensagem</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Digite a mensagem do comunicado" 
-                        className="min-h-[120px]" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="max-w-3xl mx-auto">
+        <div className="mb-5 bg-[#353542] rounded-lg overflow-hidden shadow">
+          <div className="px-4 py-3 border-b border-gray-700/30">
+            <h3 className="text-sm font-medium text-blue-300">Novo comunicado</h3>
+          </div>
+          
+          <div className="p-5 bg-[#2d2d38]">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
                   control={form.control}
-                  name="department"
+                  name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Área Responsável</FormLabel>
-                      <Select
-                        disabled={!!user?.actingDepartment}
-                        onValueChange={field.onChange}
-                        value={field.value || undefined}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione a área" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {departmentOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {user?.actingDepartment && (
-                        <FormDescription>
-                          Sua conta está restrita a criar comunicados apenas para esta área.
-                        </FormDescription>
-                      )}
+                      <FormLabel className="text-white">Título do Comunicado</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Digite o título do comunicado" 
+                          className="bg-[#353542] border-0 focus:ring-1 focus:ring-blue-500 text-white placeholder:text-gray-500"
+                          {...field} 
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -265,135 +221,190 @@ export default function RegisterAnnouncement() {
                 
                 <FormField
                   control={form.control}
-                  name="category"
+                  name="message"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Categoria da Mensagem</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value || undefined}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione a categoria" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {categoryOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormLabel className="text-white">Mensagem</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Digite a mensagem do comunicado" 
+                          className="min-h-[120px] bg-[#353542] border-0 focus:ring-1 focus:ring-blue-500 text-white placeholder:text-gray-500 resize-none" 
+                          {...field} 
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
-              
-              <FormField
-                control={form.control}
-                name="targetedLocations"
-                render={() => (
-                  <FormItem>
-                    <div className="mb-4">
-                      <FormLabel>Direcionamento Geográfico (Locais)</FormLabel>
-                      <FormDescription>
-                        Selecione para quais locais este comunicado será visível.
-                      </FormDescription>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      {locationOptions.map((option) => (
-                        <FormField
-                          key={option.value}
-                          control={form.control}
-                          name="targetedLocations"
-                          render={({ field }) => {
-                            return (
-                              <FormItem
-                                key={option.value}
-                                className="flex flex-row items-start space-x-3 space-y-0"
-                              >
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value?.includes(option.value)}
-                                    onCheckedChange={(checked) => {
-                                      const updatedValues = checked
-                                        ? [...field.value, option.value]
-                                        : field.value?.filter(
-                                            (value) => value !== option.value
-                                          );
-                                      field.onChange(updatedValues);
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormLabel className="font-normal">
-                                  {option.label}
-                                </FormLabel>
-                              </FormItem>
-                            );
-                          }}
-                        />
-                      ))}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormItem>
-                <FormLabel>Anexo (PDF)</FormLabel>
-                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                  <div className="space-y-1 text-center">
-                    <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                    <div className="flex text-sm text-gray-600">
-                      <label
-                        htmlFor="file-upload"
-                        className="relative cursor-pointer bg-white rounded-md font-medium text-[#5e8c6a] hover:text-[#88a65e] focus-within:outline-none"
-                      >
-                        <span>Carregar um arquivo</span>
-                        <input
-                          id="file-upload"
-                          name="file-upload"
-                          type="file"
-                          accept=".pdf"
-                          className="sr-only"
-                          onChange={handleFileChange}
-                        />
-                      </label>
-                      <p className="pl-1">ou arraste e solte</p>
-                    </div>
-                    <p className="text-xs text-gray-500">PDF até 10MB</p>
-                    {form.watch("attachment") && (
-                      <p className="text-sm text-[#5e8c6a]">
-                        {(form.watch("attachment") as File).name}
-                      </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="department"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-white">Área Responsável</FormLabel>
+                        <Select
+                          disabled={!!user?.actingDepartment}
+                          onValueChange={field.onChange}
+                          value={field.value || undefined}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="bg-[#353542] border-0 focus:ring-1 focus:ring-blue-500 text-white">
+                              <SelectValue placeholder="Selecione a área" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="bg-[#353542] border border-gray-700 text-white">
+                            {departmentOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value} className="focus:bg-blue-600/20 focus:text-blue-200">
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {user?.actingDepartment && (
+                          <FormDescription className="text-gray-400">
+                            Sua conta está restrita a criar comunicados apenas para esta área.
+                          </FormDescription>
+                        )}
+                        <FormMessage />
+                      </FormItem>
                     )}
-                  </div>
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-white">Categoria da Mensagem</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value || undefined}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="bg-[#353542] border-0 focus:ring-1 focus:ring-blue-500 text-white">
+                              <SelectValue placeholder="Selecione a categoria" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="bg-[#353542] border border-gray-700 text-white">
+                            {categoryOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value} className="focus:bg-blue-600/20 focus:text-blue-200">
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-              </FormItem>
-              
-              <div className="flex justify-end">
-                <Button 
-                  type="submit" 
-                  className="bg-[#5e8c6a] hover:bg-[#88a65e]"
-                  disabled={registerAnnouncementMutation.isPending}
-                >
-                  {registerAnnouncementMutation.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Registrando...
-                    </>
-                  ) : (
-                    "Registrar Comunicado"
+                
+                <FormField
+                  control={form.control}
+                  name="targetedLocations"
+                  render={() => (
+                    <FormItem>
+                      <div className="mb-4">
+                        <FormLabel className="text-white">Direcionamento Geográfico (Locais)</FormLabel>
+                        <FormDescription className="text-gray-400">
+                          Selecione para quais locais este comunicado será visível.
+                        </FormDescription>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {locationOptions.map((option) => (
+                          <FormField
+                            key={option.value}
+                            control={form.control}
+                            name="targetedLocations"
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={option.value}
+                                  className="flex flex-row items-start space-x-3 space-y-0"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      className="border-gray-500 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                                      checked={field.value?.includes(option.value)}
+                                      onCheckedChange={(checked) => {
+                                        const updatedValues = checked
+                                          ? [...field.value, option.value]
+                                          : field.value?.filter(
+                                              (value) => value !== option.value
+                                            );
+                                        field.onChange(updatedValues);
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-normal text-gray-300">
+                                    {option.label}
+                                  </FormLabel>
+                                </FormItem>
+                              );
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+                />
+                
+                <FormItem>
+                  <FormLabel className="text-white">Anexo (PDF)</FormLabel>
+                  <div className="mt-1 flex justify-center px-6 py-5 border border-gray-700 border-dashed rounded bg-[#353542]/50">
+                    <div className="space-y-1 text-center">
+                      <Upload className="mx-auto h-10 w-10 text-blue-300 opacity-75" />
+                      <div className="flex flex-wrap justify-center gap-1 text-sm text-gray-400">
+                        <label
+                          htmlFor="file-upload"
+                          className="relative cursor-pointer rounded font-medium text-blue-400 hover:text-blue-300 focus-within:outline-none"
+                        >
+                          <span>Carregar um arquivo</span>
+                          <input
+                            id="file-upload"
+                            name="file-upload"
+                            type="file"
+                            accept=".pdf"
+                            className="sr-only"
+                            onChange={handleFileChange}
+                          />
+                        </label>
+                        <p>ou arraste e solte</p>
+                      </div>
+                      <p className="text-xs text-gray-500">PDF até 10MB</p>
+                      {form.watch("attachment") && (
+                        <p className="text-sm text-blue-300">
+                          {(form.watch("attachment") as File).name}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </FormItem>
+                
+                <div className="flex justify-end pt-2">
+                  <Button 
+                    type="submit" 
+                    className="h-9 text-sm px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white"
+                    disabled={registerAnnouncementMutation.isPending}
+                  >
+                    {registerAnnouncementMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
+                        Registrando...
+                      </>
+                    ) : (
+                      "Registrar Comunicado"
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        </div>
+      </div>
     </AppLayout>
   );
 }
