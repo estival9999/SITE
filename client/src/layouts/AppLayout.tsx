@@ -237,7 +237,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
         </header>
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto bg-[#121212] p-6">
+        <main className="flex-1 overflow-y-auto bg-[#1e1e24] p-6">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>
