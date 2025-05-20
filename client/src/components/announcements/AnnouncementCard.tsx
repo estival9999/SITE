@@ -388,7 +388,7 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
       {/* Delete button - only visible for admin creator */}
       {isCreator && (
         <button
-          className="delete-announcement absolute top-3 right-3 opacity-70 hover:opacity-100 text-gray-400 hover:text-red-400 focus:outline-none z-10 transition-all rounded-full p-1.5"
+          className="delete-announcement absolute bottom-3 right-3 opacity-70 hover:opacity-100 text-gray-400 hover:text-red-400 focus:outline-none z-10 transition-all rounded-full p-1.5"
           title="Excluir comunicado"
           onClick={handleDeleteClick}
           aria-label="Excluir comunicado"
