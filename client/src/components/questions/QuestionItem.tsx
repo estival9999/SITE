@@ -75,21 +75,21 @@ export default function QuestionItem({ question, userView, responseForm }: Quest
           {getStatusBadge()}
         </div>
         
-        <div className="mt-4 bg-gray-50 p-3 rounded-lg">
-          <p className="text-sm text-gray-700">{question.text}</p>
+        <div className="mt-4 bg-[#1e1e2a] p-3 rounded-lg border border-[#344054]">
+          <p className="text-sm text-white">{question.text}</p>
         </div>
         
         {question.answerText && (
-          <div className="mt-4 border-l-4 border-[#5e8c6a] pl-4">
-            <p className="text-sm font-medium text-gray-700">
+          <div className="mt-4 border-l-4 border-[#3b82f6] pl-4">
+            <p className="text-sm font-medium text-blue-400">
               {userView ? (
                 <>Resposta de {question.answeredBy?.name} ({question.answeredBy?.actingDepartment}):</>
               ) : (
                 <>Sua resposta:</>
               )}
             </p>
-            <p className="mt-1 text-sm text-gray-700">{question.answerText}</p>
-            <p className="mt-1 text-xs text-gray-500">Respondido em: {question.answeredAt ? formatDate(question.answeredAt) : ''}</p>
+            <p className="mt-1 text-sm text-gray-200">{question.answerText}</p>
+            <p className="mt-1 text-xs text-gray-400">Respondido em: {question.answeredAt ? formatDate(question.answeredAt) : ''}</p>
           </div>
         )}
         
