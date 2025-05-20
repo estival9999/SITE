@@ -16,7 +16,6 @@ export default function MyQuestions() {
   return (
     <AppLayout title="Minhas Perguntas">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-xl font-bold text-gray-800 mb-6">Minhas Perguntas</h2>
         
         <Card>
           <CardContent className="p-0">

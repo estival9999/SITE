@@ -117,7 +117,6 @@ export default function ReceivedQuestions() {
   return (
     <AppLayout title="Perguntas Recebidas">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-xl font-bold text-gray-800 mb-6">Perguntas Recebidas</h2>
         
         <Card>
           <CardContent className="p-0">
