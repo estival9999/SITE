@@ -41,13 +41,17 @@ export default function KnowledgeSearch() {
     try {
       console.log("Enviando consulta para a IA:", searchQuery);
       
+      const sessionId = "session-" + Date.now();
+      console.log("Session ID gerado:", sessionId);
+      
       const response = await fetch(CHAT_WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          pergunta: searchQuery
+          pergunta: searchQuery,
+          sessionid: sessionId
         }),
       });
       
@@ -55,26 +59,52 @@ export default function KnowledgeSearch() {
         throw new Error(`Erro na requisição: ${response.status}`);
       }
       
-      const data = await response.json();
+      // Primeiro tentamos obter o texto bruto da resposta
+      const rawText = await response.text();
+      console.log("Resposta bruta (texto):", rawText);
+      
+      // Depois tentamos parsear como JSON se possível
+      let data: any;
+      try {
+        // Se o texto estiver vazio, usamos um objeto vazio para evitar erros
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch (e) {
+        // Se não for JSON válido, usamos o texto bruto como resposta
+        console.log("Resposta não é JSON válido, usando texto bruto");
+        data = rawText;
+      }
+      
+      console.log("Resposta processada:", data);
       
       // Processamento para formatar a resposta
       let responseText = '';
       
-      if (data.resposta) {
-        // Se o webhook retornar no formato { resposta: "texto" }
-        responseText = data.resposta;
-      } else if (data.reply) {
-        // Formato alternativo que pode ser usado pelo n8n
-        responseText = data.reply;
-      } else if (data.response) {
-        // Outro formato alternativo
-        responseText = data.response;
-      } else if (data.output) {
-        // Para o caso de { output: "texto" }
-        responseText = data.output;
-      } else {
-        // Se não conseguir extrair em nenhum formato específico, usa o objeto completo
-        responseText = JSON.stringify(data);
+      // Se a resposta for uma string direta
+      if (typeof data === 'string') {
+        responseText = data;
+      }
+      // Se for um objeto, tentar extrair a resposta de vários campos possíveis
+      else if (data && typeof data === 'object') {
+        if (data.resposta) {
+          responseText = data.resposta;
+        } else if (data.reply) {
+          responseText = data.reply;
+        } else if (data.response) {
+          responseText = data.response;
+        } else if (data.output) {
+          responseText = data.output;
+        } else if (data.answer) {
+          responseText = data.answer;
+        } else if (data.text) {
+          responseText = data.text;
+        } else if (data.message) {
+          responseText = data.message;
+        } else if (data.result) {
+          responseText = data.result;
+        } else {
+          // Se não conseguir extrair em nenhum formato específico, usa o objeto completo
+          responseText = JSON.stringify(data);
+        }
       }
       
       // Limpeza de formatação para vários cenários possíveis
@@ -104,9 +134,9 @@ export default function KnowledgeSearch() {
         String.fromCharCode(parseInt(hex, 16))
       );
       
-      console.log("Resposta processada da IA:", responseText);
+      console.log("Resposta final formatada:", responseText);
       
-      setChatResponse(responseText);
+      setChatResponse(responseText || "Não foi possível obter uma resposta.");
     } catch (err) {
       console.error("Erro ao consultar IA:", err);
       setError("Desculpe, não foi possível obter uma resposta no momento. Tente novamente mais tarde.");
@@ -232,17 +262,17 @@ export default function KnowledgeSearch() {
                     "Qual é a política de férias da empresa?", 
                     "Como funciona o processo de aprovação de despesas?",
                     "Quais são as metas da empresa para este ano?"
-                  ].map((sugestão, index) => (
+                  ].map((sugestao, index) => (
                     <div 
                       key={index} 
                       className="bg-white p-3 rounded-lg border border-[#e0e6ed] hover:border-[#5e8c6a] cursor-pointer hover:shadow-md transition-all duration-300"
                       onClick={() => {
-                        setSearchQuery(sugestão);
+                        setSearchQuery(sugestao);
                         // Adiciona um pequeno atraso para que a pessoa possa ver que a sugestão foi selecionada
                         setTimeout(() => handleSearch(), 300);
                       }}
                     >
-                      <p className="text-sm text-[#4d7358]">"{sugestão}"</p>
+                      <p className="text-sm text-[#4d7358]">"{sugestao}"</p>
                     </div>
                   ))}
                 </div>
