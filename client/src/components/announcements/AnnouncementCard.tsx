@@ -221,11 +221,11 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
       className={cn(
         "announcement-card rounded-xl shadow-lg overflow-hidden w-full border", 
         announcement.department === Department.CONTROLES_INTERNOS 
-          ? "border-l-4 border-red-600 border-l-red-600 border-t-[#2a2a3a] border-r-[#2a2a3a] border-b-[#2a2a3a]" 
+          ? "border-l-4 border-red-600 border-l-red-600 border-t-[#2a2a3a] border-r-[#2a2a3a] border-b-[#2a2a3a] hover:bg-red-950/10" 
           : announcement.department === Department.ADMINISTRATIVO 
-          ? "border-l-4 border-blue-600 border-l-blue-600 border-t-[#2a2a3a] border-r-[#2a2a3a] border-b-[#2a2a3a]"
-          : "border-l-4 border-emerald-600 border-l-emerald-600 border-t-[#2a2a3a] border-r-[#2a2a3a] border-b-[#2a2a3a]",
-        "cursor-pointer relative hover:shadow-xl transition-shadow duration-300 bg-gradient-to-b from-[#1a1a26] to-[#1c1c28]"
+          ? "border-l-4 border-blue-600 border-l-blue-600 border-t-[#2a2a3a] border-r-[#2a2a3a] border-b-[#2a2a3a] hover:bg-blue-950/10"
+          : "border-l-4 border-emerald-600 border-l-emerald-600 border-t-[#2a2a3a] border-r-[#2a2a3a] border-b-[#2a2a3a] hover:bg-emerald-950/10",
+        "cursor-pointer relative hover:shadow-xl transition-all duration-300 bg-gradient-to-b from-[#1a1a26] to-[#1c1c28]"
       )}
       onClick={handleCardClick}
     >
