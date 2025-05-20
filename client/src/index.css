@@ -40,23 +40,23 @@
 /* Variáveis para a paleta de cores corporativa */
 :root {
   /* Cores de fundo */
-  --color-bg-main: #f5f7fa;
-  --color-bg-card: #ffffff;
-  --color-bg-sidebar: #5e8c6a; 
-  --color-bg-header: #ffffff;
+  --color-bg-main: #121212;           /* Fundo principal escuro */
+  --color-bg-card: #1a1a1a;           /* Cartões mais escuros */
+  --color-bg-sidebar: #121212;        /* Sidebar escuro */
+  --color-bg-header: #121212;         /* Cabeçalho escuro */
   
   /* Cores de acentuação */
-  --color-accent-primary: #27ae60;    /* Verde principal */
-  --color-accent-secondary: #88a65e;  /* Verde secundário */
+  --color-accent-primary: #1e3a8a;    /* Azul escuro (novo, do login) */
+  --color-accent-secondary: #2d4ba0;  /* Azul médio (novo, do login) */
   
   /* Cores de texto */
-  --color-text-dark: #2c3e50;         /* Texto escuro quase preto */
-  --color-text-medium: #34495e;       /* Texto médio */
-  --color-text-light: #7f8c8d;        /* Texto claro */
+  --color-text-dark: #ffffff;         /* Texto principal em branco */
+  --color-text-medium: #cccccc;       /* Texto médio em cinza claro */
+  --color-text-light: #999999;        /* Texto claro em cinza médio */
   
   /* Cores de interface */
-  --color-border: #e0e6ed;            /* Bordas sutis */
-  --color-shadow: rgba(0, 0, 0, 0.08); /* Sombras */
+  --color-border: #333333;            /* Bordas mais escuras */
+  --color-shadow: rgba(0, 0, 0, 0.2);  /* Sombras mais pronunciadas */
 }
 
 /* Ajustes globais para cores */
@@ -170,18 +170,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f1;
+  background: #1a1a1a;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #5e8c6a;
+  background: #1e3a8a;
   border-radius: 4px;
-  border: 2px solid #f1f5f1;
+  border: 2px solid #1a1a1a;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #88a65e;
+  background: #2d4ba0;
 }
 
 :root {
