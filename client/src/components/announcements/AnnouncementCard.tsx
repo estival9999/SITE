@@ -225,11 +225,11 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
           : announcement.department === Department.ADMINISTRATIVO 
           ? "border-l-4 border-blue-600 border-l-blue-600 border-t-[#2a2a3a] border-r-[#2a2a3a] border-b-[#2a2a3a] hover:bg-blue-950/10"
           : "border-l-4 border-emerald-600 border-l-emerald-600 border-t-[#2a2a3a] border-r-[#2a2a3a] border-b-[#2a2a3a] hover:bg-emerald-950/10",
-        "cursor-pointer relative hover:shadow-xl transition-all duration-300 bg-gradient-to-b from-[#1a1a26] to-[#1c1c28]"
+        "cursor-pointer relative hover:shadow-xl transition-all duration-300 bg-gradient-to-b from-[#222236] to-[#252536]"
       )}
       onClick={handleCardClick}
     >
-      <div className="p-6">
+      <div className="px-5 py-4">
         <div className="flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
           <div className="flex-grow min-w-0 max-w-full">
             <div className="flex items-center gap-3 mb-4 flex-wrap">
