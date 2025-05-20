@@ -92,7 +92,7 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
     }
   };
 
-  // Toggle read status mutation
+  // Toggle read status mutation with optimistic update
   const toggleReadStatusMutation = useMutation({
     mutationFn: async () => {
       const res = await apiRequest("POST", `/api/announcements/${announcement.id}/read-status`, {
@@ -100,10 +100,13 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
       });
       return await res.json();
     },
-    onSuccess: () => {
+    onMutate: () => {
+      // Optimistically update UI immediately
       setReadStatus(!readStatus);
     },
     onError: (error: Error) => {
+      // Revert optimistic update on error
+      setReadStatus(!readStatus);
       toast({
         title: "Erro ao atualizar status",
         description: error.message,
@@ -263,7 +266,7 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
           <div className="flex items-start ml-2 mt-0.5">
             <button 
               className={cn(
-                "read-flag h-8 w-8 rounded-full flex items-center justify-center transform transition-all duration-300",
+                "read-flag h-8 w-8 rounded-full flex items-center justify-center transform transition-colors duration-150",
                 readStatus 
                   ? "bg-emerald-500/10 text-emerald-400" 
                   : "text-gray-500 hover:text-gray-300"
@@ -271,11 +274,12 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
               title={readStatus ? "Marcado como lido" : "Marcar como lido"}
               onClick={handleReadFlagClick}
               aria-label={readStatus ? "Marcado como lido" : "Marcar como lido"}
+              disabled={toggleReadStatusMutation.isPending}
             >
               {toggleReadStatusMutation.isPending ? (
-                <RefreshCw className="h-4 w-4 animate-spin" />
+                <RefreshCw className="h-4 w-4 animate-spin animate-duration-500" />
               ) : readStatus ? (
-                <Check className="h-4 w-4" strokeWidth={2.5} />
+                <Check className="h-4 w-4 animate-in fade-in zoom-in-50 duration-150" strokeWidth={2.5} />
               ) : (
                 <Check className="h-4 w-4" strokeWidth={1.5} />
               )}
