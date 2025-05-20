@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Announcement, Category, Department } from "@shared/schema";
@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
-import { Loader2, Info, RefreshCw, AlertTriangle, X, Check, FileText, Trash2 } from "lucide-react";
+import { Loader2, Info, RefreshCw, AlertTriangle, X, Check, FileText, Trash2, MessageSquare, Clock, Calendar, User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface AnnouncementCardProps {
   announcement: Announcement;
@@ -23,8 +24,22 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
   const { user } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const [question, setQuestion] = useState("");
-  const [readStatus, setReadStatus] = useState<boolean>(false); // This would come from API in a real implementation
+  const [readStatus, setReadStatus] = useState<boolean>(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isNew, setIsNew] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  
+  // Verifica se o anúncio é recente (menos de 24 horas)
+  useEffect(() => {
+    if (announcement.createdAt) {
+      const now = new Date();
+      const created = new Date(announcement.createdAt);
+      const diff = now.getTime() - created.getTime();
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      setIsNew(hours < 24);
+    }
+  }, [announcement]);
 
   // Get department and category specific styling
   const getDepartmentClass = () => {
