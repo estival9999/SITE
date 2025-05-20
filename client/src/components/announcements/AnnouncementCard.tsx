@@ -235,23 +235,52 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
   };
 
   return (
-    <div 
+    <motion.div 
       className={cn(
-        "announcement-card rounded-lg overflow-hidden w-full", 
+        "announcement-card rounded-lg overflow-hidden w-full border border-[#3a3a47]", 
         announcement.department === Department.CONTROLES_INTERNOS 
           ? "hover:bg-gradient-to-r hover:from-red-500/5 hover:to-transparent" 
           : announcement.department === Department.ADMINISTRATIVO 
           ? "hover:bg-gradient-to-r hover:from-blue-500/5 hover:to-transparent"
           : "hover:bg-gradient-to-r hover:from-green-500/5 hover:to-transparent",
-        "cursor-pointer relative transition-all duration-300 bg-[#2d2d38]"
+        "cursor-pointer relative transition-all duration-300 bg-[#2d2d38]",
+        isNew && "ring-1 ring-blue-500/30"
       )}
       onClick={handleCardClick}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      whileHover={!isExpanded ? 
+        { y: -4, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)" } 
+        : {}}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      layout
     >
+      {/* Tag de "NOVO" para anúncios recentes */}
+      {isNew && (
+        <motion.div 
+          className="absolute top-0 right-0 bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded-bl-md z-10"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          NOVO
+        </motion.div>
+      )}
       <div className="px-4 py-3.5 sm:px-5 sm:py-4">
         <div className="flex flex-wrap md:flex-nowrap justify-between items-start gap-2">
           <div className="flex-grow min-w-0 max-w-full">
-            <div className="flex items-center flex-wrap gap-2 mb-2.5">
-              <div className="flex items-center gap-1.5">
+            <motion.div 
+              className="flex items-center flex-wrap gap-2 mb-2.5"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div 
+                className="flex items-center gap-1.5"
+                whileHover={{ scale: 1.05 }}
+              >
                 <div className={cn("w-2 h-2 rounded-full", 
                   announcement.department === Department.CONTROLES_INTERNOS 
                     ? "bg-red-500" 
@@ -261,21 +290,41 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
                 <span className="text-xs font-medium text-gray-300">
                   {getDepartmentLabel()}
                 </span>
-              </div>
-              <div 
+              </motion.div>
+              <motion.div 
                 className="ml-2 flex items-center gap-1"
                 title={getCategoryTitle()}
+                whileHover={{ scale: 1.05 }}
               >
                 <span className="text-xs text-gray-400">•</span>
                 <span className="text-xs text-gray-400">{getCategoryTitle()}</span>
-              </div>
-              <p className="text-xs text-gray-400 ml-auto">
+              </motion.div>
+              <motion.p 
+                className="text-xs text-gray-400 ml-auto flex items-center"
+                initial={{ opacity: 0.6 }}
+                animate={{ opacity: 1 }}
+              >
+                <Clock className="h-3 w-3 mr-1 inline opacity-70" />
                 {formatDate(announcement.createdAt)}
-              </p>
-            </div>
+              </motion.p>
+            </motion.div>
             
-            <h3 className="font-semibold text-base sm:text-lg text-white tracking-tight leading-snug">{announcement.title}</h3>
-            <p className="text-sm text-gray-300 mt-1.5 line-clamp-2 max-w-full leading-relaxed">{announcement.message}</p>
+            <motion.h3 
+              className="font-semibold text-base sm:text-lg text-white tracking-tight leading-snug"
+              initial={{ opacity: 0.8 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+            >
+              {announcement.title}
+            </motion.h3>
+            <motion.p 
+              className="text-sm text-gray-300 mt-1.5 line-clamp-2 max-w-full leading-relaxed"
+              initial={{ opacity: 0.6 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              {announcement.message}
+            </motion.p>
           </div>
           
           <div className="flex items-start ml-2 mt-0.5">
@@ -424,6 +473,6 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
         onConfirm={() => deleteAnnouncementMutation.mutate()}
         isLoading={deleteAnnouncementMutation.isPending}
       />
-    </div>
+    </motion.div>
   );
 }
