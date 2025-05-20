@@ -10,7 +10,8 @@ import {
   Users, 
   LogOut, 
   MenuIcon, 
-  XIcon 
+  XIcon,
+  Network
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Logo from "@/components/Logo";
@@ -56,6 +57,12 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
       name: 'Busca de Conhecimento', 
       href: '/knowledge-search', 
       icon: SearchIcon, 
+      adminOnly: false 
+    },
+    { 
+      name: 'Mapa Mental', 
+      href: '/mind-map', 
+      icon: Network, 
       adminOnly: false 
     },
     ...(isAdmin ? [

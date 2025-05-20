@@ -14,6 +14,7 @@ import MyQuestions from "@/pages/my-questions";
 import KnowledgeSearch from "@/pages/knowledge-search";
 import ReceivedQuestions from "@/pages/received-questions";
 import ManageUsers from "@/pages/manage-users";
+import MindMap from "@/pages/mind-map";
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function Router() {
       <ProtectedRoute path="/announcements" component={Announcements} />
       <ProtectedRoute path="/my-questions" component={MyQuestions} />
       <ProtectedRoute path="/knowledge-search" component={KnowledgeSearch} />
+      <ProtectedRoute path="/mind-map" component={MindMap} />
       <ProtectedRoute path="/received-questions" component={ReceivedQuestions} />
       <ProtectedRoute path="/manage-users" component={ManageUsers} />
       <Route component={NotFound} />

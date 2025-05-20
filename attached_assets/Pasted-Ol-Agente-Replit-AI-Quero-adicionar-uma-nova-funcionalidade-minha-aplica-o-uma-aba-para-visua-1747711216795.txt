@@ -1,0 +1,59 @@
+Olá, Agente Replit AI. Quero adicionar uma nova funcionalidade à minha aplicação: uma aba para visualização de Mapas Mentais dinâmicos.
+
+**Nome da Nova Aba no Menu:**
+"Mind Map" ou "Mapa Mental" (escolha o que soar melhor ou me dê opções).
+
+**Objetivo da Aba "Mind Map":**
+Permitir que o usuário insira um texto e veja um mapa mental interativo gerado a partir desse texto. A visualização deve ser clara, bem estruturada e permitir uma exploração interessante, inspirada na qualidade e interatividade de plataformas como o MindMeister.
+
+**Componentes da Interface na Nova Aba:**
+
+1.  **Área de Entrada de Texto:**
+    * Um campo de texto grande (por exemplo, um `<textarea>`) onde o usuário poderá digitar ou colar as informações que servirão de base para o mapa mental.
+    * Um botão (ex: "Gerar Mapa Mental") para acionar a criação/atualização do mapa.
+
+2.  **Área de Visualização do Mapa Mental:**
+    * Um espaço dedicado abaixo ou ao lado da área de texto onde o mapa mental gerado será renderizado.
+
+**Funcionalidades Chave:**
+
+1.  **Entrada de Dados:** O usuário insere texto no campo designado.
+2.  **Processamento do Texto (Sugestão Inicial):**
+    * Para uma primeira versão, o texto de entrada poderia seguir uma estrutura simples para definir a hierarquia do mapa. Por exemplo:
+        * Linhas de texto representam nós.
+        * A indentação de cada linha (usando espaços ou tabs) poderia definir o nível do nó no mapa mental (nó principal, sub-nó, sub-sub-nó, etc.).
+        * Exemplo de texto de entrada:
+            ```
+            Conceito Principal
+              Sub-conceito A
+                Detalhe A1
+                Detalhe A2
+              Sub-conceito B
+            Outro Conceito Principal
+            ```
+    * Se tiver uma sugestão melhor ou mais avançada para interpretar texto não estruturado e transformá-lo em uma estrutura de mapa mental (identificando tópicos e relações), por favor, implemente ou sugira.
+
+3.  **Geração e Renderização do Mapa Mental:**
+    * Com base no texto processado, gere uma estrutura de dados que represente o mapa mental (nós e conexões).
+    * Utilize uma biblioteca JavaScript para renderizar este mapa mental de forma gráfica e interativa na área de visualização.
+
+4.  **Interatividade do Mapa Mental:**
+    * **Visualização Dinâmica:** O mapa deve ser renderizado de forma clara.
+    * **Navegação:** Permitir zoom in/out.
+    * **Expansão/Contração de Nós:** Se possível, permitir que o usuário expanda ou recolha ramos do mapa mental.
+    * **Layout:** A biblioteca deve cuidar de um layout automático e agradável.
+
+**Requisitos Técnicos e Sugestões (Adapte conforme seu projeto):**
+
+* **Linguagem/Framework:** Estou usando `[TypeScript/JavaScript]` com `[React/Vue/Angular/HTML puro - especifique seu stack atual, se houver, por exemplo, "React com TypeScript, como no arquivo knowledge-search.tsx"]`. Por favor, crie os novos componentes e lógica usando essa stack.
+* **Biblioteca de Mapa Mental:**
+    * Sugiro que você escolha e implemente uma biblioteca JavaScript adequada para essa tarefa. Algumas opções que já ouvi falar são `Markmap.js` (ótimo para markdown, talvez possamos adaptar a entrada para markdown), `Vis.js`, `D3.js` (mais complexo, para customização total), `GoJS` (comercial, mas poderosa), ou alguma outra que você recomende para criar mapas mentais dinâmicos e interativos a partir de dados estruturados.
+    * A biblioteca escolhida deve permitir a atualização dinâmica do mapa quando o texto de entrada mudar.
+* **Integração:**
+    * Adicione a nova aba ao sistema de menu/navegação existente. Se souber o arquivo do menu, mencione: `[Nome do arquivo do componente de menu, se souber]`.
+    * A estilização inicial deve ser limpa e funcional.
+
+**Resultado Esperado:**
+Um novo componente/página na minha aplicação Replit que funcione como descrito acima, permitindo a criação e visualização de mapas mentais a partir de texto fornecido pelo usuário.
+
+Por favor, forneça o código necessário (HTML, CSS, JavaScript/TypeScript) para implementar esta funcionalidade.
