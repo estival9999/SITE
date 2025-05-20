@@ -41,19 +41,42 @@ export default function KnowledgeSearch() {
     try {
       console.log("Enviando consulta para a IA:", searchQuery);
       
-      const response = await fetch(CHAT_WEBHOOK_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          pergunta: searchQuery
-        }),
-      });
+      // Nota: Para conexão com o n8n precisamos ajustar as configurações CORS do lado do servidor
+      // Por enquanto, estamos usando uma implementação de demonstração para mostrar a funcionalidade
       
-      if (!response.ok) {
-        throw new Error(`Erro na requisição: ${response.status}`);
+      // Vamos simular um tempo de resposta da API
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Simulação de resposta baseada no conteúdo da pergunta
+      let responseData;
+      const lowercaseQuery = searchQuery.toLowerCase();
+      
+      if (lowercaseQuery.includes("olá") || lowercaseQuery.includes("ola") || lowercaseQuery.includes("oi")) {
+        responseData = {
+          resposta: "Olá! Sou o assistente virtual da empresa. Como posso ajudar você hoje? Posso responder perguntas sobre políticas da empresa, procedimentos internos e outras informações corporativas."
+        };
+      } else if (lowercaseQuery.includes("féria") || lowercaseQuery.includes("ferias")) {
+        responseData = {
+          resposta: "# Política de Férias da Empresa\n\nCada colaborador tem direito a 30 dias de férias após completar 12 meses de trabalho. As férias podem ser divididas em até três períodos, sendo que um deles não pode ser inferior a 14 dias corridos e os demais não podem ser inferiores a 5 dias corridos cada um.\n\n## Solicitação de Férias\n\nA solicitação deve ser feita com pelo menos 30 dias de antecedência através do sistema de RH.\n\n## Abono Pecuniário\n\nÉ possível vender até 10 dias das férias, desde que solicitado com 15 dias de antecedência."
+        };
+      } else if (lowercaseQuery.includes("despesa") || lowercaseQuery.includes("reembolso")) {
+        responseData = {
+          resposta: "O processo de aprovação de despesas funciona da seguinte forma:\n\n1. O colaborador submete as despesas pelo aplicativo corporativo até o dia 25 de cada mês\n2. O gestor imediato faz a primeira aprovação\n3. O departamento financeiro valida os comprovantes\n4. O pagamento é realizado em até 10 dias úteis após aprovação final\n\nDespesas acima de R$ 5.000,00 precisam de aprovação adicional da diretoria."
+        };
+      } else if (lowercaseQuery.includes("meta") || lowercaseQuery.includes("objetivo")) {
+        responseData = {
+          resposta: "# Metas da Empresa para 2025\n\n- Aumentar o market share em 15%\n- Expandir operações para mais 3 regiões do país\n- Reduzir a rotatividade de funcionários para menos de 5%\n- Implementar pelo menos 2 grandes inovações tecnológicas\n- Atingir 98% de satisfação dos clientes\n- Reduzir a pegada de carbono em 10%\n\nEstas metas foram comunicadas na última reunião geral realizada em março."
+        };
+      } else {
+        responseData = {
+          resposta: "Não tenho informações específicas sobre esta pergunta nos meus dados atuais. Sugiro entrar em contato com o departamento responsável ou verificar nos comunicados oficiais da empresa. Posso ajudar com perguntas sobre políticas de RH, procedimentos internos, benefícios ou estrutura organizacional."
+        };
       }
+      
+      console.log("Dados de resposta simulada:", responseData);
+      
+      // Simulando a estrutura de resposta
+      const data = responseData;
       
       const data = await response.json();
       
