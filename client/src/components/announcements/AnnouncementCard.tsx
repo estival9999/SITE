@@ -219,127 +219,116 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
   return (
     <div 
       className={cn(
-        "announcement-card rounded-xl shadow-lg overflow-hidden w-full border", 
+        "announcement-card rounded-lg overflow-hidden w-full", 
         announcement.department === Department.CONTROLES_INTERNOS 
-          ? "border-l-4 border-red-600 border-l-red-600 border-t-[#2a2a3a] border-r-[#2a2a3a] border-b-[#2a2a3a] hover:bg-red-950/10" 
+          ? "hover:bg-gradient-to-r hover:from-red-500/5 hover:to-transparent" 
           : announcement.department === Department.ADMINISTRATIVO 
-          ? "border-l-4 border-blue-600 border-l-blue-600 border-t-[#2a2a3a] border-r-[#2a2a3a] border-b-[#2a2a3a] hover:bg-blue-950/10"
-          : "border-l-4 border-emerald-600 border-l-emerald-600 border-t-[#2a2a3a] border-r-[#2a2a3a] border-b-[#2a2a3a] hover:bg-emerald-950/10",
-        "cursor-pointer relative hover:shadow-xl transition-all duration-300 bg-gradient-to-b from-[#222236] to-[#252536]"
+          ? "hover:bg-gradient-to-r hover:from-blue-500/5 hover:to-transparent"
+          : "hover:bg-gradient-to-r hover:from-green-500/5 hover:to-transparent",
+        "cursor-pointer relative transition-all duration-300 bg-[#2d2d38]"
       )}
       onClick={handleCardClick}
     >
-      <div className="px-5 py-4">
-        <div className="flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
+      <div className="px-4 py-3.5 sm:px-5 sm:py-4">
+        <div className="flex flex-wrap md:flex-nowrap justify-between items-start gap-2">
           <div className="flex-grow min-w-0 max-w-full">
-            <div className="flex items-center gap-3 mb-4 flex-wrap">
-              <Badge className={cn("text-xs px-3 py-1.5 rounded-md", 
-                announcement.department === Department.CONTROLES_INTERNOS 
-                  ? "bg-red-900/40 text-red-300 border border-red-800" 
-                  : announcement.department === Department.ADMINISTRATIVO 
-                  ? "bg-blue-900/40 text-blue-300 border border-blue-800"
-                  : "bg-emerald-900/40 text-emerald-300 border border-emerald-800")}>
-                {getDepartmentLabel()}
-              </Badge>
-              <span 
-                className={cn("category-icon h-7 w-7 rounded-md flex items-center justify-center backdrop-blur border", 
-                announcement.department === Department.CONTROLES_INTERNOS 
-                  ? "bg-red-950/30 border-red-900/50" 
-                  : announcement.department === Department.ADMINISTRATIVO 
-                  ? "bg-blue-950/30 border-blue-900/50"
-                  : "bg-emerald-950/30 border-emerald-900/50")}
+            <div className="flex items-center flex-wrap gap-2 mb-2.5">
+              <div className="flex items-center gap-1.5">
+                <div className={cn("w-2 h-2 rounded-full", 
+                  announcement.department === Department.CONTROLES_INTERNOS 
+                    ? "bg-red-500" 
+                    : announcement.department === Department.ADMINISTRATIVO 
+                    ? "bg-blue-500"
+                    : "bg-emerald-500")}></div>
+                <span className="text-xs font-medium text-gray-300">
+                  {getDepartmentLabel()}
+                </span>
+              </div>
+              <div 
+                className="ml-2 flex items-center gap-1"
                 title={getCategoryTitle()}
               >
-                {getCategoryIcon()}
-              </span>
-              <p className="text-xs text-gray-400 ml-auto bg-[#13131d] px-3 py-1 rounded-md border border-[#2a2a3a]">
+                <span className="text-xs text-gray-400">•</span>
+                <span className="text-xs text-gray-400">{getCategoryTitle()}</span>
+              </div>
+              <p className="text-xs text-gray-400 ml-auto">
                 {formatDate(announcement.createdAt)}
               </p>
             </div>
             
-            <h3 className="font-semibold text-xl text-white tracking-tight leading-7">{announcement.title}</h3>
-            <div className={cn("h-[2px] w-1/4 my-3", 
-              announcement.department === Department.CONTROLES_INTERNOS 
-                ? "bg-gradient-to-r from-red-600 to-transparent" 
-                : announcement.department === Department.ADMINISTRATIVO 
-                ? "bg-gradient-to-r from-blue-600 to-transparent"
-                : "bg-gradient-to-r from-emerald-600 to-transparent")}></div>
-            <p className="text-sm text-gray-300 mt-2 line-clamp-2 max-w-full leading-relaxed">{announcement.message}</p>
+            <h3 className="font-semibold text-base sm:text-lg text-white tracking-tight leading-snug">{announcement.title}</h3>
+            <p className="text-sm text-gray-300 mt-1.5 line-clamp-2 max-w-full leading-relaxed">{announcement.message}</p>
           </div>
           
-          <div className="flex items-start">
+          <div className="flex items-start ml-2 mt-0.5">
             <button 
               className={cn(
-                "read-flag h-10 w-10 rounded-md flex items-center justify-center transform transition-all duration-300",
+                "read-flag h-8 w-8 rounded-full flex items-center justify-center transform transition-all duration-300",
                 readStatus 
-                  ? "bg-emerald-900/30 border border-emerald-700 shadow-md" 
-                  : "bg-[#13131d] border border-[#2a2a3a] hover:border-gray-500 hover:shadow-md"
+                  ? "bg-emerald-500/10 text-emerald-400" 
+                  : "text-gray-500 hover:text-gray-300"
               )} 
               title={readStatus ? "Marcado como lido" : "Marcar como lido"}
               onClick={handleReadFlagClick}
               aria-label={readStatus ? "Marcado como lido" : "Marcar como lido"}
             >
               {toggleReadStatusMutation.isPending ? (
-                <RefreshCw className="h-4 w-4 text-blue-400 animate-spin" />
+                <RefreshCw className="h-4 w-4 animate-spin" />
               ) : readStatus ? (
-                <Check className="h-5 w-5 text-emerald-400" strokeWidth={2.5} />
+                <Check className="h-4 w-4" strokeWidth={2.5} />
               ) : (
-                <Check className="h-5 w-5 text-gray-500" strokeWidth={1.5} />
+                <Check className="h-4 w-4" strokeWidth={1.5} />
               )}
             </button>
           </div>
         </div>
         
         {!isExpanded && (
-          <div className="mt-4 flex items-center text-xs text-gray-400">
-            <span className="flex items-center mr-4 bg-[#13131d] px-3 py-1.5 rounded-md border border-[#2a2a3a]">
-              <span className={cn("inline-block h-1.5 w-1.5 rounded-full mr-2", 
-                announcement.department === Department.CONTROLES_INTERNOS 
-                  ? "bg-red-500" 
-                  : announcement.department === Department.ADMINISTRATIVO 
-                  ? "bg-blue-500"
-                  : "bg-emerald-500")}></span>
-              Clique para expandir
-            </span>
+          <div className="mt-3 flex">
+            <button className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">
+              <span className="w-3.5 h-3.5 flex items-center justify-center rounded-full bg-blue-500/10">
+                <span className="sr-only">Expandir</span>
+                <svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 0L5.5 4.5H0.5L3 0Z" fill="currentColor"/>
+                </svg>
+              </span>
+              <span>Expandir</span>
+            </button>
           </div>
         )}
       </div>
       
       {isExpanded && (
-        <div className="border-t border-[#2a2a3a]" onClick={(e) => e.stopPropagation()}>
+        <div className="border-t border-gray-700/30" onClick={(e) => e.stopPropagation()}>
           <Tabs defaultValue="content">
-            <div className="bg-[#161622] px-5 py-3 flex justify-between items-center border-b border-[#2a2a3a]">
-              <TabsList className="w-[200px] bg-[#13131d] shadow-md border border-[#2a2a3a] rounded-lg overflow-hidden">
+            <div className="bg-[#353542] px-4 py-2 flex justify-between items-center">
+              <TabsList className="bg-transparent">
                 <TabsTrigger 
                   value="content" 
-                  className="data-[state=active]:bg-blue-900/40 data-[state=active]:text-blue-300 data-[state=active]:shadow-none w-full font-medium text-gray-300"
+                  className="data-[state=active]:bg-blue-500/10 data-[state=active]:text-blue-300 data-[state=active]:border-b-2 data-[state=active]:border-blue-500 data-[state=active]:rounded-none px-4 py-2 font-medium text-gray-300 rounded-none border-b-2 border-transparent"
                 >
                   Conteúdo
                 </TabsTrigger>
-              </TabsList>
-              <TabsList className="w-auto bg-transparent">
                 <TabsTrigger 
                   value="question" 
-                  className="text-xs font-medium text-gray-300 hover:text-blue-300 
-                  bg-[#13131d] shadow-md hover:shadow-lg border border-[#2a2a3a] rounded-lg
-                  transition-all duration-300 px-4 h-9"
+                  className="data-[state=active]:bg-blue-500/10 data-[state=active]:text-blue-300 data-[state=active]:border-b-2 data-[state=active]:border-blue-500 data-[state=active]:rounded-none px-4 py-2 font-medium text-gray-300 rounded-none border-b-2 border-transparent"
                 >
                   Perguntas
                 </TabsTrigger>
               </TabsList>
             </div>
             
-            <div className="p-6 bg-[#1a1a26]">
+            <div className="p-4 bg-[#2d2d38]">
               <TabsContent value="content" className="animate-in fade-in-50 duration-300">
-                <div className="text-sm text-gray-300 whitespace-pre-line max-w-4xl leading-relaxed">
+                <div className="text-sm text-gray-200 whitespace-pre-line max-w-full leading-relaxed">
                   {announcement.message}
                 </div>
                 
                 {announcement.attachment && (
-                  <div className="mt-6 flex items-center text-sm text-blue-400 
-                  hover:text-blue-300 bg-[#13131d] p-4 rounded-lg
-                  border border-[#2a2a3a] shadow-sm hover:shadow-md transition-all duration-300">
-                    <FileText className="h-5 w-5 mr-3" />
+                  <div className="mt-4 flex items-center text-sm text-blue-400 
+                  hover:text-blue-300 bg-[#353542] p-3 rounded
+                  hover:bg-[#2b2b3a] transition-all duration-300">
+                    <FileText className="h-4 w-4 mr-2" />
                     <a 
                       href={announcement.attachment} 
                       target="_blank" 
@@ -352,31 +341,28 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
                 )}
               </TabsContent>
               
-              <TabsContent value="question" className="animate-in slide-in-from-right-5 duration-300">
-                <div className="max-w-2xl">
-                  <div className="bg-[#13131d] p-4 rounded-lg border border-[#2a2a3a] mb-4">
-                    <h4 className="text-sm font-medium text-white mb-2">Envie uma pergunta ao autor</h4>
-                    <p className="text-xs text-gray-400 mb-3">Utilize este espaço para esclarecer dúvidas sobre o comunicado.</p>
-                  </div>
+              <TabsContent value="question" className="animate-in fade-in-50 duration-300">
+                <div className="max-w-full">
+                  <p className="text-sm text-gray-300 mb-3">Envie uma pergunta sobre este comunicado:</p>
                 
                   <Textarea
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
-                    className="mt-1 w-full bg-[#13131d] shadow-sm focus:ring-1 focus:ring-blue-500 border border-[#2a2a3a] rounded-lg text-white placeholder:text-gray-500"
-                    rows={4}
-                    placeholder="Digite sua pergunta sobre este comunicado..."
+                    className="w-full bg-[#353542] border-0 focus:ring-1 focus:ring-blue-500 rounded text-white placeholder:text-gray-500 resize-none"
+                    rows={3}
+                    placeholder="Digite sua pergunta aqui..."
                     onClick={(e) => e.stopPropagation()}
                     onFocus={(e) => e.stopPropagation()}
                   />
-                  <div className="mt-4 flex justify-end">
+                  <div className="mt-3 flex justify-end">
                     <Button
                       className={cn(
-                        "hover:opacity-90 shadow-md px-5 rounded-lg transition-all duration-300", 
+                        "px-3 py-1.5 h-auto text-sm rounded transition-colors", 
                         announcement.department === Department.CONTROLES_INTERNOS 
-                          ? "bg-gradient-to-r from-red-800 to-red-700 text-white hover:shadow-red-900/20 hover:shadow-lg" 
+                          ? "bg-red-500 hover:bg-red-600 text-white" 
                           : announcement.department === Department.ADMINISTRATIVO 
-                          ? "bg-gradient-to-r from-blue-800 to-blue-700 text-white hover:shadow-blue-900/20 hover:shadow-lg"
-                          : "bg-gradient-to-r from-emerald-800 to-emerald-700 text-white hover:shadow-emerald-900/20 hover:shadow-lg"
+                          ? "bg-blue-500 hover:bg-blue-600 text-white"
+                          : "bg-emerald-500 hover:bg-emerald-600 text-white"
                       )}
                       onClick={(e) => handleAskQuestion(e)}
                       onMouseDown={(e) => e.stopPropagation()}
@@ -384,11 +370,11 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
                     >
                       {askQuestionMutation.isPending ? (
                         <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
                           Enviando...
                         </>
                       ) : (
-                        "Enviar Pergunta"
+                        "Enviar"
                       )}
                     </Button>
                   </div>
@@ -402,12 +388,12 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
       {/* Delete button - only visible for admin creator */}
       {isCreator && (
         <button
-          className="delete-announcement absolute bottom-4 right-4 bg-[#13131d] rounded-lg p-2 shadow-md text-red-400 hover:text-red-300 hover:bg-red-900/30 hover:shadow-lg focus:outline-none z-10 transition-all border border-[#2a2a3a]"
+          className="delete-announcement absolute top-3 right-3 opacity-70 hover:opacity-100 text-gray-400 hover:text-red-400 focus:outline-none z-10 transition-all rounded-full p-1.5"
           title="Excluir comunicado"
           onClick={handleDeleteClick}
           aria-label="Excluir comunicado"
         >
-          <Trash2 className="h-5 w-5" />
+          <Trash2 className="h-4 w-4" />
         </button>
       )}
       

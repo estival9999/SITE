@@ -9,6 +9,7 @@ import { Announcement, Category, Department, Location, UserRole } from "@shared/
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FilterIcon, Search, Loader2, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function Announcements() {
   const { user } = useAuth();
@@ -78,34 +79,35 @@ export default function Announcements() {
   return (
     <AppLayout title="Caixa de Comunicados">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8 bg-[#1c1c28] rounded-xl p-5 shadow-lg border border-[#2a2a3a]">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex items-center space-x-3 flex-grow">
-              <div className="relative flex-1 min-w-[250px] max-w-md">
-                <Input
-                  placeholder="Buscar comunicados..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-10 pl-4 pr-10 bg-[#13131d] border-[#3b3b4f] text-white rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <Search className="h-4 w-4 text-blue-400" />
-                </div>
+        <div className="mb-5 bg-[#353542] rounded-lg overflow-hidden shadow">
+          <div className="flex flex-wrap items-center p-3 gap-2">
+            <div className="relative flex-1 min-w-[180px]">
+              <Input
+                placeholder="Buscar comunicados..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-9 pl-3 pr-9 bg-[#2d2d38] border-0 text-white rounded focus:ring-1 focus:ring-blue-500 placeholder:text-gray-500 text-sm"
+              />
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2.5 pointer-events-none">
+                <Search className="h-3.5 w-3.5 text-gray-400" />
               </div>
-              
-              <Button 
-                variant="outline" 
-                onClick={toggleFilters}
-                className="flex items-center h-10 px-4 py-2 bg-[#13131d] text-blue-400 border border-[#3b3b4f] hover:bg-[#1e1e2f] hover:text-blue-300 rounded-lg transition-colors duration-200"
-              >
-                <FilterIcon className="h-4 w-4 mr-2" />
-                Filtros
-              </Button>
             </div>
+            
+            <Button 
+              variant="ghost" 
+              onClick={toggleFilters}
+              className={cn("flex items-center h-9 px-3 py-1.5 text-gray-300 rounded text-sm transition-colors",
+                showFilters ? "bg-blue-500/20 text-blue-300" : "hover:bg-[#2d2d38]"
+              )}
+              size="sm"
+            >
+              <FilterIcon className="h-3.5 w-3.5 mr-1.5" />
+              Filtros
+            </Button>
           </div>
           
           {showFilters && (
-            <div className="mt-4 pt-4 border-t border-[#2a2a3a]">
+            <div className="bg-[#2d2d38] p-3 border-t border-gray-700/30">
               <FiltersPanel 
                 onApplyFilters={applyFilters} 
                 showLocationFilter={user?.role === UserRole.ADMIN}
@@ -116,18 +118,21 @@ export default function Announcements() {
         </div>
         
         {isLoading ? (
-          <div className="flex justify-center items-center my-12">
-            <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
+          <div className="flex justify-center items-center py-8">
+            <div className="flex flex-col items-center">
+              <Loader2 className="h-8 w-8 animate-spin text-blue-400 mb-2" />
+              <span className="text-sm text-gray-400">Carregando comunicados...</span>
+            </div>
           </div>
         ) : error ? (
-          <div className="bg-[#331a1e] border border-red-900 rounded-xl p-5 text-red-300 shadow-md">
-            <p className="flex items-center">
-              <X className="h-5 w-5 mr-2 text-red-400" />
+          <div className="bg-[#331a1e] rounded-lg p-4 text-red-300">
+            <p className="flex items-center text-sm">
+              <X className="h-4 w-4 mr-2 text-red-400 flex-shrink-0" />
               Erro ao carregar comunicados. Tente novamente mais tarde.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 w-full">
+          <div className="space-y-3 w-full">
             {filteredAnnouncements && filteredAnnouncements.length > 0 ? (
               filteredAnnouncements.map((announcement) => (
                 <AnnouncementCard 
@@ -138,8 +143,8 @@ export default function Announcements() {
                 />
               ))
             ) : (
-              <div className="p-8 bg-[#1c1c28] rounded-xl shadow-md border border-[#2a2a3a] text-center">
-                <p className="text-gray-300">Nenhum comunicado encontrado.</p>
+              <div className="p-6 bg-[#2d2d38] rounded-lg text-center">
+                <p className="text-gray-400 text-sm">Nenhum comunicado encontrado.</p>
               </div>
             )}
           </div>
