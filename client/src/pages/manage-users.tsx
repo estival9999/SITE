@@ -104,7 +104,6 @@ export default function ManageUsers() {
     <AppLayout title="Gerenciar Usuários">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-2 md:mb-0">Gerenciar Usuários</h2>
           
           <Button
             onClick={openAddUserModal}
