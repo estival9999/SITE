@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
 import AuthLayout from "@/layouts/AuthLayout";
+import { cn } from "@/lib/utils";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Usuário é obrigatório"),
@@ -82,43 +83,70 @@ export default function AuthPage() {
   return (
     <AuthLayout>
       <Tabs defaultValue="login" value={activeTab} onValueChange={setActiveTab} className="mt-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="login">Login</TabsTrigger>
-          <TabsTrigger value="register">Cadastro</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 bg-[#1a1a1a]">
+          <TabsTrigger 
+            value="login" 
+            className={cn(
+              "data-[state=active]:bg-[#1e3a8a] data-[state=active]:text-white text-gray-300"
+            )}
+          >
+            Login
+          </TabsTrigger>
+          <TabsTrigger 
+            value="register" 
+            className={cn(
+              "data-[state=active]:bg-[#1e3a8a] data-[state=active]:text-white text-gray-300"
+            )}
+          >
+            Cadastro
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="login">
           <Form {...loginForm}>
-            <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6">
-              <FormField
-                control={loginForm.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Usuário</FormLabel>
-                    <FormControl>
-                      <Input placeholder="admin2 ou user2" {...field} />
-                    </FormControl>
-                    <div className="text-xs text-muted-foreground mt-1">Usuários de teste: admin2 ou user2</div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6 mt-6">
+              <div>
+                <h3 className="text-white text-sm font-medium mb-2">Usuário</h3>
+                <FormField
+                  control={loginForm.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input 
+                          placeholder="admin ou user" 
+                          {...field} 
+                          className="bg-[#1a1a1a] border-[#333] text-white h-12"
+                        />
+                      </FormControl>
+                      <div className="text-xs text-gray-500 mt-1">Usuários de teste: admin2 ou user2</div>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )}
+                />
+              </div>
               
-              <FormField
-                control={loginForm.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Senha</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="password" {...field} />
-                    </FormControl>
-                    <div className="text-xs text-muted-foreground mt-1">Senha de teste: password</div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div>
+                <h3 className="text-white text-sm font-medium mb-2">Senha</h3>
+                <FormField
+                  control={loginForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input 
+                          type="password" 
+                          placeholder="••••••••" 
+                          {...field} 
+                          className="bg-[#1a1a1a] border-[#333] text-white h-12"
+                        />
+                      </FormControl>
+                      <div className="text-xs text-gray-500 mt-1">Senha de teste: password</div>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )}
+                />
+              </div>
               
               <div className="flex items-center justify-between">
                 <FormField
@@ -131,11 +159,12 @@ export default function AuthPage() {
                           checked={field.value}
                           onCheckedChange={field.onChange}
                           id="rememberMe"
+                          className="border-[#444] data-[state=checked]:bg-[#1e3a8a] data-[state=checked]:border-[#1e3a8a]"
                         />
                       </FormControl>
                       <label
                         htmlFor="rememberMe"
-                        className="text-sm font-medium text-gray-700 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        className="text-sm font-medium text-gray-300 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
                         Lembrar-me
                       </label>
@@ -143,14 +172,14 @@ export default function AuthPage() {
                   )}
                 />
                 
-                <a href="#" className="text-sm font-medium text-[#5e8c6a] hover:text-[#88a65e]">
+                <a href="#" className="text-sm font-medium text-gray-300 hover:text-blue-400">
                   Esqueceu a senha?
                 </a>
               </div>
               
               <Button
                 type="submit"
-                className="w-full bg-[#5e8c6a] hover:bg-[#88a65e]"
+                className="w-full bg-[#1e3a8a] hover:bg-[#2d4ba0] h-12 mt-6 font-medium"
                 disabled={loginMutation.isPending}
               >
                 {loginMutation.isPending ? (
@@ -168,66 +197,92 @@ export default function AuthPage() {
         
         <TabsContent value="register">
           <Form {...registerForm}>
-            <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-6">
-              <FormField
-                control={registerForm.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nome completo</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Seu nome completo" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-6 mt-6">
+              <div>
+                <h3 className="text-white text-sm font-medium mb-2">Nome completo</h3>
+                <FormField
+                  control={registerForm.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input 
+                          placeholder="Seu nome completo" 
+                          {...field}
+                          className="bg-[#1a1a1a] border-[#333] text-white h-12" 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )}
+                />
+              </div>
               
-              <FormField
-                control={registerForm.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="Seu email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div>
+                <h3 className="text-white text-sm font-medium mb-2">Email</h3>
+                <FormField
+                  control={registerForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input 
+                          type="email" 
+                          placeholder="Seu email" 
+                          {...field}
+                          className="bg-[#1a1a1a] border-[#333] text-white h-12" 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )}
+                />
+              </div>
               
-              <FormField
-                control={registerForm.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nome de usuário</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Escolha um nome de usuário" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div>
+                <h3 className="text-white text-sm font-medium mb-2">Nome de usuário</h3>
+                <FormField
+                  control={registerForm.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input 
+                          placeholder="Escolha um nome de usuário" 
+                          {...field}
+                          className="bg-[#1a1a1a] border-[#333] text-white h-12" 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )}
+                />
+              </div>
               
-              <FormField
-                control={registerForm.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Senha</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="Escolha uma senha segura" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div>
+                <h3 className="text-white text-sm font-medium mb-2">Senha</h3>
+                <FormField
+                  control={registerForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input 
+                          type="password" 
+                          placeholder="••••••••" 
+                          {...field}
+                          className="bg-[#1a1a1a] border-[#333] text-white h-12" 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )}
+                />
+              </div>
               
               <Button
                 type="submit"
-                className="w-full bg-[#5e8c6a] hover:bg-[#88a65e]"
+                className="w-full bg-[#1e3a8a] hover:bg-[#2d4ba0] h-12 mt-6 font-medium"
                 disabled={registerMutation.isPending}
               >
                 {registerMutation.isPending ? (
