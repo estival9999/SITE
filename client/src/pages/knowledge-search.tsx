@@ -47,7 +47,7 @@ export default function KnowledgeSearch() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: searchQuery
+          pergunta: searchQuery
         }),
       });
       
@@ -60,13 +60,24 @@ export default function KnowledgeSearch() {
       // Processamento para formatar a resposta
       let responseText = '';
       
-      if (data.reply) {
+      if (data.resposta) {
+        // Se o webhook retornar no formato { resposta: "texto" }
+        responseText = data.resposta;
+      } else if (data.reply) {
+        // Formato alternativo que pode ser usado pelo n8n
         responseText = data.reply;
       } else if (data.response) {
+        // Outro formato alternativo
         responseText = data.response;
+      } else if (data.output) {
+        // Para o caso de { output: "texto" }
+        responseText = data.output;
       } else {
+        // Se não conseguir extrair em nenhum formato específico, usa o objeto completo
         responseText = JSON.stringify(data);
       }
+      
+      // Limpeza de formatação para vários cenários possíveis
       
       // Remove { e output do início se existirem
       responseText = responseText.replace(/^\s*\{\s*output:?\s*/i, '');
@@ -92,6 +103,8 @@ export default function KnowledgeSearch() {
       responseText = responseText.replace(/\\u(\w{4})/g, (_, hex) => 
         String.fromCharCode(parseInt(hex, 16))
       );
+      
+      console.log("Resposta processada da IA:", responseText);
       
       setChatResponse(responseText);
     } catch (err) {
@@ -168,8 +181,11 @@ export default function KnowledgeSearch() {
             ) : isChatLoading ? (
               <div className="flex flex-col items-center justify-center py-12">
                 <Loader2 className="h-10 w-10 text-[#5e8c6a] animate-spin mb-4" />
-                <p className="text-gray-600">Processando sua pergunta...</p>
-                <p className="text-sm text-gray-400 mt-2">Estamos consultando nossa base de conhecimento para trazer a melhor resposta.</p>
+                <p className="text-gray-600">Buscando resposta...</p>
+                <p className="text-sm text-gray-400 mt-2">Estamos consultando nossa base de conhecimento para trazer a melhor resposta para você.</p>
+                <div className="mt-4 bg-[#f0f8f2] px-4 py-2 rounded-lg border border-[#cbe3d2] text-xs text-[#5e8c6a]">
+                  Conectando ao serviço de IA através do webhook...
+                </div>
               </div>
             ) : chatResponse ? (
               <div>
