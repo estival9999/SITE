@@ -6,7 +6,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Bot, SendHorizontal, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
-import { useAuth } from "@/hooks/use-auth";
 
 // URL do webhook n8n para o chat
 const CHAT_WEBHOOK_URL = "https://mateusestival.app.n8n.cloud/webhook/662240cb-762b-4046-9cb1-ab3c386bf8a7/chat";
@@ -17,7 +16,6 @@ export default function KnowledgeSearch() {
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
-  const { user } = useAuth();
 
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -47,12 +45,9 @@ export default function KnowledgeSearch() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
         },
         body: JSON.stringify({
-          question: searchQuery, // Alterado de message para question
-          userId: user?.id || 'guest',
-          username: user?.username || 'Usuário não identificado'
+          message: searchQuery
         }),
       });
       
@@ -65,22 +60,18 @@ export default function KnowledgeSearch() {
       // Processamento para formatar a resposta
       let responseText = '';
       
-      if (data.answer) {
-        responseText = data.answer;
-      } else if (data.reply) {
+      if (data.reply) {
         responseText = data.reply;
       } else if (data.response) {
         responseText = data.response;
-      } else if (data.text) {
-        responseText = data.text;
       } else {
         responseText = JSON.stringify(data);
       }
       
-      // Limpeza da resposta, mantendo apenas a parte mais relevante
-      responseText = responseText.replace(/^\s*\{\s*(")?output(")?\s*:\s*/i, '');
-      responseText = responseText.replace(/^\s*\{\s*(")?response(")?\s*:\s*/i, '');
-      responseText = responseText.replace(/^\s*\{\s*(")?text(")?\s*:\s*/i, '');
+      // Remove { e output do início se existirem
+      responseText = responseText.replace(/^\s*\{\s*output:?\s*/i, '');
+      responseText = responseText.replace(/^\s*\{\s*"output":?\s*/i, '');
+      responseText = responseText.replace(/^\s*{"output":\s*/i, '');
       
       // Remove aspas redundantes e caracteres } no final
       responseText = responseText.replace(/"\s*\}\s*$/g, '');
