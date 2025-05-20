@@ -327,42 +327,62 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
             </motion.p>
           </div>
           
-          <div className="flex items-start ml-2 mt-0.5">
-            <button 
+          <motion.div 
+            className="flex items-start ml-2 mt-0.5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            <motion.button 
               className={cn(
-                "read-flag h-8 w-8 rounded-full flex items-center justify-center transform transition-colors duration-150",
+                "read-flag h-8 w-8 rounded-full flex items-center justify-center transform transition-all duration-150",
                 readStatus 
-                  ? "bg-emerald-500/10 text-emerald-400" 
-                  : "text-gray-500 hover:text-gray-300"
+                  ? "bg-emerald-500/10 text-emerald-400 shadow-md shadow-emerald-500/10 ring-1 ring-emerald-500/20" 
+                  : "text-gray-500 hover:text-gray-300 hover:bg-blue-500/10"
               )} 
               title={readStatus ? "Marcado como lido" : "Marcar como lido"}
               onClick={handleReadFlagClick}
               aria-label={readStatus ? "Marcado como lido" : "Marcar como lido"}
               disabled={toggleReadStatusMutation.isPending}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
               {toggleReadStatusMutation.isPending ? (
-                <RefreshCw className="h-4 w-4 animate-spin animate-duration-500" />
+                <RefreshCw className="h-4 w-4 animate-spin" />
               ) : readStatus ? (
                 <Check className="h-4 w-4 animate-in fade-in zoom-in-50 duration-150" strokeWidth={2.5} />
               ) : (
                 <Check className="h-4 w-4" strokeWidth={1.5} />
               )}
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
         
         {!isExpanded && (
-          <div className="mt-3 flex">
-            <button className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">
-              <span className="w-3.5 h-3.5 flex items-center justify-center rounded-full bg-blue-500/10">
+          <motion.div 
+            className="mt-3 flex"
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <motion.button 
+              className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-all duration-200 bg-blue-500/5 hover:bg-blue-500/10 px-2.5 py-1 rounded-full"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <motion.span 
+                className="w-3.5 h-3.5 flex items-center justify-center rounded-full bg-blue-500/20"
+                animate={{ y: [0, -1, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+              >
                 <span className="sr-only">Expandir</span>
                 <svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3 0L5.5 4.5H0.5L3 0Z" fill="currentColor"/>
                 </svg>
-              </span>
+              </motion.span>
               <span>Expandir</span>
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         )}
       </div>
       
