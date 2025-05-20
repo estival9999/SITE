@@ -47,9 +47,10 @@ export default function KnowledgeSearch() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: JSON.stringify({
-          message: searchQuery,
+          question: searchQuery, // Alterado de message para question
           userId: user?.id || 'guest',
           username: user?.username || 'Usuário não identificado'
         }),
@@ -64,18 +65,22 @@ export default function KnowledgeSearch() {
       // Processamento para formatar a resposta
       let responseText = '';
       
-      if (data.reply) {
+      if (data.answer) {
+        responseText = data.answer;
+      } else if (data.reply) {
         responseText = data.reply;
       } else if (data.response) {
         responseText = data.response;
+      } else if (data.text) {
+        responseText = data.text;
       } else {
         responseText = JSON.stringify(data);
       }
       
-      // Remove { e output do início se existirem
-      responseText = responseText.replace(/^\s*\{\s*output:?\s*/i, '');
-      responseText = responseText.replace(/^\s*\{\s*"output":?\s*/i, '');
-      responseText = responseText.replace(/^\s*{"output":\s*/i, '');
+      // Limpeza da resposta, mantendo apenas a parte mais relevante
+      responseText = responseText.replace(/^\s*\{\s*(")?output(")?\s*:\s*/i, '');
+      responseText = responseText.replace(/^\s*\{\s*(")?response(")?\s*:\s*/i, '');
+      responseText = responseText.replace(/^\s*\{\s*(")?text(")?\s*:\s*/i, '');
       
       // Remove aspas redundantes e caracteres } no final
       responseText = responseText.replace(/"\s*\}\s*$/g, '');
