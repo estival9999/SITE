@@ -79,7 +79,7 @@ export default function Announcements() {
     <AppLayout title="Caixa de Comunicados">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
-          <h2 className="text-xl font-bold text-gray-800 mb-2 md:mb-0">Caixa de Comunicados</h2>
+          <h2 className="text-xl font-bold text-white mb-2 md:mb-0">Caixa de Comunicados</h2>
           
           <div className="flex space-x-2">
             <Button 

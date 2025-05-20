@@ -160,7 +160,7 @@ export default function KnowledgeSearch() {
     <AppLayout title="Busca de Conhecimento">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Busca de Conhecimento</h2>
+          <h2 className="text-xl font-bold text-white">Busca de Conhecimento</h2>
           <div className="flex items-center bg-[#f0f8f2] px-4 py-2 rounded-lg border border-[#cbe3d2]">
             <Bot className="h-5 w-5 text-[#5e8c6a] mr-2" />
             <span className="text-sm font-medium text-[#5e8c6a]">Assistente IA</span>
@@ -252,7 +252,7 @@ export default function KnowledgeSearch() {
                 <div className="bg-[#f0f8f2] p-4 rounded-full mb-5">
                   <Bot className="h-16 w-16 text-[#5e8c6a]" />
                 </div>
-                <h3 className="text-xl font-medium text-gray-900 mb-3">Assistente de IA</h3>
+                <h3 className="text-xl font-medium text-white mb-3">Assistente de IA</h3>
                 <p className="text-gray-500 max-w-md mb-6">
                   Digite sua pergunta na caixa acima para obter respostas inteligentes baseadas nos comunicados e documentos da empresa.
                 </p>

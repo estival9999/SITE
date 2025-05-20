@@ -251,7 +251,7 @@ function MindMapContent() {
         {/* Painel de entrada de texto */}
         <Card className="shadow-lg lg:col-span-1">
           <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-4 text-[var(--color-accent-primary)]">
+            <h2 className="text-xl font-semibold mb-4 text-white">
               Entrada de Texto
             </h2>
             <p className="text-sm text-gray-500 mb-4">
@@ -286,7 +286,7 @@ function MindMapContent() {
         <Card className="shadow-lg lg:col-span-2">
           <CardContent className="p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-[var(--color-accent-primary)]">
+              <h2 className="text-xl font-semibold text-white">
                 Visualização do Mapa Mental
               </h2>
               <div className="flex space-x-2">
