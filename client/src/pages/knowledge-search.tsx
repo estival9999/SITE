@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
 
 // URL do webhook n8n para o chat
-const CHAT_WEBHOOK_URL = "https://mateusestival.app.n8n.cloud/webhook/662240cb-762b-4046-9cb1-ab3c386bf8a7/chat";
+const CHAT_WEBHOOK_URL = "https://mateusestival.app.n8n.cloud/webhook-test/7247896f-761f-4204-ade9-9d609240428b";
 
 export default function KnowledgeSearch() {
   const [searchQuery, setSearchQuery] = useState("");
