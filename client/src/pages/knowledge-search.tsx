@@ -3,7 +3,7 @@ import AppLayout from "@/layouts/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bot, SendHorizontal, Loader2 } from "lucide-react";
+import { Bot, SendHorizontal, Loader2, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
 
@@ -160,20 +160,20 @@ export default function KnowledgeSearch() {
     <AppLayout title="Busca de Conhecimento">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-end items-center mb-6">
-          <div className="flex items-center bg-[#f0f8f2] px-4 py-2 rounded-lg border border-[#cbe3d2]">
-            <Bot className="h-5 w-5 text-[#5e8c6a] mr-2" />
-            <span className="text-sm font-medium text-[#5e8c6a]">Assistente IA</span>
+          <div className="flex items-center bg-blue-900/40 px-4 py-2 rounded-lg border border-blue-800">
+            <Bot className="h-5 w-5 text-blue-300 mr-2" />
+            <span className="text-sm font-medium text-blue-300">Assistente IA</span>
           </div>
         </div>
         
-        <Card className="mb-8 shadow-lg border-[#e0e6ed] overflow-hidden">
+        <Card className="mb-8 shadow-lg border-[#2a2a3a] overflow-hidden bg-[#1a1a26]">
           <CardContent className="pt-6">
             <div className="max-w-3xl mx-auto">
               <form onSubmit={handleSearch} className="group">
                 <div className="relative">
                   <Input
                     id="knowledgeSearch"
-                    className="pl-5 pr-12 py-7 text-base rounded-xl shadow-inner border-2 border-[#e0e6ed] focus:border-[#5e8c6a] transition-all duration-300"
+                    className="pl-5 pr-12 py-7 text-base rounded-xl shadow-inner border-2 border-[#2a2a3a] bg-[#13131d] text-white focus:border-blue-600 transition-all duration-300 placeholder:text-gray-500"
                     placeholder="Faça uma pergunta para a IA..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -184,7 +184,7 @@ export default function KnowledgeSearch() {
                       type="submit"
                       size="sm" 
                       variant="default" 
-                      className="h-10 w-10 p-0 rounded-full bg-[#5e8c6a] hover:bg-[#4d7358] shadow-md transition-all duration-300 group-hover:scale-110"
+                      className="h-10 w-10 p-0 rounded-lg bg-blue-700 hover:bg-blue-800 shadow-md transition-all duration-300 group-hover:scale-110"
                       disabled={searchQuery.length < 3 || isChatLoading}
                     >
                       <SendHorizontal className="h-5 w-5 text-white" />
@@ -193,7 +193,7 @@ export default function KnowledgeSearch() {
                 </div>
               </form>
               
-              <p className="mt-3 text-sm text-[#88a65e] text-center">
+              <p className="mt-3 text-sm text-blue-400 text-center">
                 Faça qualquer pergunta sobre nossa organização e o assistente IA irá responder com base nas informações disponíveis.
               </p>
             </div>
@@ -201,58 +201,73 @@ export default function KnowledgeSearch() {
         </Card>
         
         {/* Chat interface */}
-        <Card className="border border-[#e9f0eb] shadow-lg">
+        <Card className="border border-[#2a2a3a] shadow-lg bg-[#1c1c28]">
           <CardContent className="p-6">
             {error ? (
-              <div className="bg-red-50 text-red-700 p-4 rounded-md">
-                <p>{error}</p>
+              <div className="bg-[#331a1e] text-red-300 p-5 rounded-lg border border-red-900">
+                <p className="flex items-center"><X className="h-5 w-5 mr-2 text-red-400" />{error}</p>
               </div>
             ) : isChatLoading ? (
               <div className="flex flex-col items-center justify-center py-12">
-                <Loader2 className="h-10 w-10 text-[#5e8c6a] animate-spin mb-4" />
-                <p className="text-gray-600">Buscando resposta...</p>
+                <Loader2 className="h-10 w-10 text-blue-500 animate-spin mb-4" />
+                <p className="text-blue-300 font-medium">Buscando resposta...</p>
                 <p className="text-sm text-gray-400 mt-2">Estamos consultando nossa base de conhecimento para trazer a melhor resposta para você.</p>
-                <div className="mt-4 bg-[#f0f8f2] px-4 py-2 rounded-lg border border-[#cbe3d2] text-xs text-[#5e8c6a]">
+                <div className="mt-4 bg-blue-900/20 px-4 py-2 rounded-lg border border-blue-900/50 text-xs text-blue-300">
                   Conectando ao serviço de IA através do webhook...
                 </div>
               </div>
             ) : chatResponse ? (
-              <div>
+              <div className="space-y-6">
                 <div className="flex items-start mb-6">
-                  <div className="bg-white border border-[var(--color-border)] p-4 rounded-lg mr-2 max-w-2xl shadow-md">
+                  <div className="bg-[#1a1a26] border border-[#2a2a3a] p-4 rounded-lg mr-2 max-w-2xl shadow-md">
                     <div className="flex items-center mb-2">
-                      <div className="bg-[var(--color-bg-main)] p-1.5 rounded-full mr-2 border border-[var(--color-border)] shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[var(--color-text-medium)]" viewBox="0 0 20 20" fill="currentColor">
+                      <div className="bg-[#13131d] p-1.5 rounded-md mr-2 border border-[#344054] shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                         </svg>
                       </div>
-                      <span className="text-sm font-medium text-[var(--color-text-medium)]">Você perguntou:</span>
+                      <span className="text-sm font-medium text-blue-300">Você perguntou:</span>
                     </div>
-                    <p className="text-[var(--color-text-dark)] text-base">{searchQuery}</p>
+                    <p className="text-white text-base">{searchQuery}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-start mt-6">
-                  <div className="bg-white border-2 border-[var(--color-accent-primary)] shadow-xl p-6 rounded-xl w-full max-w-4xl">
-                    <div className="flex items-center mb-4 border-b border-[var(--color-border)] pb-3">
-                      <div className="bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-secondary)] p-2 rounded-full mr-3 shadow-md">
+                <div className="flex items-start mt-8 animate-in fade-in slide-in-from-bottom-10 duration-700">
+                  <div className="bg-[#161622] border-2 border-blue-600/50 shadow-xl p-6 rounded-xl w-full max-w-4xl">
+                    <div className="flex items-center mb-5 border-b border-[#2a2a3a] pb-4">
+                      <div className="bg-gradient-to-r from-blue-600 to-blue-500 p-2 rounded-lg mr-3 shadow-md">
                         <Bot className="h-5 w-5 text-white" />
                       </div>
-                      <span className="font-medium text-[var(--color-accent-primary)] text-lg">Assistente IA</span>
+                      <span className="font-medium text-blue-400 text-lg">Assistente IA</span>
+                      <div className="ml-auto bg-blue-900/20 px-3 py-1 rounded text-xs text-blue-300 border border-blue-900/50">
+                        Gerado em tempo real
+                      </div>
                     </div>
-                    <div className="prose prose-lg max-w-none text-[var(--color-text-dark)] prose-headings:text-[var(--color-accent-primary)] prose-a:text-[var(--color-accent-primary)] prose-a:hover:text-[var(--color-accent-secondary)] prose-strong:text-[var(--color-text-dark)] prose-code:bg-[#f8f9fa] prose-code:text-[var(--color-text-medium)] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-[var(--color-border)] leading-relaxed">
+                    <div className="prose prose-invert max-w-none text-gray-200 prose-headings:text-blue-300 prose-a:text-blue-400 prose-a:hover:text-blue-300 prose-strong:text-white prose-code:bg-[#13131d] prose-code:text-blue-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-[#2a2a3a] prose-li:marker:text-blue-400 leading-relaxed">
                       <ReactMarkdown>{chatResponse}</ReactMarkdown>
                     </div>
                   </div>
                 </div>
+                
+                <div className="w-full flex justify-center mt-8">
+                  <Button
+                    onClick={() => {
+                      setSearchQuery("");
+                      setChatResponse(null);
+                    }}
+                    className="bg-[#13131d] hover:bg-[#1e1e2e] text-gray-300 border border-[#2a2a3a] rounded-lg px-4 py-2 transition-colors"
+                  >
+                    Nova Pergunta
+                  </Button>
+                </div>
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="bg-[#f0f8f2] p-4 rounded-full mb-5">
-                  <Bot className="h-16 w-16 text-[#5e8c6a]" />
+                <div className="bg-[#13131d] p-6 rounded-xl mb-5 border border-[#2a2a3a] shadow-lg">
+                  <Bot className="h-16 w-16 text-blue-400" />
                 </div>
-                <h3 className="text-xl font-medium text-white mb-3">Assistente de IA</h3>
-                <p className="text-gray-500 max-w-md mb-6">
+                <h3 className="text-xl font-medium text-blue-300 mb-3">Assistente de IA</h3>
+                <p className="text-gray-400 max-w-md mb-8">
                   Digite sua pergunta na caixa acima para obter respostas inteligentes baseadas nos comunicados e documentos da empresa.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto text-left">
@@ -264,14 +279,14 @@ export default function KnowledgeSearch() {
                   ].map((sugestao, index) => (
                     <div 
                       key={index} 
-                      className="bg-white p-3 rounded-lg border border-[#e0e6ed] hover:border-[#5e8c6a] cursor-pointer hover:shadow-md transition-all duration-300"
+                      className="bg-[#1a1a26] p-4 rounded-lg border border-[#2a2a3a] hover:border-blue-700 cursor-pointer hover:shadow-md hover:bg-blue-900/10 transition-all duration-300"
                       onClick={() => {
                         setSearchQuery(sugestao);
                         // Adiciona um pequeno atraso para que a pessoa possa ver que a sugestão foi selecionada
                         setTimeout(() => handleSearch(), 300);
                       }}
                     >
-                      <p className="text-sm text-[#4d7358]">"{sugestao}"</p>
+                      <p className="text-sm text-blue-300">"{sugestao}"</p>
                     </div>
                   ))}
                 </div>
