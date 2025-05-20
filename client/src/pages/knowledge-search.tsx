@@ -159,8 +159,7 @@ export default function KnowledgeSearch() {
   return (
     <AppLayout title="Busca de Conhecimento">
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-white">Busca de Conhecimento</h2>
+        <div className="flex justify-end items-center mb-6">
           <div className="flex items-center bg-[#f0f8f2] px-4 py-2 rounded-lg border border-[#cbe3d2]">
             <Bot className="h-5 w-5 text-[#5e8c6a] mr-2" />
             <span className="text-sm font-medium text-[#5e8c6a]">Assistente IA</span>
