@@ -4,18 +4,19 @@ import pgSession from "connect-pg-simple";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { pool } from "./db";
+import createMemoryStore from "memorystore";
 
 const PostgresStore = pgSession(session);
+const MemoryStore = createMemoryStore(session);
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(session({
-  store: new PostgresStore({
-    pool,
-    tableName: 'session'
-  }),
+// Use memory store for demo mode
+const isDemoMode = process.env.DEMO_MODE === 'true' || !process.env.DATABASE_URL;
+
+const sessionConfig: any = {
   secret: process.env.SESSION_SECRET || 'default_secret',
   resave: false,
   saveUninitialized: false,
@@ -23,7 +24,20 @@ app.use(session({
     secure: app.get('env') === 'production',
     maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
   }
-}));
+};
+
+if (isDemoMode) {
+  sessionConfig.store = new MemoryStore({
+    checkPeriod: 86400000 // 24 hours
+  });
+} else {
+  sessionConfig.store = new PostgresStore({
+    pool,
+    tableName: 'session'
+  });
+}
+
+app.use(session(sessionConfig));
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -78,8 +92,9 @@ app.use((req, res, next) => {
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = 5000;
-  server.listen(port, "0.0.0.0", () => {
+  const port = process.env.PORT || 5000;
+  server.listen(port, '127.0.0.1', () => {
     log(`serving on port ${port}`);
+    console.log(`\n✨ Servidor rodando em: http://localhost:${port}\n`);
   });
 })();

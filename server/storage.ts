@@ -1,4 +1,4 @@
-import { users, type User, type InsertUser, announcements, type Announcement, type InsertAnnouncement, questions, type Question, type InsertQuestion, announcementReadStatuses, type ReadStatus, type InsertReadStatus, UserRole, Department, Location } from "@shared/schema";
+import { users, type User, type InsertUser, announcements, type Announcement, type InsertAnnouncement, questions, type Question, type InsertQuestion, announcementReadStatuses, type ReadStatus, type InsertReadStatus, UserRole, Department, Location } from "../shared/schema.js";
 import { db } from "./db";
 import { eq, and, inArray, or, like, desc } from "drizzle-orm";
 import session from "express-session";
@@ -344,5 +344,11 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-// Create and export storage instance
-export const storage = new DatabaseStorage();
+// Import demo storage
+import { DemoStorage } from "./demo-storage.js";
+
+// Use demo mode if no database is configured
+const isDemoMode = process.env.DEMO_MODE === 'true' || !process.env.DATABASE_URL;
+
+// Create and export appropriate storage instance
+export const storage: IStorage = isDemoMode ? new DemoStorage() : new DatabaseStorage();

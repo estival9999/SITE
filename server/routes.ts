@@ -2,7 +2,7 @@ import express, { type Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
-import { insertAnnouncementSchema, insertQuestionSchema, InsertUser, UserRole } from "@shared/schema";
+import { insertAnnouncementSchema, insertQuestionSchema, InsertUser, UserRole } from "../shared/schema.js";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
