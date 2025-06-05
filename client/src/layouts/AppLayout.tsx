@@ -91,8 +91,8 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Sidebar */}
-      <div className="bg-[var(--color-bg-sidebar)] text-white w-72 flex-shrink-0 hidden md:flex md:flex-col drop-shadow-lg border-r border-[#333]">
+      {/* Sidebar - CORRIGIDA PARA NÃO PISCAR */}
+      <div className="bg-[#121212] text-white w-72 flex-shrink-0 hidden md:flex md:flex-col border-r border-[#333]" style={{ position: 'relative', zIndex: 10 }}>
         <div className="flex items-center justify-center h-20 border-b border-[#333] bg-[#0c0c0c] backdrop-blur-sm">
           <Logo size="medium" withText />
         </div>
@@ -104,10 +104,8 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center px-6 py-3.5 text-gray-300 hover:bg-[var(--color-accent-secondary)]/80 transition-all duration-200 rounded-lg shadow-sm",
-                  location === item.href 
-                    ? "bg-[var(--color-accent-secondary)] text-white shadow-md transform translate-x-1" 
-                    : "hover:translate-x-1"
+                  "sidebar-nav-item",
+                  location === item.href && "sidebar-nav-item-active"
                 )}
               >
                 <item.icon className="h-5 w-5 mr-3" />
@@ -121,7 +119,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
           <div className="flex items-center">
             <Avatar className="h-11 w-11 ring-2 ring-[#333] shadow-lg">
               <AvatarImage src="" alt={user?.name || "User"} />
-              <AvatarFallback className="bg-gradient-to-br from-[#1e3a8a] to-[#2d4ba0] text-white font-medium">{user?.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
+              <AvatarFallback className="bg-gradient-to-br from-[#2d5016] to-[#3a6b1e] text-white font-medium">{user?.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
             </Avatar>
             <div className="ml-3">
               <p className="text-sm font-medium text-white">{user?.username}</p>
@@ -134,7 +132,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
           
           <Button
             onClick={handleLogout}
-            className="w-full mt-5 bg-[#1e3a8a] hover:bg-[#2d4ba0] text-white shadow-md transition-all duration-300 border-none h-10"
+            className="w-full mt-5 bg-[#2d5016] hover:bg-[#3a6b1e] text-white shadow-md transition-all duration-300 border-none h-10"
             variant="secondary"
           >
             <LogOut className="h-4 w-4 mr-2" />
@@ -176,8 +174,8 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center px-4 py-3 text-gray-300 hover:bg-[#2d4ba0] transition-colors duration-200 rounded-md",
-                  location === item.href && "bg-[#1e3a8a] text-white"
+                  "flex items-center px-4 py-3 text-gray-300 hover:bg-[#3a6b1e] transition-colors duration-200 rounded-md",
+                  location === item.href && "bg-[#2d5016] text-white"
                 )}
                 onClick={toggleMobileMenu}
               >
@@ -192,7 +190,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
           <div className="flex items-center">
             <Avatar>
               <AvatarImage src="" alt={user?.name || "User"} />
-              <AvatarFallback className="bg-[#1e3a8a] text-white">{user?.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
+              <AvatarFallback className="bg-[#2d5016] text-white">{user?.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
             </Avatar>
             <div className="ml-3">
               <p className="text-sm font-medium text-white">{user?.username}</p>
@@ -204,7 +202,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
           
           <Button
             onClick={handleLogout}
-            className="w-full mt-4 bg-[#1e3a8a] hover:bg-[#2d4ba0] h-10 text-white"
+            className="w-full mt-4 bg-[#2d5016] hover:bg-[#3a6b1e] h-10 text-white"
             variant="secondary"
           >
             <LogOut className="h-4 w-4 mr-2" />
@@ -230,7 +228,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
             
             <div className="md:hidden flex items-center">
               <Avatar className="h-8 w-8 ring-2 ring-[#333] shadow-md">
-                <AvatarFallback className="bg-[#1e3a8a] text-white text-xs">{user?.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
+                <AvatarFallback className="bg-[#2d5016] text-white text-xs">{user?.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
               </Avatar>
             </div>
           </div>

@@ -34,7 +34,7 @@ export default function AnnouncementCard({ announcement, isAdmin, isCreator }: A
       case Department.ADMINISTRATIVO:
         return "department-administrativo border-l-4 border-blue-500";
       case Department.CICLO_DE_CREDITO:
-        return "department-credito border-l-4 border-green-500";
+        return "department-credito border-l-4 border-verde-escuro-600";
       default:
         return "";
     }

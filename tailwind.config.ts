@@ -13,6 +13,20 @@ export default {
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        // Cores customizadas verde escuro
+        "verde-escuro": {
+          50: "#f3f6f1",
+          100: "#e2e9dc",
+          200: "#c5d3ba",
+          300: "#9fb48e",
+          400: "#7a9566",
+          500: "#5c7848",
+          600: "#486038",
+          700: "#3a4d2d",
+          800: "#2d5016",
+          900: "#1a2e0d",
+          950: "#0d1706",
+        },
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",

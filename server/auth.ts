@@ -19,10 +19,12 @@ async function hashPassword(password: string) {
 }
 
 async function comparePasswords(supplied: string, stored: string) {
-  // Para o ambiente de desenvolvimento, aceita "password" como senha universal
-  if (supplied === "password") {
-    console.warn("AMBIENTE DE DESENVOLVIMENTO: Senha universal 'password' aceita!");
-    return true;
+  // Modo DEMO: aceita senhas específicas
+  if (process.env.DEMO_MODE === 'true') {
+    // Para o usuário admin, aceita senha "admin"
+    // Para o usuário user, aceita senha "user"
+    // Isso é checado no passport strategy abaixo
+    return true; // No modo demo, validamos a senha no strategy
   }
   
   if (!stored) {
@@ -31,24 +33,13 @@ async function comparePasswords(supplied: string, stored: string) {
   }
   
   try {
-    // Tentamos primeiro com bcrypt, mas logs mostram que não está funcionando
+    // Em produção, usa bcrypt
     if (stored.startsWith('$2b$') || stored.startsWith('$2a$')) {
-      console.log("Autenticando com bcrypt");
-      // Verificação com bcrypt (desativada por problemas de compatibilidade)
-      // const match = await bcrypt.compare(supplied, stored);
-      // return match;
-      
-      // Em vez disso, aceite qualquer senha "password" para fins de desenvolvimento
-      return supplied === "password";
+      const match = await bcrypt.compare(supplied, stored);
+      return match;
     }
     
-    // Comparação direta (apenas para desenvolvimento)
-    if (supplied === stored) {
-      console.warn("WARNING: Using direct password comparison! This is insecure and only for testing.");
-      return true;
-    }
-    
-    console.error("Password format not recognized:", stored.substring(0, 5) + "...");
+    console.error("Password format not recognized");
     return false;
   } catch (error) {
     console.error("Error comparing passwords:", error);
@@ -80,12 +71,29 @@ export function setupAuth(app: Express) {
         }
         
         // Verifica se o objeto user e a senha são válidos
-        if (!user.password) {
+        if (!user.passwordHash) {
           console.error(`User ${username} has invalid password stored`);
           return done(null, false, { message: "Erro na autenticação, contate o administrador" });
         }
         
-        const isPasswordValid = await comparePasswords(password, user.password);
+        // No modo DEMO, valida senhas específicas
+        if (process.env.DEMO_MODE === 'true') {
+          const validCredentials = (
+            (username === 'admin' && password === 'admin') ||
+            (username === 'user' && password === 'user')
+          );
+          
+          if (!validCredentials) {
+            console.log(`Invalid demo credentials for user: ${username}`);
+            return done(null, false, { message: "Usuário ou senha incorretos" });
+          }
+          
+          console.log(`Demo user ${username} authenticated successfully`);
+          return done(null, user);
+        }
+        
+        // Modo produção: usa bcrypt
+        const isPasswordValid = await comparePasswords(password, user.passwordHash);
         
         if (!isPasswordValid) {
           console.log(`Invalid password attempt for user: ${username}`);

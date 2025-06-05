@@ -2,6 +2,8 @@ import express, { type Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
+import { setupDemoAuth } from "./demo-auth.js";
+import { setupUltraSimpleAuth } from "./ultra-simple-auth.js";
 import { insertAnnouncementSchema, insertQuestionSchema, InsertUser, UserRole } from "../shared/schema.js";
 import multer from "multer";
 import path from "path";
@@ -43,8 +45,13 @@ const isAdmin = (req: Request, res: Response, next: Function) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Setup authentication (based on blueprint)
-  setupAuth(app);
+  // Setup authentication
+  if (process.env.DEMO_MODE === 'true') {
+    console.log("🔥🔥🔥 MODO DEMO ULTRA SIMPLES - QUALQUER LOGIN FUNCIONA! 🔥🔥🔥");
+    setupUltraSimpleAuth(app);
+  } else {
+    setupAuth(app);
+  }
   
   // ANNOUNCEMENTS ROUTES
   

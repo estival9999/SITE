@@ -10,7 +10,7 @@ const demoUsers: User[] = [
   {
     id: 1,
     username: "admin",
-    passwordHash: "$2b$10$vI8PN2yEZdz8Ez2kUr6xzuVx8HYNnAZCmlMqGBmhk8DJgI2fEsrV2", // senha: admin
+    passwordHash: "$2b$10$xER0Un.XVVuYTANrnA8Ik.KThNhLlaW6ioMfbQOLrfCgzh4FsMJ/q", // senha: admin
     email: "admin@auralis.com",
     name: "Administrador",
     department: Department.TI,
@@ -22,7 +22,7 @@ const demoUsers: User[] = [
   {
     id: 2,
     username: "user",
-    passwordHash: "$2b$10$QQNnG.0uTMzYvHzrsJPMOeZi0L/bUrs5B0WlxQbMCx6nH.mI.UPZW", // senha: user
+    passwordHash: "$2b$10$zWVyYH8K1ThtfLmv8JGV.O/d27bJxXHkIOJ9vuVNjsNax1zwgb2Ki", // senha: user
     email: "user@auralis.com",
     name: "João Silva",
     department: Department.RH,
