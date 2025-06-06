@@ -1,20 +1,15 @@
 // AUTENTICAÇÃO ULTRA SIMPLIFICADA - SEMPRE FUNCIONA NO MODO DEMO
 
 export function setupUltraSimpleAuth(app: any) {
-  console.log("🔥 MODO DEMO ATIVADO - LOGIN SEMPRE ACEITO!");
+  console.log("🔥 MODO DEMO ATIVADO - LOGIN SIMPLES!");
   
-  // Middleware que sempre autentica
+  // Simula sessão de usuário
+  let currentUser: any = null;
+  
+  // Middleware de autenticação
   app.use((req: any, res: any, next: any) => {
-    req.isAuthenticated = () => true;
-    req.user = {
-      id: 1,
-      username: 'admin',
-      email: 'admin@auralis.com',
-      name: 'Administrador Demo',
-      role: 'ADMIN',
-      department: 'TI',
-      location: 'MATRIZ'
-    };
+    req.isAuthenticated = () => !!currentUser;
+    req.user = currentUser;
     next();
   });
 
@@ -33,25 +28,24 @@ export function setupUltraSimpleAuth(app: any) {
       location: 'MATRIZ'
     };
     
+    // Armazena o usuário logado
+    currentUser = user;
+    
     console.log("✅ LOGIN ACEITO AUTOMATICAMENTE!");
     return res.status(200).json(user);
   });
 
-  // Get user - sempre retorna admin
+  // Get user - retorna o usuário logado ou null
   app.get("/api/user", (req: any, res: any) => {
-    return res.json({
-      id: 1,
-      username: 'admin',
-      email: 'admin@auralis.com',
-      name: 'Administrador Demo',
-      role: 'ADMIN',
-      department: 'TI',
-      location: 'MATRIZ'
-    });
+    if (!currentUser) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+    return res.json(currentUser);
   });
 
   // Logout
   app.post("/api/logout", (req: any, res: any) => {
+    currentUser = null;
     res.sendStatus(200);
   });
 
@@ -66,6 +60,10 @@ export function setupUltraSimpleAuth(app: any) {
       department: 'RH',
       location: 'MATRIZ'
     };
+    
+    // Armazena o usuário registrado
+    currentUser = user;
+    
     res.status(201).json(user);
   });
 }
