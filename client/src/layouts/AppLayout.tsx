@@ -108,7 +108,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
           </div>
         </nav>
         
-        <div className="p-5 border-t border-[#333] mt-4 bg-[#1a1a1a] backdrop-blur">
+        <div className="p-5 border-t border-[#444] mt-4 bg-[#0a0a0a] backdrop-blur">
           <div className="flex items-center">
             <Avatar className="h-11 w-11 ring-2 ring-[#333] shadow-lg">
               <AvatarImage src="" alt={user?.name || "User"} />

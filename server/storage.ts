@@ -344,11 +344,11 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-// Import demo storage
-import { DemoStorage } from "./demo-storage.js";
+// Import memory storage for demo mode
+import { MemoryStorage } from "./memory-storage.js";
 
-// Use demo mode if no database is configured
-const isDemoMode = process.env.DEMO_MODE === 'true' || !process.env.DATABASE_URL;
+// Use memory storage if no database is configured
+const useMemoryStorage = process.env.DEMO_MODE === 'true' || !process.env.DATABASE_URL;
 
 // Create and export appropriate storage instance
-export const storage: IStorage = isDemoMode ? new DemoStorage() : new DatabaseStorage();
+export const storage: IStorage = useMemoryStorage ? new MemoryStorage() : new DatabaseStorage();

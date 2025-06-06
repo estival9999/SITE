@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import logoImage from "../assets/auralis-logo.png";
 
 interface LogoProps {
   className?: string;
@@ -17,7 +16,7 @@ export function Logo({ className, size = "medium", withText = false }: LogoProps
   return (
     <div className={cn("flex justify-center", className)}>
       <img 
-        src={logoImage}
+        src="/images/logo-auralis.png"
         alt="Auralis Logo" 
         className={cn(sizes[size], "object-contain")}
       />
