@@ -8,6 +8,7 @@ import { insertAnnouncementSchema, insertQuestionSchema, InsertUser, UserRole } 
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import aiRoutes from "./ai-routes";
 
 // File upload configuration
 const upload = multer({
@@ -471,6 +472,203 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Server error" });
     }
   });
+  
+  // CHAT ROUTES
+  
+  // Chat endpoint with AI
+  app.post("/api/chat", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const { message, context } = req.body;
+      
+      // Validate input
+      if (!message || typeof message !== 'string' || message.trim() === '') {
+        return res.status(400).json({ message: "Message is required" });
+      }
+      
+      // Check if LightRAG is configured
+      const lightragUrl = process.env.LIGHTRAG_URL || 'http://localhost:9621';
+      const lightragApiKey = process.env.LIGHTRAG_API_KEY || 'sk-lightrag-estival-2024-secure-api-key-xyz789';
+      
+      try {
+        // Try LightRAG first
+        const lightragResponse = await fetch(`${lightragUrl}/query`, {
+          method: 'POST',
+          headers: {
+            'X-API-Key': lightragApiKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query: message,
+            mode: "mix",
+            top_k: 30,
+            max_token_for_text_unit: 8000,
+            max_token_for_global_context: 8000,
+            max_token_for_local_context: 8000,
+            response_type: "Multiple Paragraphs",
+            conversation_history: context ? [{ role: "user", content: context }] : []
+          })
+        });
+        
+        if (lightragResponse.ok) {
+          const data = await lightragResponse.json();
+          const responseContent = typeof data === 'string' ? data : (data.response || data.content || JSON.stringify(data));
+          
+          return res.json({
+            message: {
+              role: "assistant",
+              content: responseContent
+            },
+            timestamp: new Date().toISOString()
+          });
+        }
+      } catch (lightragError) {
+        console.log("LightRAG não disponível, tentando OpenAI...");
+      }
+      
+      // Fallback to OpenAI if configured
+      if (!process.env.OPENAI_API_KEY) {
+        // If no OpenAI API key, return mock response
+        console.warn("Nem LightRAG nem OpenAI estão disponíveis. Usando resposta mock.");
+        
+        const mockResponse = {
+          role: "assistant",
+          content: `Recebi sua mensagem: "${message}". ${context ? `Contexto: ${context}` : ''}\n\nEsta é uma resposta de teste. Configure LIGHTRAG_URL ou OPENAI_API_KEY no arquivo .env para habilitar respostas de IA.`
+        };
+        
+        return res.json({
+          message: mockResponse,
+          timestamp: new Date().toISOString()
+        });
+      }
+      
+      // Import OpenAI dynamically to avoid errors if not needed
+      const { OpenAI } = await import('openai');
+      const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+      
+      // Prepare messages for OpenAI
+      const messages: any[] = [
+        {
+          role: "system",
+          content: "Você é um assistente útil integrado ao sistema de comunicados AURALIS. Você ajuda os usuários a entender comunicados, responder perguntas sobre políticas da empresa e fornecer orientação sobre como usar o sistema. Seja conciso e profissional."
+        }
+      ];
+      
+      // Add context if provided
+      if (context) {
+        messages.push({
+          role: "system",
+          content: `Context: ${context}`
+        });
+      }
+      
+      // Add user message
+      messages.push({
+        role: "user",
+        content: message
+      });
+      
+      // Check if streaming is requested
+      const stream = req.headers.accept === 'text/event-stream';
+      
+      if (stream) {
+        // Set headers for SSE
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        
+        // Create streaming response
+        const streamResponse = await openai.chat.completions.create({
+          model: process.env.OPENAI_MODEL || "gpt-3.5-turbo",
+          messages,
+          stream: true,
+          temperature: 0.7,
+          max_tokens: 1000,
+        });
+        
+        // Send chunks as they arrive
+        for await (const chunk of streamResponse) {
+          const content = chunk.choices[0]?.delta?.content || '';
+          if (content) {
+            res.write(`data: ${JSON.stringify({ content })}\n\n`);
+          }
+        }
+        
+        // Send done signal
+        res.write(`data: [DONE]\n\n`);
+        res.end();
+      } else {
+        // Non-streaming response
+        const completion = await openai.chat.completions.create({
+          model: process.env.OPENAI_MODEL || "gpt-3.5-turbo",
+          messages,
+          temperature: 0.7,
+          max_tokens: 1000,
+        });
+        
+        const responseMessage = completion.choices[0]?.message;
+        
+        if (!responseMessage) {
+          return res.status(500).json({ message: "Failed to generate response" });
+        }
+        
+        // Save chat history if needed (optional)
+        // await storage.saveChatMessage(req.user!.id, message, responseMessage.content);
+        
+        res.json({
+          message: responseMessage,
+          timestamp: new Date().toISOString(),
+          usage: completion.usage
+        });
+      }
+    } catch (error: any) {
+      console.error("Error in chat endpoint:", error);
+      
+      // Handle specific OpenAI errors
+      if (error.code === 'insufficient_quota') {
+        return res.status(503).json({ 
+          message: "AI service quota exceeded. Please try again later." 
+        });
+      } else if (error.code === 'rate_limit_exceeded') {
+        return res.status(429).json({ 
+          message: "Too many requests. Please wait a moment and try again." 
+        });
+      }
+      
+      res.status(500).json({ 
+        message: "An error occurred while processing your message",
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  });
+  
+  // Get chat history (optional endpoint)
+  app.get("/api/chat/history", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      // This would require implementing chat history storage
+      // For now, return empty array
+      res.json({
+        messages: [],
+        message: "Chat history not implemented yet"
+      });
+    } catch (error) {
+      console.error("Error fetching chat history:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+  
+  // AI Routes
+  app.use(aiRoutes);
   
   // Serve uploaded files
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));

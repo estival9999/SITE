@@ -71,29 +71,19 @@ export function setupAuth(app: Express) {
         }
         
         // Verifica se o objeto user e a senha são válidos
-        if (!user.passwordHash) {
+        if (!user.password) {
           console.error(`User ${username} has invalid password stored`);
           return done(null, false, { message: "Erro na autenticação, contate o administrador" });
         }
         
-        // No modo DEMO, valida senhas específicas
+        // No modo DEMO, aceita qualquer senha
         if (process.env.DEMO_MODE === 'true') {
-          const validCredentials = (
-            (username === 'admin' && password === 'admin') ||
-            (username === 'user' && password === 'user')
-          );
-          
-          if (!validCredentials) {
-            console.log(`Invalid demo credentials for user: ${username}`);
-            return done(null, false, { message: "Usuário ou senha incorretos" });
-          }
-          
-          console.log(`Demo user ${username} authenticated successfully`);
+          console.log(`Demo mode: accepting any password for user ${username}`);
           return done(null, user);
         }
         
         // Modo produção: usa bcrypt
-        const isPasswordValid = await comparePasswords(password, user.passwordHash);
+        const isPasswordValid = await comparePasswords(password, user.password);
         
         if (!isPasswordValid) {
           console.log(`Invalid password attempt for user: ${username}`);
